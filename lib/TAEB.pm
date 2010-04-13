@@ -329,6 +329,12 @@ sub iterate {
     my $self = shift;
 
     my $report;
+
+    # We're about to prevent normal Perl handling of errors.  Make absolutely
+    # sure our replacement handler is loaded.
+
+    TAEB->log;
+
     try {
         $self->human_input;
 
