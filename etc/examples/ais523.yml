@@ -9,8 +9,8 @@ ai_options:
     Planar:
         overall_plan: DevNullSokobanMeta
 
-interface: Local
-#interface: Telnet
+#interface: Local
+interface: Telnet
 #interface: SSH
 
 display: Curses
@@ -38,6 +38,7 @@ character:
 
 display_options:
     Curses:
+#        color_method: debug
         color_method: planar_debug
         glyph_method: normal
 
