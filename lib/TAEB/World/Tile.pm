@@ -109,7 +109,13 @@ has engraving => (
         my $self = shift;
         my $engraving = shift;
         if (length($engraving) > 255) {
-            $self->engraving(substr($engraving, 0, 255));
+            # Three-argument substr returns an lvalue with magic;
+            # passing this directly to $self->engraving causes it to
+            # fail the type constraint (technically, the return from
+            # substr is not a 'Str'). This interpolation method strips
+            # the magic and allows the code to run.
+            my $shortened = substr($engraving, 0, 255);
+            $self->engraving("$shortened");
         }
     },
 );
