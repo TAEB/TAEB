@@ -6,11 +6,11 @@ name           'TAEB';
 all_from       'lib/TAEB.pm';
 
 # the object system
-requires 'Moose'                       => 0.90;
+requires 'Moose'                       => 1.15;
 requires 'MooseX::ABC'                 => 0.02;
-requires 'MooseX::ClassAttribute'      => 0.07;
-requires 'MooseX::NonMoose'            => 0.07;
-requires 'MooseX::Role::Parameterized' => 0.06;
+requires 'MooseX::ClassAttribute'      => 0.24;
+requires 'MooseX::NonMoose'            => 0.18;
+requires 'MooseX::Role::Parameterized' => 0.24;
 requires 'MooseX::Role::Matcher'       => 0.03;
 requires 'MooseX::Singleton'           => 0.17;
 requires 'Module::Pluggable';
@@ -42,7 +42,6 @@ requires 'Heap::Simple::XS'; # why doesn't Heap::Simple do this for us...
 requires 'Time::HiRes';
 requires 'Data::Page';
 requires 'Getopt::Long';
-requires 'Devel::GlobalDestruction';
 
 # NetHack-specific things
 requires 'NetHack::Menu' => 0.06;
@@ -107,6 +106,5 @@ install_script 'bin/taeb';
 
 tests('t/*.t t/*/*.t');
 
-auto_install;
 WriteAll;
 
