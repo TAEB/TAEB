@@ -1,5 +1,5 @@
 package TAEB::Spoilers::Sokoban;
-use MooseX::Singleton;
+use Moose;
 use Tie::RefHash;
 
 has level_maps => (
@@ -657,7 +657,7 @@ sub next_sokoban_step {
 }
 
 __PACKAGE__->meta->make_immutable;
-no MooseX::Singleton;
+no Moose;
 
 1;
 

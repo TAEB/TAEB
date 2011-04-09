@@ -13,7 +13,6 @@ requires 'MooseX::NonMoose'            => 0.18;
 requires 'MooseX::Role::Parameterized' => 0.24;
 requires 'MooseX::Role::Matcher'       => 0.03;
 requires 'MooseX::Role::WithOverloading' => 0.09;
-requires 'MooseX::Singleton'           => 0.17;
 requires 'Module::Pluggable';
 requires 'namespace::autoclean';
 
