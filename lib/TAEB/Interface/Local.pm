@@ -1,11 +1,9 @@
 package TAEB::Interface::Local;
 use Moose;
 use TAEB::OO;
-use IO::Pty::Easy;
+use IO::Pty::HalfDuplex;
 
 extends 'TAEB::Interface';
-
-sub ping_wait { '.3' }
 
 has name => (
     is      => 'ro',
@@ -23,7 +21,7 @@ has args => (
 has pty => (
     traits  => [qw/TAEB::Meta::Trait::DontInitialize/],
     is      => 'ro',
-    isa     => 'IO::Pty::Easy',
+    isa     => 'IO::Pty::HalfDuplex',
     lazy    => 1,
     handles => ['is_active'],
     builder => '_build_pty',
@@ -51,7 +49,7 @@ sub _build_pty {
 
     # set Pty to ignore SIGWINCH so that we don't confuse nethack if
     # controlling terminal is not set to 80x24
-    my $pty = IO::Pty::Easy->new(handle_pty_size => 0);
+    my $pty = IO::Pty::HalfDuplex->new(handle_pty_size => 0);
 
     $pty->spawn($self->name, $self->args);
     return $pty;
@@ -60,32 +58,19 @@ sub _build_pty {
 augment read => sub {
     my $self = shift;
 
-    sleep($self->ping_wait);
-
     die "Pty inactive" unless $self->is_active;
 
     # We already waited for output to arrive; don't wait even longer if there
     # isn't any. Use an appropriate reading function depending on the class.
-    my $out;
-    $out = $self->pty->read(0,1024);
-
-    return '' if !defined($out);
-
-    # We specified blocks of 1024 characters above. If we got exactly 1024,
-    # read more.
-    if (length($out) == 1024) {
-        $out .= $self->read(@_);
-    }
-
-    return $out;
+    return $self->pty->recv;
 };
 
-sub flush { shift->pty->read(2); }
+sub flush { shift->pty->recv(2); }
 
 sub wait_for_termination {
     my $self = shift;
     my $pty = $self->pty;
-    $pty->read(2); # give it time to save
+    $pty->recv(2); # give it time to save
     return unless $pty->is_active;
     TAEB->log->input("Trying to handle unclean NetHack shutdown...");
     # Send NetHack a SIGHUP first in case we turn out not to have sent a
@@ -106,7 +91,7 @@ sub wait_for_termination {
     # 3-second timeout, then see if the process has ended; if it's
     # ended, then it's finished saving, and otherwise it's waiting for
     # its record file.
-    $pty->read(3);
+    $pty->recv(3);
     return unless $pty->is_active;
     # NetHack will wait for up to a minute to get its lockfile. We've
     # waited 5 seconds already; let's wait another 66 just to be sure,
@@ -117,7 +102,7 @@ sub wait_for_termination {
         TAEB->log->input("Waiting for termination ($wait seconds remaining)...");
         print "Something went wrong when NetHack tried to save.\n";
         print "Waiting up to another $wait seconds...   \n";
-        $pty->read(3);
+        $pty->recv(3);
         return unless $pty->is_active;
         $wait -= 3;
     }
