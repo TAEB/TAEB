@@ -3,12 +3,15 @@ use Moose ();
 use MooseX::ClassAttribute ();
 use Moose::Exporter;
 
+use autodie;
+use namespace::autoclean ();
+
 use TAEB::Meta::Trait::Persistent;
 use TAEB::Meta::Trait::GoodStatus;
 use TAEB::Meta::Trait::DontInitialize;
 use TAEB::Meta::Types;
 
-Moose::Exporter->setup_import_methods(
+my ($import) = Moose::Exporter->setup_import_methods(
     also      => ['MooseX::ClassAttribute'],
     with_meta => ['subscribe'],
     base_class_roles => [
@@ -46,6 +49,15 @@ sub subscribe {
 
         $meta->add_method($method_name => $method);
     }
+}
+
+sub import {
+    my $caller = caller;
+
+    autodie->import;
+    namespace::autoclean->import(-cleanee => $caller);
+
+    goto $import;
 }
 
 1;
