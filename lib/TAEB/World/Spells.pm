@@ -4,7 +4,7 @@ use TAEB::OO;
 use TAEB::Util 'first';
 use TAEB::World::Spell;
 
-use overload %TAEB::Meta::Overload::default;
+with 'TAEB::Role::Overload';
 
 my @slots = ('a' .. 'z', 'A' .. 'Z');
 

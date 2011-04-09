@@ -3,9 +3,7 @@ use Moose;
 use TAEB::OO;
 use TAEB::Util qw/delta2vi vi2delta display display_ro :colors any all apply first/;
 
-with 'TAEB::Role::Reblessing';
-
-use overload %TAEB::Meta::Overload::default;
+with 'TAEB::Role::Reblessing', 'TAEB::Role::Overload';
 
 has level => (
     is       => 'ro',

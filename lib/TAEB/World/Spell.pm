@@ -3,7 +3,7 @@ use Moose;
 use TAEB::OO;
 use TAEB::Util qw/max min/;
 
-use overload %TAEB::Meta::Overload::default;
+with 'TAEB::Role::Overload';
 
 has name => (
     is       => 'ro',

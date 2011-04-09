@@ -7,7 +7,6 @@ use TAEB::Meta::Trait::Persistent;
 use TAEB::Meta::Trait::GoodStatus;
 use TAEB::Meta::Trait::DontInitialize;
 use TAEB::Meta::Types;
-use TAEB::Meta::Overload;
 
 Moose::Exporter->setup_import_methods(
     also      => ['MooseX::ClassAttribute'],

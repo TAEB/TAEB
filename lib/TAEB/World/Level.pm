@@ -3,9 +3,7 @@ use Moose;
 use TAEB::OO;
 use TAEB::Util qw/deltas delta2vi vi2delta tile_types first any assert/;
 
-with 'TAEB::Role::Reblessing';
-
-use overload %TAEB::Meta::Overload::default;
+with 'TAEB::Role::Reblessing', 'TAEB::Role::Overload';
 
 has tiles => (
     is      => 'ro',

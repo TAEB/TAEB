@@ -1,7 +1,8 @@
 package TAEB::World;
 use strict;
 use warnings;
-use TAEB::Meta::Overload;
+
+use TAEB::Role::Overload ();
 
 use Module::Pluggable (
     require     => 1,
@@ -44,16 +45,8 @@ sub taebify {
     Moose::Meta::Class->create(
         $taeb_class,
         superclasses => [$class],
-        roles        => [_find_item_role($class)],
+        roles        => [_find_item_role($class), 'TAEB::Role::Overload'],
     );
-
-    # add overloading to taeb_class
-    my $failed = not eval <<OVERLOAD; ## no critic (ProhibitStringyEval)
-        package $taeb_class;
-        use overload \%TAEB::Meta::Overload::default;
-        1;
-OVERLOAD
-    die $@ if $failed;
 }
 
 __PACKAGE__->load_world_classes;

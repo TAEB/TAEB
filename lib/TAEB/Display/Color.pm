@@ -3,7 +3,7 @@ use Moose;
 use TAEB::OO;
 use TAEB::Util ':colors';
 
-use overload %TAEB::Meta::Overload::default;
+with 'TAEB::Role::Overload';
 sub debug_line {
     my $self = shift;
     my $color = $self->color;

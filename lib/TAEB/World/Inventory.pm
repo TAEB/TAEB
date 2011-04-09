@@ -2,15 +2,16 @@ package TAEB::World::Inventory;
 use Moose;
 use TAEB::OO;
 extends 'NetHack::Inventory';
+with 'TAEB::Role::Overload';
 
 use TAEB::Util qw/first assert refaddr/;
-
-use overload %TAEB::Meta::Overload::default;
 
 use constant equipment_class => 'TAEB::World::Equipment';
 
 has '+equipment' => (
-    isa => 'TAEB::World::Equipment',
+    isa     => 'TAEB::World::Equipment',
+    # XXX kinda ugly, but oh well
+    handles => qr/^(?!update|remove|(has_)?pool|slots|debug_line)\w/,
 );
 
 sub find {
@@ -53,21 +54,19 @@ sub has_projectile {
     return;
 }
 
-# XXX I had to comment this out because it errors about overriding a delegate
-# with a local method
-#sub debug_line {
-#    my $self = shift;
-#    my @items;
-#
-#    return "No inventory." unless $self->has_items;
-#
-#    push @items, 'Inventory (' . $self->weight . ' hzm)';
-#    #for my $slot (sort $self->slots) {
-#    #    push @items, sprintf '%s - %s', $slot, $self->get($slot)->debug_line;
-#    #}
-#
-#    return join "\n", @items;
-#}
+sub debug_line {
+    my $self = shift;
+    my @items;
+
+    return "No inventory." unless $self->has_items;
+
+    push @items, 'Inventory (' . $self->weight . ' hzm)';
+    #for my $slot (sort $self->slots) {
+    #    push @items, sprintf '%s - %s', $slot, $self->get($slot)->debug_line;
+    #}
+
+    return join "\n", @items;
+}
 
 subscribe got_item => sub {
     my $self  = shift;

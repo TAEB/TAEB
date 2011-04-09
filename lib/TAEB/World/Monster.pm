@@ -4,7 +4,7 @@ use TAEB::OO;
 use TAEB::Util qw/:colors align2str max min any all string_color/;
 use TAEB::Spoilers::Combat;
 
-use overload %TAEB::Meta::Overload::default;
+with 'TAEB::Role::Overload';
 
 has glyph => (
     is       => 'ro',

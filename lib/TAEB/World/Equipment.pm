@@ -3,7 +3,7 @@ use Moose;
 use TAEB::OO;
 extends 'NetHack::Inventory::Equipment';
 
-use overload %TAEB::Meta::Overload::default;
+with 'TAEB::Role::Overload';
 
 sub debug_line {
     my $self = shift;
