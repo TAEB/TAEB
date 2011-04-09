@@ -1,4 +1,5 @@
 package TAEB::Action::Custom;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Action';
 

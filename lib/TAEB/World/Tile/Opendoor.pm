@@ -1,4 +1,5 @@
 package TAEB::World::Tile::Opendoor;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::World::Tile::Door';
 

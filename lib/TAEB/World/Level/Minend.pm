@@ -1,5 +1,6 @@
 package TAEB::World::Level::Minend;
 #sic
+use Moose;
 use TAEB::OO;
 extends 'TAEB::World::Level';
 

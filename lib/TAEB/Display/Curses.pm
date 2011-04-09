@@ -1,4 +1,5 @@
 package TAEB::Display::Curses;
+use Moose;
 use TAEB::OO;
 use Curses ();
 use TAEB::Util qw/:colors max tile_type_to_glyph tile_type_to_color display refaddr/;

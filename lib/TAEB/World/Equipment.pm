@@ -1,4 +1,5 @@
 package TAEB::World::Equipment;
+use Moose;
 use TAEB::OO;
 extends 'NetHack::Inventory::Equipment';
 

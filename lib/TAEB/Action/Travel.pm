@@ -1,4 +1,5 @@
 package TAEB::Action::Travel;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Action';
 

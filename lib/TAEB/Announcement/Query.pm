@@ -1,4 +1,5 @@
 package TAEB::Announcement::Query;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement';
 

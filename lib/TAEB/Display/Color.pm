@@ -1,4 +1,5 @@
 package TAEB::Display::Color;
+use Moose;
 use TAEB::OO;
 use TAEB::Util ':colors';
 

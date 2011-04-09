@@ -1,4 +1,5 @@
 package TAEB::Announcement::Step;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement';
 

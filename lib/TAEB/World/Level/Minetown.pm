@@ -1,4 +1,5 @@
 package TAEB::World::Level::Minetown;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::World::Level';
 

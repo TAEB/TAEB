@@ -1,4 +1,5 @@
 package TAEB::Announcement;
+use Moose;
 use TAEB::OO;
 use MooseX::ABC;
 

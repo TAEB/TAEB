@@ -1,4 +1,5 @@
 package TAEB::Announcement::Dungeon::Feature::CannotDip;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Dungeon';
 

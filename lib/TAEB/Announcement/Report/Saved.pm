@@ -1,4 +1,5 @@
 package TAEB::Announcement::Report::Saved;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Report';
 

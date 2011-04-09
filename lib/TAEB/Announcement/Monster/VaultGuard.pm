@@ -1,4 +1,5 @@
 package TAEB::Announcement::Monster::VaultGuard;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Monster';
 

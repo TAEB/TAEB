@@ -1,4 +1,5 @@
 package TAEB::World::Tile::Door;
+use Moose;
 use TAEB::OO;
 use TAEB::Util qw/min/;
 extends 'TAEB::World::Tile';

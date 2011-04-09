@@ -1,5 +1,6 @@
 package TAEB::Role::Item::Food::Corpse;
 use Moose::Role;
+use TAEB::OO;
 with 'TAEB::Role::Item::Food';
 
 has is_forced_verboten => (
@@ -171,5 +172,6 @@ sub beneficial_to_eat {
 }
 
 no Moose::Role;
+no TAEB::OO;
 
 1;

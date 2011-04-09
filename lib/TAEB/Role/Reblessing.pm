@@ -1,5 +1,6 @@
 package TAEB::Role::Reblessing;
 use Moose::Role;
+use TAEB::OO;
 
 requires 'base_class';
 
@@ -45,6 +46,7 @@ sub downgrade {
 }
 
 no Moose::Role;
+no TAEB::OO;
 
 1;
 

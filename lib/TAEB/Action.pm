@@ -1,4 +1,5 @@
 package TAEB::Action;
+use Moose;
 use TAEB::OO;
 use MooseX::ABC;
 

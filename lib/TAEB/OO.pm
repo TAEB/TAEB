@@ -1,6 +1,6 @@
 package TAEB::OO;
-use MooseX::ClassAttribute ();
 use Moose ();
+use MooseX::ClassAttribute ();
 use Moose::Exporter;
 
 use TAEB::Meta::Trait::Persistent;
@@ -9,10 +9,9 @@ use TAEB::Meta::Trait::DontInitialize;
 use TAEB::Meta::Types;
 use TAEB::Meta::Overload;
 
-my (undef, undef, $init_meta) = Moose::Exporter->build_import_methods(
-    also      => ['Moose', 'MooseX::ClassAttribute'],
+Moose::Exporter->setup_import_methods(
+    also      => ['MooseX::ClassAttribute'],
     with_meta => ['subscribe'],
-    install   => [qw(import unimport)],
     base_class_roles => [
         'TAEB::Role::Initialize',
         'TAEB::Role::Subscription',
@@ -20,6 +19,11 @@ my (undef, undef, $init_meta) = Moose::Exporter->build_import_methods(
     class_metaroles => {
         attribute => ['TAEB::Meta::Trait::Provided'],
     },
+    (Moose->VERSION >= 1.9900
+        ? (role_metaroles => {
+               applied_attribute => ['TAEB::Meta::Trait::Provided'],
+           })
+        : ()),
 );
 
 sub subscribe {
@@ -45,12 +49,4 @@ sub subscribe {
     }
 }
 
-sub init_meta {
-    my ($package, %options) = @_;
-
-    Moose->init_meta(%options);
-    $package->$init_meta(%options);
-}
-
 1;
-

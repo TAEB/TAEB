@@ -1,5 +1,6 @@
 package TAEB::Role::Item;
 use Moose::Role;
+use TAEB::OO;
 with 'MooseX::Role::Matcher' => {
     default_match => 'name',
     allow_missing_methods => 1,
@@ -96,5 +97,6 @@ around match => sub {
 };
 
 no Moose::Role;
+no TAEB::OO;
 
 1;

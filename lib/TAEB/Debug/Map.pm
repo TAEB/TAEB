@@ -1,4 +1,5 @@
 package TAEB::Debug::Map;
+use Moose;
 use TAEB::OO;
 use TAEB::Util qw/item_menu vi2delta/;
 

@@ -1,4 +1,5 @@
 package TAEB::Action::Throw;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Action';
 

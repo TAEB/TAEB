@@ -1,4 +1,5 @@
 package TAEB::World::Tile::Stairsup;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::World::Tile::Stairs';
 

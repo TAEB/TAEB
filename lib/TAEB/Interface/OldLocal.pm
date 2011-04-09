@@ -1,4 +1,5 @@
 package TAEB::Interface::OldLocal;
+use Moose;
 use TAEB::OO;
 use IO::Pty::Easy;
 use Time::HiRes 'sleep';

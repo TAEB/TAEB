@@ -1,4 +1,5 @@
 package TAEB::Announcement::Dungeon::Trap::Trapdoor;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Dungeon::Trap';
 

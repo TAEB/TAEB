@@ -1,4 +1,5 @@
 package TAEB::Announcement::Exception;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement';
 

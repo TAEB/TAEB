@@ -1,4 +1,5 @@
 package TAEB::Spoilers::Monster;
+use Moose;
 use TAEB::OO;
 use TAEB::Util qw/colors min max firstidx string_color dice/;
 extends 'NetHack::Monster::Spoiler';

@@ -1,4 +1,5 @@
 package TAEB::Announcement::Character::FullMoon;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Character';
 

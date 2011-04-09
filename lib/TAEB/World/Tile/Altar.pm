@@ -1,4 +1,5 @@
 package TAEB::World::Tile::Altar;
+use Moose;
 use TAEB::OO;
 use TAEB::Util qw/:colors display/;
 extends 'TAEB::World::Tile';

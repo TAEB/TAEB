@@ -1,5 +1,6 @@
 package TAEB::Role::Item::Food;
 use Moose::Role;
+use TAEB::OO;
 with 'TAEB::Role::Item';
 
 sub is_safely_edible {
@@ -12,5 +13,6 @@ sub is_safely_edible {
 }
 
 no Moose::Role;
+no TAEB::OO;
 
 1;

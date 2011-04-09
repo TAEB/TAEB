@@ -1,4 +1,5 @@
 package TAEB::World::Inventory;
+use Moose;
 use TAEB::OO;
 extends 'NetHack::Inventory';
 

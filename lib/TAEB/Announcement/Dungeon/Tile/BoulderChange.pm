@@ -1,4 +1,5 @@
 package TAEB::Announcement::Dungeon::Tile::BoulderChange;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Dungeon::Tile';
 

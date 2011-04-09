@@ -1,4 +1,5 @@
 package TAEB::Action::Wait;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Action';
 

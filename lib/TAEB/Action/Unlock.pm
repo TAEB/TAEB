@@ -1,4 +1,5 @@
 package TAEB::Action::Unlock;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Action';
 with (

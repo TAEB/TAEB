@@ -1,4 +1,5 @@
 package TAEB::Announcement::UI::Keypress;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::UI';
 

@@ -1,4 +1,5 @@
 package TAEB::World::Spell;
+use Moose;
 use TAEB::OO;
 use TAEB::Util qw/max min/;
 

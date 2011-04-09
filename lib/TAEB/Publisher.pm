@@ -1,4 +1,5 @@
 package TAEB::Publisher;
+use Moose;
 use TAEB::OO;
 use Set::Object;
 use TAEB::Util qw(natatime);

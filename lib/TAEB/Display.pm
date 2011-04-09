@@ -1,4 +1,5 @@
 package TAEB::Display;
+use Moose;
 use TAEB::OO;
 use TAEB::Display::Color;
 use TAEB::Display::Menu;

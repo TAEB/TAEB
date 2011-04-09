@@ -1,4 +1,5 @@
 package TAEB::World::Tile;
+use Moose;
 use TAEB::OO;
 use TAEB::Util qw/delta2vi vi2delta display display_ro :colors any all apply first/;
 

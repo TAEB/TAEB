@@ -1,4 +1,5 @@
 package TAEB::World::Tile::Sink;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::World::Tile';
 

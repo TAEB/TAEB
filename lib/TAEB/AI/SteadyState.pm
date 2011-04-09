@@ -1,4 +1,5 @@
 package TAEB::AI::SteadyState;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::AI';
 

@@ -1,4 +1,5 @@
 package TAEB::ScreenScraper;
+use Moose;
 use TAEB::OO;
 use TAEB::Util qw/crow_flies natatime/;
 use TAEB::Announcement;

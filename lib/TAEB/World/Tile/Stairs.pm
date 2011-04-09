@@ -1,4 +1,5 @@
 package TAEB::World::Tile::Stairs;
+use Moose;
 use TAEB::OO;
 use TAEB::Util qw/:colors display/;
 extends 'TAEB::World::Tile';

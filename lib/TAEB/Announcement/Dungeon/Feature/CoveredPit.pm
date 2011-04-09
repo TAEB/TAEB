@@ -1,4 +1,5 @@
 package TAEB::Announcement::Dungeon::Feature::CoveredPit;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Dungeon';
 

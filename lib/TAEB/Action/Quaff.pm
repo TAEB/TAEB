@@ -1,4 +1,5 @@
 package TAEB::Action::Quaff;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Action';
 with 'TAEB::Action::Role::Item' => { items => [qw/from/] };

@@ -1,4 +1,5 @@
 package TAEB::Debug::IRC;
+use Moose;
 use TAEB::OO;
 with 'TAEB::Role::Config';
 

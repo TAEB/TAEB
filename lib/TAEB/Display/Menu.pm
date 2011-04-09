@@ -1,4 +1,5 @@
 package TAEB::Display::Menu;
+use Moose;
 use TAEB::OO;
 
 has description => (

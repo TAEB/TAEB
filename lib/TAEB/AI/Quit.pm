@@ -1,4 +1,5 @@
 package TAEB::AI::Quit;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::AI';
 

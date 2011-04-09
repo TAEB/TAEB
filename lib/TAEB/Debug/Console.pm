@@ -1,4 +1,5 @@
 package TAEB::Debug::Console;
+use Moose;
 use TAEB::OO;
 use Try::Tiny;
 with 'TAEB::Role::Config';

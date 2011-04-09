@@ -1,4 +1,5 @@
 package TAEB::Announcement::Dungeon::Tile;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement';
 

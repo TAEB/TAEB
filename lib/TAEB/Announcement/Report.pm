@@ -1,4 +1,5 @@
 package TAEB::Announcement::Report;
+use Moose;
 use TAEB::OO;
 use TAEB::Util 'max';
 extends 'TAEB::Announcement';

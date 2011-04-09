@@ -1,4 +1,5 @@
 package TAEB::Action::Zap;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Action';
 with (

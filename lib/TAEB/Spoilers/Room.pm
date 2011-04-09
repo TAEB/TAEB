@@ -1,4 +1,5 @@
 package TAEB::Spoilers::Room;
+use Moose;
 use TAEB::OO;
 
 class_has shop_names => (

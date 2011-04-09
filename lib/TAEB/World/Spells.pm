@@ -1,4 +1,5 @@
 package TAEB::World::Spells;
+use Moose;
 use TAEB::OO;
 use TAEB::Util 'first';
 use TAEB::World::Spell;

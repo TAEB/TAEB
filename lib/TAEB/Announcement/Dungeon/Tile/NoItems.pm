@@ -1,4 +1,5 @@
 package TAEB::Announcement::Dungeon::Tile::NoItems;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Dungeon::Tile';
 

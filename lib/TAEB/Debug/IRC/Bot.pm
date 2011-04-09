@@ -1,4 +1,5 @@
 package TAEB::Debug::IRC::Bot;
+use Moose;
 use TAEB::OO;
 use MooseX::NonMoose;
 use Time::HiRes qw/time/;

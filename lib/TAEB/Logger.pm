@@ -1,4 +1,5 @@
 package TAEB::Logger;
+use Moose;
 use TAEB::OO;
 use Log::Dispatch::File;
 use Carp;

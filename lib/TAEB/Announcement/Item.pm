@@ -1,4 +1,5 @@
 package TAEB::Announcement::Item;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement';
 

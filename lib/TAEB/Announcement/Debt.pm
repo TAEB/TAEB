@@ -1,4 +1,5 @@
 package TAEB::Announcement::Debt;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement';
 

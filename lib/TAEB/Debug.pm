@@ -1,4 +1,5 @@
 package TAEB::Debug;
+use Moose;
 use TAEB::OO;
 use TAEB::Debug::Console;
 use TAEB::Debug::Map;

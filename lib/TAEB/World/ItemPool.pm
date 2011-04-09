@@ -1,4 +1,5 @@
 package TAEB::World::ItemPool;
+use Moose;
 use TAEB::OO;
 extends 'NetHack::ItemPool';
 

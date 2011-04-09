@@ -1,4 +1,5 @@
 package TAEB::Interface::Telnet;
+use Moose;
 use TAEB::OO;
 use IO::Socket::Telnet::HalfDuplex;
 

@@ -1,4 +1,5 @@
 package TAEB::Action::Chat;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Action';
 with 'TAEB::Action::Role::Direction';

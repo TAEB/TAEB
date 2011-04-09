@@ -1,4 +1,5 @@
 package TAEB::AI::Human;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::AI';
 

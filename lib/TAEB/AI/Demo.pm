@@ -1,4 +1,5 @@
 package TAEB::AI::Demo;
+use Moose;
 use TAEB::OO; # like "use Moose" but with a bit more added to it
 extends 'TAEB::AI';
 

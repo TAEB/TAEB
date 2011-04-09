@@ -1,4 +1,5 @@
 package TAEB::Announcement::Character;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement';
 

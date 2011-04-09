@@ -1,4 +1,5 @@
 package TAEB::World::Level::Oracle;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::World::Level';
 

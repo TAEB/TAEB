@@ -1,4 +1,5 @@
 package TAEB::World::Level;
+use Moose;
 use TAEB::OO;
 use TAEB::Util qw/deltas delta2vi vi2delta tile_types first any assert/;
 

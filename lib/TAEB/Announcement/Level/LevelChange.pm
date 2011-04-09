@@ -1,4 +1,5 @@
 package TAEB::Announcement::Level::LevelChange;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Level';
 

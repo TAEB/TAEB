@@ -1,4 +1,5 @@
 package TAEB::Action::Move;
+use Moose;
 use TAEB::OO;
 use TAEB::Util qw/vi2delta assert/;
 extends 'TAEB::Action';

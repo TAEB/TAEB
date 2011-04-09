@@ -1,4 +1,5 @@
 package TAEB::Spoilers::Engravings;
+use Moose;
 use TAEB::OO;
 use TAEB::Util 'any';
 

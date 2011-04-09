@@ -1,4 +1,5 @@
 package TAEB::World::Cartographer;
+use Moose;
 use TAEB::OO;
 use NetHack::FOV 'calculate_fov';
 use TAEB::Util qw/assert tile_type_to_glyph/;

@@ -1,4 +1,5 @@
 package TAEB::Debug::Sanity;
+use Moose;
 use TAEB::OO;
 with 'TAEB::Role::Config';
 

@@ -1,4 +1,5 @@
 package TAEB::Senses;
+use Moose;
 use TAEB::OO;
 
 has name => (

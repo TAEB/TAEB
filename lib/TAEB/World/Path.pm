@@ -1,4 +1,5 @@
 package TAEB::World::Path;
+use Moose;
 use TAEB::OO;
 use Heap::Simple;
 use TAEB::Util qw/delta2vi deltas sum max refaddr/;

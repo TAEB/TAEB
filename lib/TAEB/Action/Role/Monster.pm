@@ -1,5 +1,6 @@
 package TAEB::Action::Role::Monster;
 use Moose::Role;
+use TAEB::OO;
 
 requires 'victim_tile';
 
@@ -14,6 +15,7 @@ sub has_monster {
 }
 
 no Moose::Role;
+no TAEB::OO;
 
 1;
 

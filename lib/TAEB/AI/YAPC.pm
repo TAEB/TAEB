@@ -1,4 +1,5 @@
 package TAEB::AI::YAPC;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::AI';
 

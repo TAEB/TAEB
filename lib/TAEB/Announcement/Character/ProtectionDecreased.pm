@@ -1,4 +1,5 @@
 package TAEB::Announcement::Character::ProtectionDecreased;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Character';
 

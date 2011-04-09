@@ -1,4 +1,5 @@
 package TAEB::Action::Ascend;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Action::Move';
 

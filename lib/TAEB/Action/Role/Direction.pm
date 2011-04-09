@@ -1,5 +1,6 @@
 package TAEB::Action::Role::Direction;
 use Moose::Role;
+use TAEB::OO;
 use TAEB::Util 'none', 'vi2delta';
 
 has direction => (
@@ -69,6 +70,7 @@ sub msg_killed {
 }
 
 no Moose::Role;
+no TAEB::OO;
 
 1;
 

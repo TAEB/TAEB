@@ -1,4 +1,5 @@
 package TAEB::World::Monster;
+use Moose;
 use TAEB::OO;
 use TAEB::Util qw/:colors align2str max min any all string_color/;
 use TAEB::Spoilers::Combat;

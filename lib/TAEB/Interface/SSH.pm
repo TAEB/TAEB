@@ -1,4 +1,5 @@
 package TAEB::Interface::SSH;
+use Moose;
 use TAEB::OO;
 use Try::Tiny;
 

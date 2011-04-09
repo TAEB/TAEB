@@ -1,4 +1,5 @@
 package TAEB::World::Dungeon;
+use Moose;
 use TAEB::OO;
 use TAEB::Util 'refaddr';
 

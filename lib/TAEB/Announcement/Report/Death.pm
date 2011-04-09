@@ -1,4 +1,5 @@
 package TAEB::Announcement::Report::Death;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Report';
 

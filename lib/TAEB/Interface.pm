@@ -1,4 +1,5 @@
 package TAEB::Interface;
+use Moose;
 use TAEB::OO;
 use MooseX::ABC;
 

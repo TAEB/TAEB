@@ -1,4 +1,5 @@
 package TAEB::Announcement::Dungeon::Door;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Dungeon';
 

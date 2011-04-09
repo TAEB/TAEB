@@ -1,5 +1,6 @@
 package TAEB::Debug::Bot;
 use Moose::Role;
+use TAEB::OO;
 use Set::Object;
 
 requires 'speak', 'quit_message', 'tick';
@@ -136,6 +137,7 @@ subscribe step => sub {
 };
 
 no Moose::Role;
+no TAEB::OO;
 
 1;
 

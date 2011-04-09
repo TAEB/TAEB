@@ -22,6 +22,8 @@ sub exception_missing_item {
 
 role {
     my $p = shift;
+    my (%args) = @_;
+    TAEB::OO->import({into => $args{operating_on}->name});
     my $items = $p->items;
     my $default_current_item = $items->[0];
 

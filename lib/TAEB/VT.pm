@@ -1,4 +1,5 @@
 package TAEB::VT;
+use Moose;
 use TAEB::OO;
 #use MooseX::NonMoose::InsideOut;
 use MooseX::NonMoose;

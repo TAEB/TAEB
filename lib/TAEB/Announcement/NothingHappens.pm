@@ -1,4 +1,5 @@
 package TAEB::Announcement::NothingHappens;
+use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement';
 
