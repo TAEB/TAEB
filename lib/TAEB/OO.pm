@@ -13,7 +13,7 @@ use TAEB::Meta::Types;
 
 my ($import) = Moose::Exporter->setup_import_methods(
     also      => ['MooseX::ClassAttribute'],
-    with_meta => ['subscribe'],
+    with_meta => ['extends', 'subscribe'],
     base_class_roles => [
         'TAEB::Role::Initialize',
         'TAEB::Role::Subscription',
@@ -27,6 +27,22 @@ my ($import) = Moose::Exporter->setup_import_methods(
            })
         : ()),
 );
+
+# make sure using extends doesn't wipe out our base class roles
+sub extends {
+    my ($meta, @superclasses) = @_;
+    Class::MOP::load_class($_) for @superclasses;
+    for my $parent (@superclasses) {
+        goto \&Moose::extends if $parent->can('does')
+                              && $parent->does('TAEB::Role::Initialize');
+    }
+    # i'm assuming that after apply_base_class_roles, we'll have a single
+    # base class...
+    my ($superclass_from_metarole) = $meta->superclasses;
+    push @_, $superclass_from_metarole;
+    goto \&Moose::extends;
+}
+
 
 sub subscribe {
     my $meta = shift;
