@@ -12,7 +12,7 @@ use constant equipment_class => 'TAEB::World::Equipment';
 has '+equipment' => (
     isa     => 'TAEB::World::Equipment',
     # XXX kinda ugly, but oh well
-    handles => qr/^(?!update|remove|(has_)?pool|slots|debug_line)\w/,
+    handles => qr/^(?!update|remove|(has_)?pool|slots|debug_line|initialize)\w/,
 );
 
 sub find {
