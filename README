@@ -21,10 +21,6 @@ X, you will need Xcode and probably a few packages from MacPorts.
 
 $ perl Makefile.PL
 
-Or to install in your home directory instead of in the default location
-
-$ perl Makefile.PL PREFIX=~/.local
-
 Answer the defaults to any dependencies it asks about. You may have to
 set up CPAN. The defaults are usually fine. Be sure to set a mirror though.
 
