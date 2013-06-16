@@ -44,7 +44,7 @@ Or you can get a tarball from
 The newer actively developed AI is Planar, whose design principle is "be the
 opposite of Behavorial". You can get it from darcs:
 
-    darcs get http://ais523.sartak.org/TAEB-AI-Planar
+    darcs get http://patch-tag.com/r/ais523/taeb-ai-planar
 
 -- CONFIGURATION
 
