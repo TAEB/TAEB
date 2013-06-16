@@ -100,7 +100,7 @@ our %feature_colors = (
     COLOR_BLUE,    [qw/fountain trap pool underwater/],
     COLOR_BROWN,   [qw/opendoor closeddoor drawbridge stairsup stairsdown trap/],
     COLOR_CYAN,    [qw/bars ice trap/],
-    COLOR_GRAY,    [qw/unexplored rock altar corridor floor grave sink stairsup stairsdown trap wall opendoor/],
+    COLOR_GRAY,    [qw/unexplored rock altar corridor floor grave sink stairsup stairsdown trap wall/],
     COLOR_GREEN,   'tree',
     COLOR_MAGENTA, 'trap',
     COLOR_ORANGE,  'trap',
