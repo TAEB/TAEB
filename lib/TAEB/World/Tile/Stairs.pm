@@ -14,7 +14,7 @@ before change_type => sub {
     # somewhere other than the stairs when going downstairs (say if a
     # monster followed us, and it was on the staircase, not us).
     if ($newtype ne 'stairsup' && $newtype ne 'stairsdown') {
-        $self->other_side->clear_other_side if $self->known_other_side;
+        $self->other_side->clear_other_side if $self->other_side_known;
     }
 };
 
