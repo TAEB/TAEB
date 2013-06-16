@@ -954,14 +954,11 @@ possibilities for each appearance, and so on.
 
 TAEB is versioned using C<git>. You can get a checkout of the code with:
 
-    git clone git://github.com/sartak/TAEB.git
+    git clone git://github.com/TAEB/TAEB.git
 
-=head1 BLOG
+=head1 SITE
 
-The TAEB authors maintain something resembling a blog of ideas, difficulties,
-and progress at:
-
-    http://taeb-nethack.blogspot.com
+    http://taeb.github.io
 
 =head1 AUTHORS
 

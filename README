@@ -1,9 +1,9 @@
 -- GETTING TAEB
 
 The preferred method for obtaining the TAEB source is from the github repo:
-    git clone git://github.com/sartak/TAEB.git
+    git clone git://github.com/TAEB/TAEB.git
 
-Alternatively, you can download "http://github.com/sartak/TAEB/tarball/master"
+Alternatively, you can download "http://github.com/TAEB/TAEB/tarball/master"
 and extract to the directory of your choice.
 
 You can also download TAEB from the CPAN: cpan -i TAEB
@@ -36,10 +36,10 @@ about 60 modules.
 Though TAEB ships with a demo AI, you should still install a robust AI. There
 are two actively developed AIs. The older of the two is Behavioral. The
 preferred method to get it is through git:
-    git clone git://github.com/doy/taeb-ai-behavioral.git
+    git clone git://github.com/TAEB/TAEB-AI-Behavioral.git
 
 Or you can get a tarball from
-"http://github.com/sartak/TAEB-AI-Behavioral/tarball/master" or the CPAN.
+"http://github.com/TAEB/TAEB-AI-Behavioral/tarball/master" or the CPAN.
 
 The newer actively developed AI is Planar, whose design principle is "be the
 opposite of Behavorial". You can get it from darcs:
