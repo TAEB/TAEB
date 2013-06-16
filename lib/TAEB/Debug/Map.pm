@@ -20,9 +20,15 @@ for my $name (qw/x y z z_index/) {
 }
 
 has topline => (
-    isa => 'Maybe[Str]',
-    is  => 'rw',
+    isa        => 'Str',
+    is         => 'rw',
+    lazy_build => 1,
 );
+
+sub _build_topline {
+    my $self = shift;
+    return $self->tile->debug_line;
+}
 
 sub levels_here {
     my $self = shift;
@@ -74,6 +80,22 @@ sub tile {
     return $self->level->at($self->x, $self->y);
 }
 
+sub _change_level_command {
+    my $self      = shift;
+    my $direction = shift;
+
+    if ($self->tile->does('TAEB::World::Tile::Role::LevelChanger') && $self->tile->other_side_known) {
+        my $other_tile = $self->tile->other_side;
+        my $other_level = $other_tile->level;
+        $self->z_with_branch($other_level->z, $other_level);
+        $self->x($other_tile->x);
+        $self->y($other_tile->y);
+    }
+    else {
+        $self->z_with_branch($self->z + $direction);
+    }
+}
+
 # Commands should return true if they need to force a redraw, or undef
 # if they are a terminator.
 
@@ -87,8 +109,8 @@ my %normal_commands = (
 
     (map { $_ => sub { undef } } "\e", "\n", ";", ".", " ", "q", "Q"),
 
-    '<' => sub { my $self = shift; $self->z_with_branch($self->z - 1); 1 },
-    '>' => sub { my $self = shift; $self->z_with_branch($self->z + 1); 1 },
+    '<' => sub { shift->_change_level_command(-1); 1 },
+    '>' => sub { shift->_change_level_command(+1); 1 },
     'v' => sub { shift->inc_z_index(+1); 1 },
     'i' => sub {
         my $tile = shift->tile;
@@ -128,14 +150,14 @@ sub activate {
 
     COMMAND: while (1) {
         TAEB->display_topline($self->topline);
+        $self->clear_topline;
 
         TAEB->redraw(level => $self->level,
             botl => "Displaying " . $self->level) if $redraw;
 
         TAEB->place_cursor($self->x, $self->y);
 
-        my $c  = TAEB->get_key;
-        $self->topline(undef);
+        my $c = TAEB->get_key;
 
         if ($commands{$c}) {
             $redraw = $commands{$c}->($self);
@@ -147,9 +169,6 @@ sub activate {
 
         $self->x($self->x % 80);
         $self->y(($self->y-1)%21+1);
-
-        $self->topline($self->tile->debug_line)
-            unless defined $self->topline;
     }
 
     TAEB->redraw;

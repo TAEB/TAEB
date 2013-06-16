@@ -438,10 +438,12 @@ sub iterate_tile_vt {
         my @glyphs = split '', $vt->row_plaintext($y);
         my @colors = $vt->row_color($y);
 
+        # XXX: yes, this is another encapsulation breaker. boo hoo!
+        my $tile_row = $self->{tiles}->[$y];
+
         for my $x (0 .. 79) {
             return unless $code->(
-                # XXX: yes, this is another encapsulation breaker. boo hoo!
-                $self->{tiles}->[$y][$x],
+                $tile_row->[$x],
                 $glyphs[$x],
                 $colors[$x],
                 $x,
