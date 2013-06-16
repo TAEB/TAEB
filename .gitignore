@@ -1,7 +1,8 @@
 *.swp
 MANIFEST
 MANIFEST.bak
-META.yml
+META.*
+MYMETA.*
 Makefile
 Makefile.old
 SIGNATURE
