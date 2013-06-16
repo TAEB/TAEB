@@ -73,39 +73,6 @@ has error => (
     },
 );
 
-has twitter => (
-    traits  => [qw/TAEB::DontInitialize/],
-    is      => 'ro',
-    isa     => 'Maybe[Log::Dispatch::Twitter]',
-    lazy    => 1,
-    default => sub {
-        my $self = shift;
-        return unless $self->config;
-        my $error_config = $self->config->{twitter}{errors};
-        return unless $error_config;
-        return unless eval { require Log::Dispatch::Twitter; 1 };
-
-        my $twitter = Log::Dispatch::Twitter->new(
-            name      => 'twitter',
-            min_level => 'error',
-            username  => $error_config->{username},
-            password  => $error_config->{password},
-            callbacks => sub {
-                my %args = @_;
-                $args{message} =~ s/\n.*//s;
-                return sprintf "%s (T%s): %s",
-                            TAEB->loaded_persistent_data
-                         && defined TAEB->senses # i.e. not yet cleaned up
-                          ? (TAEB->name, TAEB->turn)
-                          : ('?', '-'),
-                            $args{message};
-            },
-        );
-        $self->add_as_default($twitter);
-        return $twitter;
-    },
-);
-
 sub BUILD {
     my $self = shift;
     # we don't initialize log files until they're used, so need to make sure
@@ -114,16 +81,6 @@ sub BUILD {
     $self->everything;
     $self->warning;
     $self->error;
-    $self->twitter;
-};
-
-around twitter => sub {
-    my $orig = shift;
-    my $self = shift;
-    my $output = $self->$orig();
-    return $output unless @_;
-    my $message = shift;
-    $output->log(level => 'error', message => $message, @_);
 };
 
 around [qw/everything warning error/] => sub {

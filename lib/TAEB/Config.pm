@@ -335,13 +335,6 @@ TAEB::Config
     #    log_rotate:
     #        dir: logs
     #        compress: 1
-    #    twitter:
-    #        deaths:
-    #            username: taeb_deaths
-    #            password: pass
-    #        errors:
-    #            username: taeb_errors
-    #            password: pass
 
     #### Misc config ##########
     # Set this to 1 if you want to run a buggy TAEB overnight; it causes TAEB

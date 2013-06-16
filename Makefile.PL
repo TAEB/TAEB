@@ -90,10 +90,6 @@ features(
         recommends('Bot::BasicBot'),
         recommends('App::Nopaste'),
     ],
-    'Log errors (and eventually deaths) to Twitter' => [
-        -default => 0,
-        recommends('Log::Dispatch::Twitter'),
-    ],
     'Compress backed up logfiles' => [
         -default => 1,
         recommends('IO::Compress::Gzip'),
