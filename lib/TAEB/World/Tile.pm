@@ -230,6 +230,11 @@ sub _build_intrinsic_cost {
     # prefer tiles we've stepped on to avoid traps
     $cost = $cost * .9 if $self->stepped_on;
 
+    # prefer stairs (since they're good for escaping, and can't be traps)
+    $cost = $cost * .8
+        if $self->type eq 'stairsup'
+        || $self->type eq 'stairsdown';
+
     return int($cost);
 }
 
