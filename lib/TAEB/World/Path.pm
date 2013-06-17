@@ -371,6 +371,36 @@ sub spans_multiple_levels {
     return $self->from->level != $self->to->level;
 }
 
+sub intralevel_subpath {
+    my $self = shift;
+
+    my $full_path = $self->path;
+    my $new_path = '';
+    my @tiles = $self->tiles;
+
+    my $new_to = $self->from;
+
+    for my $dir (split '', $self->path) {
+        my $start_level = $tile->level;
+        my $next = $start_level->at_direction($tile->x, $tile->y, $dir);
+        if ($next->level != $start_level) {
+            break;
+        }
+
+        $new_to = $next;
+        $new_path .= $dir;
+    }
+
+    return if $new_path eq '';
+
+    return Moose::Object::new(blessed($self), (
+        from     => $from,
+        to       => $tile,
+        path     => $new_path,
+        complete => 1,
+    ));
+}
+
 __PACKAGE__->meta->make_immutable(inline_constructor => 0);
 
 1;
