@@ -27,7 +27,6 @@ around new => sub {
     # we only want to change Move
     return $class->$orig(@_) if $class ne 'TAEB::Action::Move';
 
-    my $action;
     my $start;
 
     if ($args{path}) {
@@ -41,20 +40,16 @@ around new => sub {
     }
 
     if ($start eq '<') {
-        $action = 'Ascend';
+        return TAEB::Action::Ascend->new(%args);
     }
     elsif ($start eq '>') {
-        $action = 'Descend';
+        return TAEB::Action::Descend->new(%args);
     }
     else {
         my $next_tile = TAEB->current_tile->at_direction($start);
         if ($next_tile && $next_tile->has_boulder) {
             $args{pushing} = 1;
         }
-    }
-
-    if ($action) {
-        return "TAEB::Action::$action"->new(%args);
     }
 
     $class->$orig(%args);
