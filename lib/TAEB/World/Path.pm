@@ -366,6 +366,11 @@ sub as_action {
     return TAEB::Action::Move->new(path => $self);
 }
 
+sub spans_multiple_levels {
+    my $self = shift;
+    return $self->from->level != $self->to->level;
+}
+
 __PACKAGE__->meta->make_immutable(inline_constructor => 0);
 
 1;
