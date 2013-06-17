@@ -13,6 +13,7 @@ has target_tile => (
 );
 
 # if the first movement is < or >, then just use the Ascend or Descend actions
+# if the path spans multiple levels, just go until the level change action
 around new => sub {
     my $orig  = shift;
     my $class = shift;
@@ -35,6 +36,14 @@ around new => sub {
     }
     elsif ($start eq '>') {
         return TAEB::Action::Descend->new(%args);
+    }
+
+    my $intralevel_subpath = $args{path}->intralevel_subpath;
+    if ($intralevel_subpath) {
+        return $class->$orig(
+            %args,
+            path => $intralevel_subpath,
+        );
     }
 
     $class->$orig(%args);
