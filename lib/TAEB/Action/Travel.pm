@@ -12,6 +12,34 @@ has target_tile => (
     required => 1,
 );
 
+# if the first movement is < or >, then just use the Ascend or Descend actions
+around new => sub {
+    my $orig  = shift;
+    my $class = shift;
+    my %args  = @_;
+
+    # we only want to change Travel
+    return $class->$orig(@_) if $class ne 'TAEB::Action::Travel';
+
+    my $start;
+
+    if ($args{path}) {
+        $start = substr($args{path}->path, 0, 1);
+    }
+    else {
+        confess "You must specify a path to the Travel action.";
+    }
+
+    if ($start eq '<') {
+        return TAEB::Action::Ascend->new(%args);
+    }
+    elsif ($start eq '>') {
+        return TAEB::Action::Descend->new(%args);
+    }
+
+    $class->$orig(%args);
+};
+
 sub location_controlled_tele {
     my $self = shift;
     my $target = $self->target_tile;
