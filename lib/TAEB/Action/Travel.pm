@@ -5,9 +5,9 @@ extends 'TAEB::Action';
 
 use constant command => '_';
 
-has target_tile => (
+has path => (
     is       => 'ro',
-    isa      => 'TAEB::World::Tile',
+    isa      => 'TAEB::World::Path',
     provided => 1,
     required => 1,
 );
