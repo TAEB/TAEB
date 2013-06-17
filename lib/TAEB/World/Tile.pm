@@ -228,6 +228,8 @@ sub _build_intrinsic_cost {
     $cost *= 1.1 if !$self->is_engravable;
 
     # avoid traps
+    # corridors can have traps (like trap doors, level teleporters) but they're
+    # tame compared to the traps that exist in normal rooms
     $cost = $cost * .9
         if $self->stepped_on
         || $self->type eq 'corridor';
