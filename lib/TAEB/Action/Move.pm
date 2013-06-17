@@ -30,11 +30,15 @@ around new => sub {
     my $action;
     my $start;
 
-    confess "You must specify a path or direction to the Move action."
-        unless $args{path} || $args{direction};
-
-    $start = substr($args{path}->path, 0, 1) if $args{path};
-    $start = substr($args{direction},  0, 1) if $args{direction};
+    if ($args{path}) {
+        $start = substr($args{path}->path, 0, 1);
+    }
+    elsif ($args{direction}) {
+        $start = substr($args{direction},  0, 1);
+    }
+    else {
+        confess "You must specify a path or direction to the Move action.";
+    }
 
     if ($start eq '<') {
         $action = 'Ascend';
