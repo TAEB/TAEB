@@ -30,7 +30,8 @@ sub done {
     my $self = shift;
     # NetHack doesn't show or tell us what's on the floor when we
     # travel. So we have to check manually.
-    TAEB->send_message(check => 'floor');
+    TAEB->send_message(check => 'floor')
+        unless TAEB->is_blind;
 }
 
 __PACKAGE__->meta->make_immutable;
