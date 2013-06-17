@@ -24,7 +24,7 @@ has path => (
     is       => 'ro',
     isa      => 'Str',
     required => 1,
-    handles  => ['length'],
+    handles  => { length => 'length' },
 );
 
 has complete => (
