@@ -381,10 +381,10 @@ sub intralevel_subpath {
     my $new_to = $self->from;
 
     for my $dir (split '', $self->path) {
-        my $start_level = $tile->level;
-        my $next = $start_level->at_direction($tile->x, $tile->y, $dir);
+        my $start_level = $new_to->level;
+        my $next = $start_level->at_direction($new_to->x, $new_to->y, $dir);
         if ($next->level != $start_level) {
-            break;
+            last;
         }
 
         $new_to = $next;
@@ -394,8 +394,8 @@ sub intralevel_subpath {
     return if $new_path eq '';
 
     return Moose::Object::new(blessed($self), (
-        from     => $from,
-        to       => $tile,
+        from     => $self->from,
+        to       => $new_to,
         path     => $new_path,
         complete => 1,
     ));

@@ -71,7 +71,7 @@ sub done {
         unless TAEB->is_blind;
 }
 
-__PACKAGE__->meta->make_immutable;
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
 
 1;
 
