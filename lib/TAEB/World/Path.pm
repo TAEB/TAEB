@@ -20,9 +20,11 @@ has to => (
 );
 
 has path => (
+    traits   => ['String'],
     is       => 'ro',
     isa      => 'Str',
     required => 1,
+    handles  => ['length'],
 );
 
 has complete => (
