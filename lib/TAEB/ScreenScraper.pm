@@ -902,9 +902,6 @@ sub scrape {
     $self->check_cycling;
 
     try {
-        # handle cursor still updating the botl, output isn't complete!
-        $self->handle_botl_update;
-
         # You don't have that object!
         $self->handle_exceptions;
 
@@ -925,6 +922,9 @@ sub scrape {
 
         # handle other text
         $self->handle_fallback;
+
+        # handle cursor still updating the botl
+        $self->handle_botl_update;
 
         # handle location requests
         $self->handle_location_request;
