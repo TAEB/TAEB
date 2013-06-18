@@ -1,20 +1,21 @@
 package TAEB::World;
-use strict;
-use warnings;
+use Moose;
 
 use TAEB::Role::Overload ();
 
 use Module::Pluggable (
-    require     => 1,
-    sub_name    => 'load_nhi_classes',
-    search_path => ['NetHack::Item'],
-    except      => qr/Meta|Role/,
+    require          => 1,
+    sub_name         => 'load_nhi_classes',
+    search_path      => ['NetHack::Item'],
+    except           => qr/Meta|Role/,
+    on_require_error => sub { confess "Couldn't require $_[0]: $_[1]" },
 );
 
 use Module::Pluggable (
-    require     => 1,
-    sub_name    => 'load_world_classes',
-    search_path => ['TAEB::World'],
+    require          => 1,
+    sub_name         => 'load_world_classes',
+    search_path      => ['TAEB::World'],
+    on_require_error => sub { confess "Couldn't require $_[0]: $_[1]" },
 );
 
 sub _find_item_role {

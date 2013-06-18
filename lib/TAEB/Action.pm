@@ -51,9 +51,10 @@ sub is_impossible { 0 }
 sub is_advisable  { 1 }
 
 use Module::Pluggable
-    search_path => 'TAEB::Action',
-    require     => 1,
-    sub_name    => 'actions';
+    search_path      => 'TAEB::Action',
+    require          => 1,
+    sub_name         => 'actions',
+    on_require_error => sub { confess "Couldn't require $_[0]: $_[1]" };
 
 # force loading of all the actions for compile errors etc
 my @actions = grep { $_->isa('TAEB::Action') }

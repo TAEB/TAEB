@@ -24,9 +24,10 @@ sub name {
 sub immediate { 0 }
 
 use Module::Pluggable (
-    require     => 1,
-    sub_name    => 'announcement_classes',
-    search_path => ['TAEB::Announcement'],
+    require          => 1,
+    sub_name         => 'announcement_classes',
+    search_path      => ['TAEB::Announcement'],
+    on_require_error => sub { confess "Couldn't require $_[0]: $_[1]" },
 );
 my @announcement_classes = announcement_classes();
 
