@@ -902,6 +902,9 @@ sub scrape {
     $self->check_cycling;
 
     try {
+        # handle cursor still updating the botl, output isn't complete!
+        $self->handle_botl_update;
+
         # You don't have that object!
         $self->handle_exceptions;
 
@@ -1179,6 +1182,16 @@ sub handle_more_menus {
             TAEB->process_input(0);
         }
         $afterloop->() if $afterloop;
+        _recurse;
+    }
+}
+
+sub handle_botl_update {
+    my $self = shift;
+    my $y = TAEB->vt->y;
+    if ($y == 22 || $y == 23) {
+        TAEB->write('');
+        TAEB->process_input(0);
         _recurse;
     }
 }
