@@ -216,6 +216,16 @@ class_has action => (
     is        => 'rw',
     isa       => 'TAEB::Action',
     predicate => 'has_action',
+    trigger   => sub {
+        my ($self, $new_value) = @_;
+        $self->previous_action($new_value) if $new_value;
+    },
+);
+
+class_has previous_action => (
+    is        => 'rw',
+    isa       => 'TAEB::Action',
+    predicate => 'has_previous_action',
 );
 
 class_has new_game => (
