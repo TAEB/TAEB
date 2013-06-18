@@ -377,11 +377,12 @@ sub handle_playing {
         local $SIG{__DIE__} = sub {
             my ($message) = @_;
 
-            my $level = $message =~ /^Interrupted\./
-                      ? 'info'
-                      : 'error';
-
-            $self->log->perl($message, level => $level);
+            if ($message =~ /^Interrupted\./) {
+                $self->log->perl($message, level => 'info');
+            }
+            else {
+                $self->log->perl(Carp::longmess($message), level => 'error');
+            }
 
             $self->paused(1);
             $self->redraw;
@@ -810,10 +811,13 @@ sub setup_handlers {
             }
         }
         else {
-            my $level = $message =~ /^Interrupted\./
-                      ? 'info'
-                      : 'error';
-            TAEB->log->perl($error, level => $level);
+            if ($message =~ /^Interrupted\./) {
+                TAEB->log->perl($message, level => 'info');
+            }
+            else {
+                TAEB->log->perl(Carp::longmess($error), level => 'error');
+            }
+
             # Use the emergency versions of quit/save here, not the actions.
             if (defined TAEB->config && defined TAEB->config->contents &&
                 TAEB->config->contents->{'kiosk_mode'}) {
