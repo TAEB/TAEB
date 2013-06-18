@@ -847,20 +847,6 @@ sub monkey_patch {
         local $SIG{__DIE__};
         $orig->(@_);
     }) unless $yaml_any_meta->get_method('implementation')->isa('Class::MOP::Method::Wrapped');
-
-    # weaken leaks memory on 5.10, unless we hack around it
-    # see also TAEB::Role::WeakenFix
-    if ($] == 5.010) {
-        my @nhi_classes = qw/NetHack::ItemPool::Tracker
-                             NetHack::ItemPool::Trackers/;
-        for my $nhi_meta (map { Class::MOP::Class->initialize($_) } @nhi_classes) {
-            $nhi_meta->make_mutable;
-            $nhi_meta->add_after_method_modifier(
-                DEMOLISHALL => sub { %{ $_[0] } = () }
-            ) unless $nhi_meta->find_method_by_name('DEMOLISHALL')->isa('Class::MOP::Method::Wrapped');
-            $nhi_meta->make_immutable;
-        }
-    }
 }
 
 __PACKAGE__->meta->make_immutable;
