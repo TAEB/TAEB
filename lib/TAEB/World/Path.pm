@@ -401,6 +401,15 @@ sub intralevel_subpath {
     ));
 }
 
+sub next_tile {
+    my $self = shift;
+    my $from = $self->from;
+    my $dir = substr($self->path, 0, 1);
+
+    return unless $dir;
+    return $from->level->at_direction($from->x, $from->y, $dir);
+}
+
 __PACKAGE__->meta->make_immutable(inline_constructor => 0);
 
 1;
