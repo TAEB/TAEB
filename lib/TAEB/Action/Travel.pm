@@ -12,6 +12,11 @@ has path => (
     required => 1,
 );
 
+has intralevel_subpath => (
+    is  => 'ro',
+    isa => 'TAEB::World::Path',
+);
+
 # if the first movement is < or >, then just use the Ascend or Descend actions
 # if the path spans multiple levels, just go until the level change action
 around new => sub {
@@ -42,7 +47,8 @@ around new => sub {
     if ($intralevel_subpath) {
         return $class->$orig(
             %args,
-            path => $intralevel_subpath,
+            path               => $intralevel_subpath,
+            intralevel_subpath => $intralevel_subpath,
         );
     }
 
@@ -51,7 +57,7 @@ around new => sub {
 
 sub location_controlled_tele {
     my $self = shift;
-    my $target = $self->target_tile;
+    my $target = $self->location_travel;
     return $target if $target->is_walkable && !$target->has_monster;
     my @adjacent = $target->grep_adjacent(sub {
         my $t = shift;
@@ -61,7 +67,13 @@ sub location_controlled_tele {
     return $adjacent[0];
 }
 
-sub location_travel { shift->target_tile }
+sub location_travel {
+    my $self = shift;
+
+    my $path = $self->intralevel_subpath || $self->path;
+
+    return $path->to;
+}
 
 sub done {
     my $self = shift;
