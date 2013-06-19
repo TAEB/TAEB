@@ -3,6 +3,13 @@ use Moose;
 use TAEB::OO;
 with 'TAEB::Role::Config';
 
+TAEB->register_debug_command(
+    'S' => {
+        help    => "Toggle global per-turn sanity checks",
+        command => sub { TAEB->debugger->sanity->toggle },
+    },
+);
+
 has enabled => (
     is      => 'rw',
     isa     => 'Bool',
@@ -14,22 +21,19 @@ has enabled => (
     lazy    => 1,
 );
 
-subscribe step => sub {
+sub toggle {
     my $self = shift;
-
-    TAEB->send_message('sanity') if $self->enabled;
-};
-
-subscribe keypress => sub {
-    my $self  = shift;
-    my $event  = shift;
-
-    return if $event->key ne 'S';
 
     $self->enabled(!$self->enabled);
 
     TAEB->notify("Global per-turn sanity checks now " .
         ($self->enabled ? "en" : "dis") . "abled.");
+};
+
+subscribe step => sub {
+    my $self = shift;
+
+    TAEB->send_message('sanity') if $self->enabled;
 };
 
 __PACKAGE__->meta->make_immutable;

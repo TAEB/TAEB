@@ -3,11 +3,12 @@ use Moose;
 use TAEB::OO;
 use TAEB::Util qw/item_menu vi2delta/;
 
-subscribe keypress => sub {
-    my $self  = shift;
-    my $event = shift;
-    $self->activate if $event->key eq ';';
-};
+TAEB->register_debug_command(
+    ';' => {
+        help    => "Debug map",
+        command => sub { TAEB->debugger->map->activate },
+    },
+);
 
 for my $name (qw/x y z z_index/) {
     has $name => (

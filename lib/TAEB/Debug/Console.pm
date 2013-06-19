@@ -4,12 +4,12 @@ use TAEB::OO;
 use Try::Tiny;
 with 'TAEB::Role::Config';
 
-subscribe keypress => sub {
-    my $self = shift;
-    my $event = shift;
-
-    $self->repl(undef) if $event->key eq '~';
-};
+TAEB->register_debug_command(
+    '~' => {
+        help    => "Debug console",
+        command => sub { TAEB->debugger->console->repl(undef) },
+    },
+);
 
 sub repl {
     my $self = shift;
