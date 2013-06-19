@@ -351,8 +351,10 @@ sub item_menu {
 }
 
 sub hashref_menu {
-    my $title = shift;
-    my $hash = shift;
+    my $title   = shift;
+    my $hash    = shift;
+    my $options = shift || {};
+
     $title ||= "${hash}'s keys/values";
 
     my @hash_data = (
@@ -365,12 +367,12 @@ sub hashref_menu {
     my $menu = TAEB::Display::Menu->new(
         description => _shorten_title($title),
         items       => \@hash_data,
-        select_type => $options{select_type} || 'single',
+        select_type => $options->{select_type} || 'single',
     );
     my $item = TAEB->display_menu($menu) or return;
     my $selected = $item->user_data;
 
-    if ($options{no_recurse}) {
+    if ($options->{no_recurse}) {
         return $selected;
     }
 
@@ -399,12 +401,12 @@ sub object_menu {
     my $menu = TAEB::Display::Menu->new(
         description => _shorten_title($title),
         items       => \@object_data,
-        select_type => $options{select_type} || 'single',
+        select_type => $options->{select_type} || 'single',
     );
     my $item = TAEB->display_menu($menu) or return;
     my $selected = $item->user_data;
 
-    if ($options{no_recurse}) {
+    if ($options->{no_recurse}) {
         return $selected;
     }
 
@@ -423,12 +425,12 @@ sub list_menu {
     my $menu = TAEB::Display::Menu->new(
         description => _shorten_title($title),
         items       => $items,
-        select_type => $options{select_type} || 'single',
+        select_type => $options->{select_type} || 'single',
     );
     my $item = TAEB->display_menu($menu) or return;
     my $selected = $item->user_data;
 
-    if ($options{no_recurse}) {
+    if ($options->{no_recurse}) {
         return $selected;
     }
 
