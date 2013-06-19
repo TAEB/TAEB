@@ -68,6 +68,7 @@ sub respond_wish {
     # Half physical damage? Don't mind if I do! (Now with added grease for Eidolos!)
     return "blessed fixed greased Master Key of Thievery\n"
         if TAEB->align eq 'Cha'
+        && !TAEB->role eq 'Rog'
         && !TAEB->seen_artifact('Master Key of Thievery');
 
     # We can always use more AC.
