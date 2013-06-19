@@ -879,9 +879,7 @@ TAEB->register_debug_commands(
             );
 
             my @tiles = map { $_->level->debug_line . ': ' . $_->debug_line }
-                        map { $_->tiles_of($type) }
-                        map { @$_ }
-                        @{ TAEB->dungeon->levels };
+                        TAEB->dungeon->tiles_of_type($type);
 
             item_menu("Tiles of type $type", \@tiles);
         },

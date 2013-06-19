@@ -163,6 +163,14 @@ sub create_level {
     return $level;
 }
 
+sub tiles_of_type {
+    my $self = shift;
+    my $type = shift;
+
+    return map { $_->tiles_of($type) } map { @$_ } @{ $self->levels };
+}
+
+
 __PACKAGE__->meta->make_immutable;
 
 1;
