@@ -365,7 +365,7 @@ sub hashref_menu {
     my $menu = TAEB::Display::Menu->new(
         description => _shorten_title($title),
         items       => \@hash_data,
-        select_type => 'single',
+        select_type => $options{select_type} || 'single',
     );
     my $item = TAEB->display_menu($menu) or return;
     my $selected = $item->user_data;
@@ -399,7 +399,7 @@ sub object_menu {
     my $menu = TAEB::Display::Menu->new(
         description => _shorten_title($title),
         items       => \@object_data,
-        select_type => 'single',
+        select_type => $options{select_type} || 'single',
     );
     my $item = TAEB->display_menu($menu) or return;
     my $selected = $item->user_data;
@@ -423,7 +423,7 @@ sub list_menu {
     my $menu = TAEB::Display::Menu->new(
         description => _shorten_title($title),
         items       => $items,
-        select_type => 'single',
+        select_type => $options{select_type} || 'single',
     );
     my $item = TAEB->display_menu($menu) or return;
     my $selected = $item->user_data;
