@@ -4,13 +4,6 @@ use TAEB::OO;
 use TAEB::Debug::Console;
 use TAEB::Debug::Map;
 use TAEB::Debug::Sanity;
-use TAEB::Debug::IRC;
-
-has irc => (
-    is      => 'ro',
-    isa     => 'TAEB::Debug::IRC',
-    default => sub { TAEB::Debug::IRC->new },
-);
 
 has console => (
     is      => 'ro',

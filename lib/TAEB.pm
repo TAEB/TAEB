@@ -937,7 +937,7 @@ continued a previously saved game
 =item debugger
 
 An object holding a collection of debugging tools such as
-L<TAEB::Debug::Console> and L<TAEB::Debug::IRC::Bot>
+L<TAEB::Debug::Console>
 
 =item display
 

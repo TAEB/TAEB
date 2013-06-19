@@ -315,17 +315,11 @@ TAEB::Config
 
     #### Debugging config #####
     # Configure various debugging plugins for TAEB here
-    # name for the irc plugin defaults to the bot's name
     #debug:
     #    sanity:
     #        enabled: 0
     #    console:
     #        readline: Gnu
-    #    irc:
-    #        server: irc.freenode.net
-    #        port:   6667
-    #        channel: "#interhack"
-    #        name: taeb
 
     #### Logging config #######
     # note: log_rotate->compress requires IO::Compress::Gzip to be installed

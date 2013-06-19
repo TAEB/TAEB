@@ -85,11 +85,6 @@ features(
         -default => 0,
         recommends('Carp::REPL'),
     ],
-    'IRC debug interface' => [
-        -default => 0,
-        recommends('Bot::BasicBot'),
-        recommends('App::Nopaste'),
-    ],
     'Compress backed up logfiles' => [
         -default => 1,
         recommends('IO::Compress::Gzip'),
