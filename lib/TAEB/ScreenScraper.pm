@@ -822,6 +822,8 @@ our @prompts = (
     qr/^Stop eating\?/ => 'stop_eating',
     qr/^You have (?:a little|much) trouble lifting .*\. Continue\?/ => 'continue_lifting',
     qr/^Beware, there will be no return! Still climb\?/ => 'really_escape',
+    qr/^What monster do you want to genocide\?/ => 'genocide_species',
+    qr/^What class of monsters do you wish to genocide\?/ => 'genocide_class',
 );
 
 our @exceptions = (
