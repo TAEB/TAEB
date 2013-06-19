@@ -134,7 +134,7 @@ my %debug_commands;
         },
     },
     "\e" => {
-        help     => "Echo next keystroke to NetHack (for emergencies only)",
+        help     => "Echo next keystroke directly to NetHack (for emergencies only)",
         selector => "\\e",
         command  => sub {
             TAEB->write(TAEB->get_key);
