@@ -563,8 +563,9 @@ sub keypress {
             items       => [ sort NetHack::Item::Spoiler->all_identities ],
             select_type => 'single',
         );
-        my $item = $self->display_menu($menu)
+        my $selection = $self->display_menu($menu)
             or return;
+        my $item = $selection->user_data;
 
         my $spoiler = NetHack::Item::Spoiler->spoiler_for($item);
         item_menu("Spoiler data for $item", $spoiler);
@@ -579,8 +580,9 @@ sub keypress {
                              NetHack::Monster::Spoiler->list ],
             select_type => 'single',
         );
-        my $monster = $self->display_menu($menu)
+        my $selection = $self->display_menu($menu)
             or return;
+        my $monster = $selection->user_data;
 
         my @spoilers = NetHack::Monster::Spoiler->lookup($monster);
         item_menu("Spoiler data for $monster",
@@ -602,8 +604,9 @@ sub keypress {
             select_type => 'single',
         );
 
-        my $type = $self->display_menu($type_menu)
+        my $selection = $self->display_menu($type_menu)
             or return;
+        my $type = $selection->user_data;
 
         my @tiles = map { $_->level->debug_line . ': ' . $_->debug_line }
                     map { $_->tiles_of($type) }

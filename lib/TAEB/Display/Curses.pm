@@ -437,9 +437,20 @@ sub draw_menu {
     my $i = 0;
 
     if ($pager->total_entries > 0) {
+        my %seen = map { $_->selector => 1 } grep { $_->has_selector } $menu->items;
+
         push @rows, map {
-            my $sep = $menu->is_selected($_ - 1) ? '+' : '-';
-            chr($i++ + ord('a')) . " $sep " . $menu->item($_ - 1)
+            my $item      = $menu->item($_ - 1);
+            my $separator = $item->selected ? '+' : '-';
+            my $selector  = $item->selector;
+
+            if (!$selector) {
+                do {
+                    $selector = chr($i++ + ord('a'));
+                } while $seen{$selector};
+            }
+
+            join " ", $selector, $separator, $item->title
         } $pager->first .. $pager->last;
     }
 
@@ -531,8 +542,10 @@ sub change_draw_mode {
         select_type => 'single',
     );
 
-    defined(my $change = $self->display_menu($menu))
+    defined(my $item = $self->display_menu($menu))
         or return;
+
+    my $change = $item->title;
 
     my ($key) = grep { $modes{$_}{description} eq $change } keys %modes;
 

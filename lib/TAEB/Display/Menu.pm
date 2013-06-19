@@ -1,6 +1,7 @@
 package TAEB::Display::Menu;
 use Moose;
 use TAEB::OO;
+use TAEB::Display::Menu::Item;
 
 has description => (
     is       => 'ro',
@@ -8,9 +9,13 @@ has description => (
     required => 1,
 );
 
-has _item_metadata => (
-    is  => 'ro',
-    isa => 'ArrayRef',
+has items => (
+    traits  => ['Array'],
+    isa     => 'ArrayRef[TAEB::Display::Menu::Item]',
+    handles => {
+        item  => 'get',
+        items => 'elements',
+    },
 );
 
 has select_type => (
@@ -32,47 +37,45 @@ sub BUILDARGS {
 
     die "Attribute (items) is required and must be an array reference"
         unless $args{items} && ref($args{items}) eq 'ARRAY';
-    $args{_item_metadata} = [ map { [$_] } @{ delete $args{items} } ];
+
+    my @new_items;
+    for my $raw_item (@{ delete $args{items} }) {
+        if (blessed($raw_item) && $raw_item->isa('TAEB::Display::Menu::Item')) {
+            push @new_items, $raw_item;
+        }
+        elsif (!ref($raw_item)) {
+            push @new_items, TAEB::Display::Menu::Item->new(
+                user_data => $raw_item,
+                title     => $raw_item,
+            );
+        }
+        else {
+            push @new_items, TAEB::Display::Menu::Item->new(
+                user_data => $raw_item,
+                title     => "$raw_item",
+            );
+        }
+    }
+
+    $args{items} = \@new_items;
 
     return \%args;
 }
 
-sub item {
-    my $self = shift;
-    my $index = shift;
-
-    return $self->_item_metadata->[$index][0];
-}
-
-sub items {
-    my $self = shift;
-
-    return map { $_->[0] } @{ $self->_item_metadata };
-}
-
-sub select { ## no critic (ProhibitBuiltinHomonyms)
+sub select {
     my $self = shift;
 
     return if $self->select_type eq 'none';
 
     for my $index (@_) {
-        $self->_item_metadata->[$index][1] ^= 1;
+        $self->item($index)->toggle_selected;
     }
-}
-
-sub is_selected {
-    my $self  = shift;
-    my $index = shift;
-
-    return $self->_item_metadata->[$index][1];
 }
 
 sub selected {
     my $self  = shift;
 
-    my @selected = map { $_->[0] }
-                   grep { $_->[1] }
-                   @{ $self->_item_metadata };
+    my @selected = grep { $_->selected } $self->items;
 
     return $selected[0] if $self->select_type eq 'single';
     return @selected;
@@ -83,12 +86,12 @@ sub clear_selections {
 
     return if $self->select_type eq 'none';
 
-    for my $index (0 .. @{ $self->_item_metadata } - 1) {
-        $self->_item_metadata->[$index][1] = 0;
+    for my $item (grep { defined } $self->selected) {
+        $item->selected(0);
     }
 }
 
-around _item_metadata => sub {
+around items => sub {
     my $orig = shift;
     my $self = shift;
 
@@ -110,7 +113,8 @@ around _item_metadata => sub {
     # to work
     $compiled = qr/$search/i unless $search =~ /[A-Z]/;
 
-    return [ grep { $_->[0] =~ $compiled } @{ $orig->($self) } ];
+    my @all_items = $orig->($self);
+    return grep { $_->title =~ $compiled } @all_items;
 };
 
 __PACKAGE__->meta->make_immutable;

@@ -367,8 +367,9 @@ sub hashref_menu {
         items       => \@hash_data,
         select_type => 'single',
     );
-    my $selected = TAEB->display_menu($menu) or return;
-    item_menu("$title -> " . $selected->name, $selected->value => 1);
+    my $item = TAEB->display_menu($menu) or return;
+    my $selected = $item->user_data;
+    item_menu("$title -> " . $selected->name, $selected->value, 1);
 }
 
 sub object_menu {
@@ -389,8 +390,9 @@ sub object_menu {
         items       => \@object_data,
         select_type => 'single',
     );
-    my $selected = TAEB->display_menu($menu) or return;
-    item_menu("$title -> " . $selected->name, $selected->value => 1);
+    my $item = TAEB->display_menu($menu) or return;
+    my $selected = $item->user_data;
+    item_menu("$title -> " . $selected->name, $selected->value, 1);
 }
 
 sub list_menu {
@@ -401,8 +403,9 @@ sub list_menu {
         items       => $items,
         select_type => 'single',
     );
-    my $selected = TAEB->display_menu($menu) or return;
-    item_menu("$title -> $selected", $selected => 1);
+    my $item = TAEB->display_menu($menu) or return;
+    my $selected = $item->user_data;
+    item_menu("$title -> $selected", $selected, 1);
 }
 
 sub _add_file_line {
