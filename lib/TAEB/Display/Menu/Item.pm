@@ -14,9 +14,14 @@ has title => (
 );
 
 has selector => (
-    is        => 'ro',
+    is        => 'rw',
     isa       => 'Str',
     predicate => 'has_selector',
+);
+
+has temporary_selector => (
+    is  => 'rw',
+    isa => 'Str',
 );
 
 has selected => (
