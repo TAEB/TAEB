@@ -32,7 +32,7 @@ my %debug_commands;
 
             if (TAEB->senses->gold) {
                 push @menu_items, TAEB::Display::Menu::Item->new(
-                    user_data => undef,
+                    user_data => TAEB->senses,
                     title     => '$' . TAEB->senses->gold,
                     selector  => '$',
                 );
