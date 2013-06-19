@@ -39,6 +39,11 @@ has spoiler => (
     },
 );
 
+has casted_count => (
+    is  => 'rw',
+    isa => 'Int',
+);
+
 for my $attribute (qw/level read marker role emergency/) {
     __PACKAGE__->meta->add_method($attribute => sub {
         my $self = shift;
@@ -211,6 +216,11 @@ sub debug_line {
 }
 
 sub power { 5 * shift->level }
+
+sub did_cast {
+    my $self = shift;
+    $self->casted_count(($self->casted_count || 0) + 1);
+}
 
 __PACKAGE__->meta->make_immutable;
 

@@ -33,6 +33,8 @@ sub exception_hunger_cast {
 sub done {
     my $spell = shift->spell;
 
+    $spell->did_cast;
+
     # detect food doesn't make us hungry
     return if $spell->name eq 'detect food';
 
