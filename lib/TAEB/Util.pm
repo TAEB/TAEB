@@ -393,7 +393,8 @@ sub object_menu {
     my @object_data = (
         sort map {
             my $name = $_->name;
-            _canonicalize_name_value($name, scalar $object->$name);
+            my $reader = $_->get_read_method_ref;
+            _canonicalize_name_value($name, scalar $reader->($object));
         }
         $object->meta->get_all_attributes
     );
