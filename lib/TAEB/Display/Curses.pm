@@ -407,7 +407,12 @@ augment(display_menu => sub {
                 $menu->clear_selections;
                 last;
             }
-            elsif ($c =~ /^[a-z]$/i) {
+            elsif ($c eq ':') {
+                $is_searching = 1;
+                $menu->search('');
+                $pager->current_page(1);
+            }
+            else {
                 my @visible_items = map { $menu->item($_ - 1) }
                                     $pager->first .. $pager->last;
 
@@ -421,11 +426,6 @@ augment(display_menu => sub {
                     last KEYSTROKE if $menu->select_type eq 'single';
                     last ITEM;
                 }
-            }
-            elsif ($c eq ':') {
-                $is_searching = 1;
-                $menu->search('');
-                $pager->current_page(1);
             }
         }
     }
