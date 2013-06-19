@@ -99,7 +99,9 @@ sub _change_level_command {
 # Commands should return true if they need to force a redraw, or undef
 # if they are a terminator.
 
-my %normal_commands = (
+my %normal_commands;
+
+%normal_commands = (
     (map { my ($dx, $dy) = vi2delta $_;
            $_    => sub { my $self = shift;
                           $self->inc_x($dx); $self->inc_y($dy); 0; },
@@ -107,35 +109,88 @@ my %normal_commands = (
                           $self->inc_x(8*$dx); $self->inc_y(8*$dy); 0; } }
          qw/h j k l y u b n/),
 
-    (map { $_ => sub { undef } } "\e", "\n", ";", ".", " ", "q", "Q"),
+    (map { $_ => sub { undef } } "\e", "\n", ";", ".", " ", "Q"),
 
-    '<' => sub { shift->_change_level_command(-1); 1 },
-    '>' => sub { shift->_change_level_command(+1); 1 },
-    'v' => sub { shift->inc_z_index(+1); 1 },
-    'i' => sub {
-        my $tile = shift->tile;
-        my @items = $tile->items;
-        item_menu (@items ? ("The items on $tile", \@items)
-                : ("The items on " . $tile->level, [ $tile->level->items ]));
-        1;
+    '?' => {
+        help    => 'List map debugger commands',
+        command => sub {
+            my @commands;
+            for my $key (sort { lc($a) cmp lc($b) } keys %normal_commands) {
+                my $command = $normal_commands{$key};
+                next unless ref($command) eq 'HASH';
+
+                push @commands, TAEB::Display::Menu::Item->new(
+                    title    => $command->{help},
+                    selector => $key,
+                );
+            }
+
+            my $menu = TAEB::Display::Menu->new(
+                description => 'Map debugger commands',
+                items       => \@commands,
+                select_type => 'none',
+            );
+
+            TAEB->display_menu($menu);
+
+            1;
+        },
     },
-    't' => sub {
-        my $t = shift->tile;
-        item_menu("Tile data for (" . $t->x . "," . $t->y . ")", $t);
-        1;
+    'q' => {
+        help    => 'Return to play',
+        command => sub { undef },
     },
-    'T' => sub {
-        my $level = shift->level;
-        item_menu("Level data for " . $level, $level);
-        1;
+    '<' => {
+        help    => 'Up one level',
+        command => sub { shift->_change_level_command(-1); 1 },
     },
-    'm' => sub {
-        if (my $monster = shift->tile->monster) {
-            item_menu("Monster data for $monster", $monster); return 1;
-        }
-        return 0;
+    '>' => {
+        help    => 'Down one level',
+        command => sub { shift->_change_level_command(+1); 1 },
     },
-    'd' => sub { TAEB->display->change_draw_mode; 1; },
+    'v' => {
+        help    => 'Browse other branch levels at this depth',
+        command => sub { shift->inc_z_index(+1); 1 },
+    },
+    'i' => {
+        help    => 'View items on the selected tile',
+        command => sub {
+            my $tile = shift->tile;
+            my @items = $tile->items;
+            item_menu (@items ? ("The items on $tile", \@items)
+                    : ("The items on " . $tile->level, [ $tile->level->items ]));
+            1;
+        },
+    },
+    't' => {
+        help    => 'Browse metadata associated with selected tile',
+        command => sub {
+            my $t = shift->tile;
+            item_menu("Tile data for (" . $t->x . "," . $t->y . ")", $t);
+            1;
+        },
+    },
+    'T' => {
+        help    => 'Browse metadata associated with selected level',
+        command => sub {
+            my $level = shift->level;
+            item_menu("Level data for " . $level, $level);
+            1;
+        },
+    },
+    'm' => {
+        help    => 'Browse metadata associated with monster on selected tile',
+        command => sub {
+            if (my $monster = shift->tile->monster) {
+                item_menu("Monster data for $monster", $monster); return 1;
+            }
+            return 0;
+        },
+    },
+    'd' => {
+        help    => 'Change draw mode',
+        command => sub { TAEB->display->change_draw_mode; 1; },
+    },
 );
 
 sub activate {
@@ -160,10 +215,15 @@ sub activate {
         my $c = TAEB->get_key;
 
         if ($commands{$c}) {
-            $redraw = $commands{$c}->($self);
+            my $command = $commands{$c};
+            if (ref($command) eq 'HASH') {
+                $command = $command->{command};
+            }
+
+            $redraw = $command->($self);
             last if !defined($redraw);
         } else {
-            $self->topline("Unknown command '$c'");
+            $self->topline("Unknown command '$c'. See ? for help.");
             $redraw = 0;
         }
 
