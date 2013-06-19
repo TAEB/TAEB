@@ -10,197 +10,19 @@ use Try::Tiny;
 
 our $VERSION = '0.05';
 
-my %debug_commands;
-%debug_commands = (
-    'p' => {
-        help    => "Pause or unpause",
-        command => sub {
-            TAEB->paused(! TAEB->paused);
-            TAEB->redraw;
-        },
-    },
-    'd' => {
-        help    => 'Change debug draw mode',
-        command => sub {
-            TAEB->display->change_draw_mode;
-        },
-    },
-    'i' => {
-        help    => "Display TAEB's inventory",
-        command => sub {
-            my @menu_items;
+our %debug_commands;
 
-            if (TAEB->senses->gold) {
-                push @menu_items, TAEB::Display::Menu::Item->new(
-                    user_data => TAEB->senses,
-                    title     => '$' . TAEB->senses->gold,
-                    selector  => '$',
-                );
-            }
+sub register_debug_commands {
+    my $self     = shift;
+    my %commands = @_;
 
-            for my $item (TAEB->inventory) {
-                push @menu_items, TAEB::Display::Menu::Item->new(
-                    user_data => $item,
-                    title     => $item->debug_line,
-                    selector  => $item->slot,
-                );
-            }
+    for my $key (keys %commands) {
+        if (exists $debug_commands{$key}) {
+            confess "$key is already a registered debug command";
+        }
 
-            item_menu(
-                'Inventory (' . TAEB->inventory->weight . ' hzm)',
-                \@menu_items,
-            );
-        },
-    },
-    "\cP" => {
-        help     => "Display old messages",
-        selector => '^P',
-        command  => sub {
-            item_menu(
-                "Old messages",
-                [ reverse TAEB->scraper->old_messages ],
-                { select_type => 'none' },
-            );
-        },
-    },
-    "\cX" => {
-        help     => "Display senses (TAEB's character stats)",
-        selector => '^X',
-        command  => sub {
-            item_menu("Senses", TAEB->senses);
-        },
-    },
-    "e" => {
-        help    => "Display TAEB's equipment",
-        command => sub {
-            my $eq = TAEB->equipment;
-            my @eq = (
-                map { "$_: " . ($eq->$_ ? $eq->$_->debug_line : "(none)") }
-                sort { ($eq->$b ? 1 : 0) <=> ($eq->$a ? 1 : 0) }
-                $eq->slots
-            );
-
-            item_menu("Equipment", \@eq);
-        },
-    },
-    "I" => {
-        help    => "Display item spoilers",
-        command => sub {
-            my $item = item_menu(
-                "Item spoiler data",
-                [ sort NetHack::Item::Spoiler->all_identities ],
-                { no_recurse => 1 },
-            ) or return;
-
-            my $spoiler = NetHack::Item::Spoiler->spoiler_for($item);
-            item_menu("Spoiler data for $item", $spoiler);
-        },
-    },
-    "M" => {
-        help    => "Display monster spoilers",
-        command => sub {
-            my $monster = item_menu(
-                "Monster spoiler data",
-                [ sort map { $_->name } NetHack::Monster::Spoiler->list ],
-                { no_recurse => 1 },
-            ) or return;
-
-            my @spoilers = NetHack::Monster::Spoiler->lookup($monster);
-            item_menu("Spoiler data for $monster",
-                    @spoilers > 1 ? \@spoilers : $spoilers[0]);
-        },
-    },
-    "t" => {
-        help    => "Display map tile information by tile type",
-        command => sub {
-            my @types = (
-                grep { !TAEB->current_level->is_unregisterable($_) }
-                sort { $a cmp $b }
-                tile_types(),
-            );
-
-            my $type = item_menu(
-                "Select a tile type",
-                \@types,
-                { no_recurse => 1 },
-            );
-
-            my @tiles = map { $_->level->debug_line . ': ' . $_->debug_line }
-                        map { $_->tiles_of($type) }
-                        map { @$_ }
-                        @{ TAEB->dungeon->levels };
-
-            item_menu("Tiles of type $type", \@tiles);
-        },
-    },
-    "\e" => {
-        help     => "Echo next keystroke directly to NetHack (for emergencies only)",
-        selector => "\\e",
-        command  => sub {
-            TAEB->write(TAEB->get_key);
-        },
-    },
-    "r" => {
-        help    => "Redraw the screen",
-        command => sub {
-            TAEB->redraw(force_clear => 1);
-        },
-    },
-    "\cr" => sub { TAEB->redraw(force_clear => 1) },
-    "q" => {
-        help    => "Controlled save and exit",
-        command => sub {
-            if (TAEB->state eq 'playing') {
-                TAEB->action(TAEB::Action::Save->new);
-                TAEB->state('human_override');
-                TAEB->paused(0);
-            }
-        },
-    },
-    "Q" => {
-        help    => "Controlled quit and exit",
-        command => sub {
-            if (TAEB->state eq 'playing') {
-                TAEB->action(TAEB::Action::Quit->new);
-                TAEB->state('human_override');
-                TAEB->paused(0);
-            }
-        },
-    },
-    "?" => {
-        help    => "List TAEB's debug commands",
-        command => sub {
-            my @commands;
-            for my $key (sort { lc($a) cmp lc($b) } keys %debug_commands) {
-                my $command = $debug_commands{$key};
-                next unless ref($command) eq 'HASH';
-
-                push @commands, TAEB::Display::Menu::Item->new(
-                    title    => $command->{help},
-                    selector => $command->{selector} || $key,
-                );
-            }
-
-            item_menu(
-                "TAEB's debug commands",
-                \@commands,
-                { select_type => 'none' },
-            );
-        },
-    },
-    " " => sub { }, # no-op
-);
-
-sub register_debug_command {
-    my $self  = shift;
-    my $key   = shift;
-    my $value = shift;
-
-    if (exists $debug_commands{$key}) {
-        confess "$key is already a registered debug command";
+        $debug_commands{$key} = $commands{$key};
     }
-
-    $debug_commands{$key} = $value;
 }
 
 use TAEB::Config;
@@ -916,6 +738,186 @@ sub monkey_patch {
         $orig->(@_);
     }) unless $yaml_any_meta->get_method('implementation')->isa('Class::MOP::Method::Wrapped');
 }
+
+TAEB->register_debug_commands(
+    'p' => {
+        help    => "Pause or unpause",
+        command => sub {
+            TAEB->paused(! TAEB->paused);
+            TAEB->redraw;
+        },
+    },
+    'd' => {
+        help    => 'Change debug draw mode',
+        command => sub {
+            TAEB->display->change_draw_mode;
+        },
+    },
+    'i' => {
+        help    => "Display TAEB's inventory",
+        command => sub {
+            my @menu_items;
+
+            if (TAEB->senses->gold) {
+                push @menu_items, TAEB::Display::Menu::Item->new(
+                    user_data => TAEB->senses,
+                    title     => '$' . TAEB->senses->gold,
+                    selector  => '$',
+                );
+            }
+
+            for my $item (TAEB->inventory) {
+                push @menu_items, TAEB::Display::Menu::Item->new(
+                    user_data => $item,
+                    title     => $item->debug_line,
+                    selector  => $item->slot,
+                );
+            }
+
+            item_menu(
+                'Inventory (' . TAEB->inventory->weight . ' hzm)',
+                \@menu_items,
+            );
+        },
+    },
+    "\cP" => {
+        help     => "Display old messages",
+        selector => '^P',
+        command  => sub {
+            item_menu(
+                "Old messages",
+                [ reverse TAEB->scraper->old_messages ],
+                { select_type => 'none' },
+            );
+        },
+    },
+    "\cX" => {
+        help     => "Display senses (TAEB's character stats)",
+        selector => '^X',
+        command  => sub {
+            item_menu("Senses", TAEB->senses);
+        },
+    },
+    "e" => {
+        help    => "Display TAEB's equipment",
+        command => sub {
+            my $eq = TAEB->equipment;
+            my @eq = (
+                map { "$_: " . ($eq->$_ ? $eq->$_->debug_line : "(none)") }
+                sort { ($eq->$b ? 1 : 0) <=> ($eq->$a ? 1 : 0) }
+                $eq->slots
+            );
+
+            item_menu("Equipment", \@eq);
+        },
+    },
+    "I" => {
+        help    => "Display item spoilers",
+        command => sub {
+            my $item = item_menu(
+                "Item spoiler data",
+                [ sort NetHack::Item::Spoiler->all_identities ],
+                { no_recurse => 1 },
+            ) or return;
+
+            my $spoiler = NetHack::Item::Spoiler->spoiler_for($item);
+            item_menu("Spoiler data for $item", $spoiler);
+        },
+    },
+    "M" => {
+        help    => "Display monster spoilers",
+        command => sub {
+            my $monster = item_menu(
+                "Monster spoiler data",
+                [ sort map { $_->name } NetHack::Monster::Spoiler->list ],
+                { no_recurse => 1 },
+            ) or return;
+
+            my @spoilers = NetHack::Monster::Spoiler->lookup($monster);
+            item_menu("Spoiler data for $monster",
+                    @spoilers > 1 ? \@spoilers : $spoilers[0]);
+        },
+    },
+    "t" => {
+        help    => "Display map tile information by tile type",
+        command => sub {
+            my @types = (
+                grep { !TAEB->current_level->is_unregisterable($_) }
+                sort { $a cmp $b }
+                tile_types(),
+            );
+
+            my $type = item_menu(
+                "Select a tile type",
+                \@types,
+                { no_recurse => 1 },
+            );
+
+            my @tiles = map { $_->level->debug_line . ': ' . $_->debug_line }
+                        map { $_->tiles_of($type) }
+                        map { @$_ }
+                        @{ TAEB->dungeon->levels };
+
+            item_menu("Tiles of type $type", \@tiles);
+        },
+    },
+    "\e" => {
+        help     => "Echo next keystroke directly to NetHack (for emergencies only)",
+        selector => "\\e",
+        command  => sub {
+            TAEB->write(TAEB->get_key);
+        },
+    },
+    "r" => {
+        help    => "Redraw the screen",
+        command => sub {
+            TAEB->redraw(force_clear => 1);
+        },
+    },
+    "\cr" => sub { TAEB->redraw(force_clear => 1) },
+    "q" => {
+        help    => "Controlled save and exit",
+        command => sub {
+            if (TAEB->state eq 'playing') {
+                TAEB->action(TAEB::Action::Save->new);
+                TAEB->state('human_override');
+                TAEB->paused(0);
+            }
+        },
+    },
+    "Q" => {
+        help    => "Controlled quit and exit",
+        command => sub {
+            if (TAEB->state eq 'playing') {
+                TAEB->action(TAEB::Action::Quit->new);
+                TAEB->state('human_override');
+                TAEB->paused(0);
+            }
+        },
+    },
+    "?" => {
+        help    => "List TAEB's debug commands",
+        command => sub {
+            my @commands;
+            for my $key (sort { lc($a) cmp lc($b) } keys %debug_commands) {
+                my $command = $debug_commands{$key};
+                next unless ref($command) eq 'HASH';
+
+                push @commands, TAEB::Display::Menu::Item->new(
+                    title    => $command->{help},
+                    selector => $command->{selector} || $key,
+                );
+            }
+
+            item_menu(
+                "TAEB's debug commands",
+                \@commands,
+                { select_type => 'none' },
+            );
+        },
+    },
+    " " => sub { }, # no-op
+);
 
 __PACKAGE__->meta->make_immutable;
 

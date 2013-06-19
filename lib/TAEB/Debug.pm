@@ -17,7 +17,7 @@ has sanity => (
     default => sub { TAEB::Debug::Sanity->new },
 );
 
-has debug_map => (
+has map => (
     is      => 'ro',
     isa     => 'TAEB::Debug::Map',
     default => sub { TAEB::Debug::Map->new },

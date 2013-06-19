@@ -4,7 +4,7 @@ use TAEB::OO;
 use Try::Tiny;
 with 'TAEB::Role::Config';
 
-TAEB->register_debug_command(
+TAEB->register_debug_commands(
     '~' => {
         help    => "Debug console",
         command => sub { TAEB->debugger->console->repl(undef) },

@@ -3,7 +3,7 @@ use Moose;
 use TAEB::OO;
 use TAEB::Util qw/item_menu vi2delta/;
 
-TAEB->register_debug_command(
+TAEB->register_debug_commands(
     ';' => {
         help    => "Debug map",
         command => sub { TAEB->debugger->map->activate },

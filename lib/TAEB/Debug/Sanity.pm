@@ -3,7 +3,7 @@ use Moose;
 use TAEB::OO;
 with 'TAEB::Role::Config';
 
-TAEB->register_debug_command(
+TAEB->register_debug_commands(
     'S' => {
         help    => "Toggle global per-turn sanity checks",
         command => sub { TAEB->debugger->sanity->toggle },
