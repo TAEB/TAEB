@@ -437,7 +437,13 @@ sub draw_menu {
     my $i = 0;
 
     if ($pager->total_entries > 0) {
-        my %seen = map { $_->selector => 1 } grep { $_->has_selector } $menu->items;
+        my %seen;
+        my $selector_length = 1;
+        for my $selector (map { $_->selector } grep { $_->has_selector } $menu->items) {
+            $seen{$selector} = 1;
+            $selector_length = length($selector)
+                if length($selector) > $selector_length;
+        }
 
         push @rows, map {
             my $item      = $menu->item($_ - 1);
@@ -450,7 +456,11 @@ sub draw_menu {
                 } while $seen{$selector};
             }
 
-            join " ", $selector, $separator, $item->title
+            sprintf '%*s %s %s',
+                $selector_length,
+                $selector,
+                $separator,
+                $item->title
         } $pager->first .. $pager->last;
     }
 
