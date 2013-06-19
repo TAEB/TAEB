@@ -531,11 +531,11 @@ sub keypress {
     }
 
     if ($c eq "\cP") {
-        my $menu = TAEB::Display::Menu->new(
-            description => "Old messages",
-            items       => [ reverse $self->scraper->old_messages ],
+        item_menu(
+            "Old messages",
+            [ reverse $self->scraper->old_messages ],
+            { select_type => 'none' },
         );
-        $self->display_menu($menu);
 
         return;
     }
@@ -558,14 +558,11 @@ sub keypress {
     }
 
     if ($c eq 'I') {
-        my $menu = TAEB::Display::Menu->new(
-            description => "Item spoiler data",
-            items       => [ sort NetHack::Item::Spoiler->all_identities ],
-            select_type => 'single',
-        );
-        my $selection = $self->display_menu($menu)
-            or return;
-        my $item = $selection->user_data;
+        my $item = item_menu(
+            "Item spoiler data",
+            [ sort NetHack::Item::Spoiler->all_identities ],
+            { no_recurse => 1 },
+        ) or return;
 
         my $spoiler = NetHack::Item::Spoiler->spoiler_for($item);
         item_menu("Spoiler data for $item", $spoiler);
@@ -574,15 +571,11 @@ sub keypress {
     }
 
     if ($c eq 'M') {
-        my $menu = TAEB::Display::Menu->new(
-            description => "Monster spoiler data",
-            items       => [ sort map { $_->name }
-                             NetHack::Monster::Spoiler->list ],
-            select_type => 'single',
-        );
-        my $selection = $self->display_menu($menu)
-            or return;
-        my $monster = $selection->user_data;
+        my $monster = item_menu(
+            "Monster spoiler data",
+            [ sort map { $_->name } NetHack::Monster::Spoiler->list ],
+            { no_recurse => 1 },
+        ) or return;
 
         my @spoilers = NetHack::Monster::Spoiler->lookup($monster);
         item_menu("Spoiler data for $monster",
@@ -598,15 +591,11 @@ sub keypress {
             tile_types(),
         );
 
-        my $type_menu = TAEB::Display::Menu->new(
-            description => "Select a tile type",
-            items       => \@types,
-            select_type => 'single',
+        my $type = item_menu(
+            "Select a tile type",
+            \@types,
+            { no_recurse => 1 },
         );
-
-        my $selection = $self->display_menu($type_menu)
-            or return;
-        my $type = $selection->user_data;
 
         my @tiles = map { $_->level->debug_line . ': ' . $_->debug_line }
                     map { $_->tiles_of($type) }

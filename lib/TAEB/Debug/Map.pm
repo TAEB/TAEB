@@ -125,13 +125,11 @@ my %normal_commands;
                 );
             }
 
-            my $menu = TAEB::Display::Menu->new(
-                description => 'Map debugger commands',
-                items       => \@commands,
-                select_type => 'none',
+            item_menu(
+                'Map debugger commands',
+                \@commands,
+                { select_type => 'none' },
             );
-
-            TAEB->display_menu($menu);
 
             1;
         },
@@ -182,7 +180,8 @@ my %normal_commands;
         help    => 'Browse metadata associated with monster on selected tile',
         command => sub {
             if (my $monster = shift->tile->monster) {
-                item_menu("Monster data for $monster", $monster); return 1;
+                item_menu("Monster data for $monster", $monster);
+                return 1;
             }
             return 0;
         },
