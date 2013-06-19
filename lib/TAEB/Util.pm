@@ -330,24 +330,24 @@ sub _shorten_title {
 }
 
 sub item_menu {
-    my $title = shift;
-    my $thing = shift;
-    my $quiet = shift;
+    my $title   = shift;
+    my $thing   = shift;
+    my $options = shift || {};
 
     if (blessed($thing) && $thing->can('meta')) {
-        return object_menu($title, $thing);
+        return object_menu($title, $thing, $options);
     }
     elsif (ref($thing) && ref($thing) eq 'HASH') {
-        return hashref_menu($title, $thing);
+        return hashref_menu($title, $thing, $options);
     }
     elsif (ref($thing) && ref($thing) eq 'ARRAY') {
-        return list_menu($title, $thing);
+        return list_menu($title, $thing, $options);
     }
     elsif (blessed($thing) && $thing->isa('Set::Object')) {
-        return list_menu($title, [$thing->members]);
+        return list_menu($title, [$thing->members], $options);
     }
 
-    die "No valid menu type for '$thing'" unless $quiet;
+    die "No valid menu type for '$thing'" unless $options->{quiet};
 }
 
 sub hashref_menu {
@@ -369,12 +369,23 @@ sub hashref_menu {
     );
     my $item = TAEB->display_menu($menu) or return;
     my $selected = $item->user_data;
-    item_menu("$title -> " . $selected->name, $selected->value, 1);
+
+    if ($options{no_recurse}) {
+        return $selected;
+    }
+
+    item_menu(
+        "$title -> " . $selected->name,
+        $selected->value,
+        { %$options, quiet => 1 },
+    );
 }
 
 sub object_menu {
-    my $title = shift;
-    my $object = shift;
+    my $title   = shift;
+    my $object  = shift;
+    my $options = shift || {};
+
     $title ||= "${object}'s attributes";
 
     my @object_data = (
@@ -392,12 +403,23 @@ sub object_menu {
     );
     my $item = TAEB->display_menu($menu) or return;
     my $selected = $item->user_data;
-    item_menu("$title -> " . $selected->name, $selected->value, 1);
+
+    if ($options{no_recurse}) {
+        return $selected;
+    }
+
+    item_menu(
+        "$title -> " . $selected->name,
+        $selected->value,
+        { %$options, quiet => 1 },
+    );
 }
 
 sub list_menu {
-    my $title = shift || "Unknown list";
-    my $items = shift;
+    my $title   = shift || "Unknown list";
+    my $items   = shift;
+    my $options = shift || {};
+
     my $menu = TAEB::Display::Menu->new(
         description => _shorten_title($title),
         items       => $items,
@@ -405,7 +427,16 @@ sub list_menu {
     );
     my $item = TAEB->display_menu($menu) or return;
     my $selected = $item->user_data;
-    item_menu("$title -> $selected", $selected, 1);
+
+    if ($options{no_recurse}) {
+        return $selected;
+    }
+
+    item_menu(
+        "$title -> " . $selected,
+        $selected,
+        { %$options, quiet => 1 },
+    );
 }
 
 sub _add_file_line {
