@@ -28,10 +28,9 @@ my %debug_commands;
     'i' => {
         help    => "Display TAEB's inventory",
         command => sub {
-            my $inventory = TAEB->inventory;
             item_menu(
-                'Inventory (' . $inventory->weight . ' hzm)',
-                [$inventory],
+                'Inventory (' . TAEB->inventory->weight . ' hzm)',
+                [TAEB->inventory],
             );
         },
     },
