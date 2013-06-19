@@ -350,7 +350,7 @@ augment(display_menu => sub {
     $pager->current_page(1);
 
     my $is_searching = 0;
-    while (1) {
+    KEYSTROKE: while (1) {
         $pager->total_entries(scalar $menu->items);
 
         $self->draw_menu($menu, $pager, $is_searching);
@@ -408,11 +408,18 @@ augment(display_menu => sub {
                 last;
             }
             elsif ($c =~ /^[a-z]$/i) {
-                my $index = ($pager->first - 1) + (ord(lc $c) - ord('a'));
+                my @visible_items = map { $menu->item($_ - 1) }
+                                    $pager->first .. $pager->last;
 
-                if ($index < $pager->last) {
-                    $menu->select($index);
-                    last if $menu->select_type eq 'single';
+                ITEM: for my $i (0 .. $#visible_items) {
+                    my $item = $visible_items[$i];
+
+                    next unless $item->selector eq $c
+                             || $item->temporary_selector eq $c;
+
+                    $menu->select($item);
+                    last KEYSTROKE if $menu->select_type eq 'single';
+                    last ITEM;
                 }
             }
             elsif ($c eq ':') {
@@ -437,31 +444,34 @@ sub draw_menu {
     my $i = 0;
 
     if ($pager->total_entries > 0) {
-        my %seen;
+        my @visible_items = map { $menu->item($_ - 1) }
+                            $pager->first .. $pager->last;
+
+        my %seen_selector;
         my $selector_length = 1;
-        for my $selector (map { $_->selector } grep { $_->has_selector } $menu->items) {
-            $seen{$selector} = 1;
+        for my $selector (map { $_->selector } grep { $_->has_selector } @visible_items) {
+            $seen_selector{$selector} = 1;
             $selector_length = length($selector)
                 if length($selector) > $selector_length;
         }
 
-        push @rows, map {
-            my $item      = $menu->item($_ - 1);
+        for my $item (@visible_items) {
             my $separator = $item->selected ? '+' : '-';
             my $selector  = $item->selector;
 
             if (!$selector) {
                 do {
                     $selector = chr($i++ + ord('a'));
-                } while $seen{$selector};
+                } while $seen_selector{$selector};
+                $item->temporary_selector($selector);
             }
 
-            sprintf '%*s %s %s',
-                $selector_length,
-                $selector,
-                $separator,
-                $item->title
-        } $pager->first .. $pager->last;
+            push @rows, sprintf '%*s %s %s',
+                            $selector_length,
+                            $selector,
+                            $separator,
+                            $item->title;
+        }
     }
 
     if ($menu->has_search) {
