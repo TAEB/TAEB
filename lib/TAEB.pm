@@ -29,6 +29,15 @@ my %debug_commands;
         help    => "Display TAEB's inventory",
         command => sub {
             my @menu_items;
+
+            if (TAEB->senses->gold) {
+                push @menu_items, TAEB::Display::Menu::Item->new(
+                    user_data => undef,
+                    title     => '$' . TAEB->senses->gold,
+                    selector  => '$',
+                );
+            }
+
             for my $item (TAEB->inventory) {
                 push @menu_items, TAEB::Display::Menu::Item->new(
                     user_data => $item,
