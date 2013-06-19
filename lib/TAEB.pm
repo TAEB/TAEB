@@ -1014,7 +1014,7 @@ TAEB has also had features, fixes, and improvements from:
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2007-2009 TAEB DevTeam.
+Copyright 2007-2013 TAEB DevTeam.
 
 This program is free software; you can redistribute it and/or modify it
 under terms of the GNU public license version 2.
