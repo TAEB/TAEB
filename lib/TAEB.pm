@@ -780,6 +780,25 @@ TAEB->register_debug_commands(
             );
         },
     },
+    'Z' => {
+        help    => "Display TAEB's spells",
+        command => sub {
+            my @menu_items;
+
+            for my $spell (TAEB->spells->spells) {
+                push @menu_items, TAEB::Display::Menu::Item->new(
+                    user_data => $spell,
+                    title     => $spell->debug_line_noslot,
+                    selector  => $spell->slot,
+                );
+            }
+
+            item_menu(
+                "TAEB's spells",
+                \@menu_items,
+            );
+        },
+    },
     "\cP" => {
         help     => "Display old messages",
         selector => '^P',
