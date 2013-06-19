@@ -163,6 +163,19 @@ sub create_level {
     return $level;
 }
 
+sub has_tile_of_type {
+    my $self = shift;
+    my $type = shift;
+
+    for my $z (@{ $self->levels }) {
+        for my $level (@$z) {
+            return 1 if $level->has_type($type);
+        }
+    }
+
+    return 0;
+}
+
 sub tiles_of_type {
     my $self = shift;
     my $type = shift;
