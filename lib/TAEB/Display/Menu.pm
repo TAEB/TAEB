@@ -68,7 +68,8 @@ sub select {
     return if $self->select_type eq 'none';
 
     for my $index (@_) {
-        $self->item($index)->toggle_selected;
+        my $item = blessed($index) ? $index : $self->item($index);
+        $item->toggle_selected;
     }
 }
 
