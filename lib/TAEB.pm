@@ -595,13 +595,9 @@ sub new_item {
     return $item;
 }
 
-sub inventory {
-    my $self = shift;
-    my $inventory = $self->item_pool->inventory;
+sub inventory { shift->item_pool->inventory }
 
-    return $inventory->items if wantarray;
-    return $inventory;
-}
+sub inventory_items { shift->item_pool->inventory->items }
 
 sub has_item {
     my $self = shift;
@@ -772,7 +768,7 @@ TAEB->register_debug_commands(
                 );
             }
 
-            for my $item (TAEB->inventory) {
+            for my $item (TAEB->inventory_items) {
                 push @menu_items, TAEB::Display::Menu::Item->new(
                     user_data => $item,
                     title     => $item->debug_line,

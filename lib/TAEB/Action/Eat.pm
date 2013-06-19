@@ -75,7 +75,7 @@ sub edible_items {
 
     return grep { $class->can_eat($_) }
            TAEB->current_tile->items,
-           TAEB->inventory;
+           TAEB->inventory_items;
 }
 
 sub can_eat {
