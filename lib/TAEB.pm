@@ -28,9 +28,18 @@ my %debug_commands;
     'i' => {
         help    => "Display TAEB's inventory",
         command => sub {
+            my @menu_items;
+            for my $item (TAEB->inventory) {
+                push @menu_items, TAEB::Display::Menu::Item->new(
+                    user_data => $item,
+                    title     => $item->debug_line,
+                    selector  => $item->slot,
+                );
+            }
+
             item_menu(
                 'Inventory (' . TAEB->inventory->weight . ' hzm)',
-                [TAEB->inventory],
+                \@menu_items,
             );
         },
     },
