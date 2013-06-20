@@ -201,6 +201,12 @@ has ac => (
     is      => 'rw',
     isa     => 'Int',
     default => 10,
+    trigger => sub {
+        my ($self, $new, $old) = @_;
+        if (defined($old) && defined($new) && $new != $old) {
+            TAEB->send_message(check => 'inventory');
+        }
+    },
 );
 
 has burden => (
