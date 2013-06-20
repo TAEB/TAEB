@@ -4,19 +4,24 @@ use TAEB::OO;
 use TAEB::Util qw/min/;
 extends 'TAEB::World::Tile';
 
-has state => (
+has door_state => (
     is  => 'rw',
     isa => 'TAEB::Type::DoorState',
 );
 
+sub state {
+    carp "Invalid use of old Door->state accessor; use door_state instead";
+    goto \&door_state;
+}
+
 sub is_locked {
     my $self = shift;
-    $self->state && $self->state eq 'locked';
+    $self->door_state && $self->door_state eq 'locked';
 }
 
 sub is_unlocked {
     my $self = shift;
-    $self->state && $self->state eq 'unlocked';
+    $self->door_state && $self->door_state eq 'unlocked';
 }
 
 sub blocked_door {

@@ -37,7 +37,7 @@ my %terrain2taeb = (
 
         $tile->change_type(($minor eq 'open' ? 'opendoor' : 'closeddoor'), ' ');
 
-        $tile->state(($minor eq 'closed') ? 'unlocked' : 'locked');
+        $tile->door_state(($minor eq 'closed') ? 'unlocked' : 'locked');
     },
 );
 

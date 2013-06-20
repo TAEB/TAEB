@@ -21,10 +21,10 @@ subscribe door => sub {
     return unless $door->isa('TAEB::World::Tile::Door');
 
     if ($state eq 'locked') {
-        $door->state('locked');
+        $door->door_state('locked');
     }
     elsif ($state eq 'resists') {
-        $door->state('unlocked');
+        $door->door_state('unlocked');
     }
 };
 
