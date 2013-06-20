@@ -30,7 +30,11 @@ subscribe door => sub {
     my $self  = shift;
     my $event = shift;
 
-    my $tile  = $event->tile;
+    my $tile = $event->tile;
+
+    # if the door explodes as we're unlocking it, it's not a door any more
+    return unless $tile->isa('TAEB::World::Tile::Door');
+
     my $state = $event->state;
 
     if ($state eq 'just_unlocked') {
