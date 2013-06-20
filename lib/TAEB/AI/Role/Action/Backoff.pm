@@ -61,7 +61,7 @@ role {
 
     method "$is_blacked_out_method" => sub {
         my $self = shift;
-        return TAEB->turn < $self->$forbidden_until_method;
+        return TAEB->turn < ($self->$forbidden_until_method||0);
     };
 
     my $maybe_blackout_method = sub {
