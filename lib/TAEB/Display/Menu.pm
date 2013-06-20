@@ -13,7 +13,6 @@ has items => (
     traits  => ['Array'],
     isa     => 'ArrayRef[TAEB::Display::Menu::Item]',
     handles => {
-        item  => 'get',
         items => 'elements',
     },
 );
@@ -117,6 +116,16 @@ around items => sub {
     my @all_items = $orig->($self);
     return grep { $_->title =~ $compiled } @all_items;
 };
+
+# can't use the native delegation since it breaks searching
+sub item {
+    my $self = shift;
+    my $index = shift;
+
+    my @items = $self->items;
+
+    return $items[$index];
+}
 
 __PACKAGE__->meta->make_immutable;
 
