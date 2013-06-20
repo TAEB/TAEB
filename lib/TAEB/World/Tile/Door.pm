@@ -10,7 +10,7 @@ has door_state => (
 );
 
 sub state {
-    carp "Invalid use of old Door->state accessor; use door_state instead";
+    Carp::carp("Invalid use of old Door->state accessor; use door_state instead");
     goto \&door_state;
 }
 
