@@ -1,7 +1,12 @@
 package TAEB::World::Level;
 use Moose;
 use TAEB::OO;
-use TAEB::Util qw/deltas delta2vi vi2delta tile_types first any assert/;
+use TAEB::Util qw/first any assert/;
+use TAEB::Util::World qw/deltas delta2vi vi2delta tile_types glyphs feature_colors/;
+use TAEB::Util::Colors 'color_from_index';
+
+our %GLYPHS = %{ glyphs() };
+our %FEATURE_COLORS = %{ feature_colors() };
 
 with 'TAEB::Role::Reblessing', 'TAEB::Role::Overload';
 
@@ -445,7 +450,7 @@ sub iterate_tile_vt {
             return unless $code->(
                 $tile_row->[$x],
                 $glyphs[$x],
-                $colors[$x],
+                color_from_index($colors[$x]),
                 $x,
                 $y,
             );
@@ -768,18 +773,18 @@ sub glyph_to_type {
     my $self  = shift;
     my $glyph = shift;
 
-    return $TAEB::Util::glyphs{$glyph} || 'obscured' unless @_;
+    return $GLYPHS{$glyph} || 'obscured' unless @_;
     # glyph_to_type will always return 'rock' for blank tiles
-    return $TAEB::Util::glyphs{$glyph}->[0] if $glyph eq ' ';
+    return $GLYPHS{$glyph}->[0] if $glyph eq ' ';
 
     # use color in an effort to differentiate tiles
     my $color = shift;
 
-    return 'obscured' unless $TAEB::Util::glyphs{$glyph}
-                          && $TAEB::Util::feature_colors{$color};
+    return 'obscured' unless $GLYPHS{$glyph}
+                          && $FEATURE_COLORS{$color};
 
-    my @a = map { ref $_ ? @$_ : $_ } $TAEB::Util::glyphs{$glyph};
-    my @b = map { ref $_ ? @$_ : $_ } $TAEB::Util::feature_colors{$color};
+    my @a = map { ref $_ ? @$_ : $_ } $GLYPHS{$glyph};
+    my @b = map { ref $_ ? @$_ : $_ } $FEATURE_COLORS{$color};
 
     # calculate intersection of the two lists
     # because of the config chosen, given a valid glyph+color combo

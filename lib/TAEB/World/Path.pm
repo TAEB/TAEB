@@ -2,7 +2,8 @@ package TAEB::World::Path;
 use Moose;
 use TAEB::OO;
 use Heap::Simple;
-use TAEB::Util qw/delta2vi deltas sum max refaddr/;
+use TAEB::Util qw/sum max refaddr/;
+use TAEB::Util::World qw/delta2vi deltas/;
 use Time::HiRes 'time';
 
 with 'TAEB::Role::Actionable';

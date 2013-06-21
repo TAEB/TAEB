@@ -1,7 +1,9 @@
 package TAEB::Action::Move;
 use Moose;
 use TAEB::OO;
-use TAEB::Util qw/vi2delta assert/;
+use TAEB::Util 'assert';
+use TAEB::Util::World 'vi2delta';
+
 extends 'TAEB::Action';
 with 'TAEB::Action::Role::Direction';
 

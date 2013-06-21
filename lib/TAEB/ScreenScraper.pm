@@ -1,7 +1,8 @@
 package TAEB::ScreenScraper;
 use Moose;
 use TAEB::OO;
-use TAEB::Util qw/crow_flies natatime/;
+use TAEB::Util 'natatime';
+use TAEB::Util::World 'crow_flies';
 use TAEB::Announcement;
 use NetHack::Menu;
 use Try::Tiny;

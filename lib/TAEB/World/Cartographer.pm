@@ -2,7 +2,9 @@ package TAEB::World::Cartographer;
 use Moose;
 use TAEB::OO;
 use NetHack::FOV 'calculate_fov';
-use TAEB::Util qw/assert tile_type_to_glyph/;
+use TAEB::Util 'assert';
+use TAEB::Util::World 'tile_type_to_glyph';
+use TAEB::Util::Colors 'color_from_index';
 
 has dungeon => (
     is       => 'ro',
@@ -126,7 +128,8 @@ sub update {
             my $x     = $tile->x;
             my $y     = $tile->y;
             my $glyph = $vt->at($x, $y);
-            my $color = $vt->color($x, $y);
+            my $color = color_from_index($vt->color($x, $y))
+                or confess "($x, $y) color=" . $vt->color($x, $y);
 
             $level->update_tile($x, $y, $glyph, $color);
         }

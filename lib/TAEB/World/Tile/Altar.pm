@@ -1,7 +1,7 @@
 package TAEB::World::Tile::Altar;
 use Moose;
 use TAEB::OO;
-use TAEB::Util qw/:colors display/;
+use TAEB::Util::Colors;
 extends 'TAEB::World::Tile';
 
 has align => (
@@ -15,12 +15,12 @@ sub debug_color {
     my $align = $self->align;
 
     if (defined $align) {
-        return display(COLOR_RED)   if $align eq 'Cha';
-        return display(COLOR_GREEN) if $align eq 'Neu';
-        return display(COLOR_CYAN)  if $align eq 'Law';
+        return COLOR_RED   if $align eq 'Cha';
+        return COLOR_GREEN if $align eq 'Neu';
+        return COLOR_CYAN  if $align eq 'Law';
     }
 
-    return display(COLOR_MAGENTA);
+    return COLOR_MAGENTA;
 }
 
 sub reblessed {

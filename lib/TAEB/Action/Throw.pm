@@ -3,6 +3,8 @@ use Moose;
 use TAEB::OO;
 extends 'TAEB::Action';
 
+use TAEB::Util::World 'vi2delta';
+
 # We do not perform role summation over Monster and Direction because Monster
 # requires victim_tile, which is provided *in an attribute* by Direction.
 # requirements and attributes do not play well at all.
@@ -11,8 +13,6 @@ with (
     'TAEB::Action::Role::Item' => { items => [qw/projectile/] },
 );
 with 'TAEB::Action::Role::Monster';
-
-use TAEB::Util 'vi2delta';
 
 use constant command => 't';
 

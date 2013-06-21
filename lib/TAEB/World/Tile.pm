@@ -1,7 +1,9 @@
 package TAEB::World::Tile;
 use Moose;
 use TAEB::OO;
-use TAEB::Util qw/delta2vi vi2delta display display_ro :colors any all apply first/;
+use TAEB::Util qw/any all apply first/;
+use TAEB::Util::World qw/delta2vi vi2delta/;
+use TAEB::Util::Colors;
 
 with 'TAEB::Role::Reblessing', 'TAEB::Role::Overload';
 
@@ -33,8 +35,7 @@ has itemly_glyph => (
 
 has itemly_color => (
     is      => 'rw',
-    isa     => 'Int',
-    default => 0,
+    isa     => 'TAEB::Display::Color',
 );
 
 has floor_glyph => (
@@ -45,8 +46,7 @@ has floor_glyph => (
 
 has color => (
     is      => 'rw',
-    isa     => 'Int',
-    default => 0,
+    isa     => 'TAEB::Display::Color',
 );
 
 has stepped_on => (
@@ -268,7 +268,8 @@ sub update {
     # XXX what's this for?  we don't run the AI until we've seen all
     # output anyway, and worse things than this will break if we lose
     # sync
-    return if $newglyph =~ m{^[\\/-]$} && $color == 1;
+    # isn't it supposed to be green?
+    return if $newglyph =~ m{^[\\/-]$} && $color == COLOR_RED;
 
     $self->glyph($newglyph);
     $self->color($color);
@@ -405,7 +406,7 @@ sub update_lit {
 
     # Corridors are lit if and only if they are brightly colored.
 
-    $self->is_lit($self->color == 15) if $self->glyph eq '#';
+    $self->is_lit($self->color == COLOR_WHITE) if $self->glyph eq '#';
 
     # Other types of tiles cannot have light status easily determined.
     # Fortunately, they are rare and we usually do not fight on them.
@@ -562,8 +563,8 @@ sub change_type {
 sub change_itemview {
     my ($self, $newglyph, $newcolor) = @_;
 
-    return if $self->itemly_glyph eq $newglyph &&
-        $self->itemly_color == $newcolor;
+    return if $self->itemly_glyph eq $newglyph
+           && $self->itemly_color == $newcolor;
 
     $self->itemly_glyph($newglyph);
     $self->itemly_color($newcolor);
@@ -679,29 +680,19 @@ sub is_engravable {
 sub normal_color {
     my $color = shift->color;
     $color = COLOR_WHITE if $color == COLOR_NONE;
-    return display_ro(color => $color);
+    return $color;
 }
-
-sub item_display_color { display_ro(shift->itemly_color) }
 
 sub debug_color {
     my $self = shift;
-    my @reverse = ();
-    @reverse = (reverse => 1) if $self->type eq 'rock';
 
-    my $color = $self->in_shop || $self->in_temple
-              ? display_ro(color => COLOR_GREEN, bold => 1, @reverse)
-              : $self->has_enemy
-              ? display_ro(color => COLOR_RED, bold => 1, @reverse)
-              : $self->is_interesting
-              ? display_ro(color => COLOR_RED, @reverse)
-              : $self->searched > 5
-              ? display_ro(color => COLOR_CYAN, @reverse)
-              : $self->stepped_on
-              ? display_ro(color => COLOR_BROWN, @reverse)
-              : $self->explored
-              ? display_ro(color => COLOR_GREEN, @reverse)
-              : display_ro(color => COLOR_WHITE, @reverse);
+    my $color = $self->in_shop || $self->in_temple ? COLOR_BRIGHT_GREEN
+              : $self->has_enemy                   ? COLOR_ORANGE
+              : $self->is_interesting              ? COLOR_RED
+              : $self->searched > 5                ? COLOR_CYAN
+              : $self->stepped_on                  ? COLOR_BROWN
+              : $self->explored                    ? COLOR_GREEN
+                                                   : COLOR_WHITE;
 
     return $color;
 }
@@ -709,31 +700,23 @@ sub debug_color {
 sub lit_color {
     my $self = shift;
 
-    return $self->is_lit
-         ? display_ro(color => COLOR_YELLOW)
-         : !defined $self->is_lit
-         ? display_ro(color => COLOR_BROWN)
-         : display_ro(color => COLOR_WHITE, bold => 1);
+    return $self->is_lit          ? COLOR_YELLOW
+         : !defined $self->is_lit ? COLOR_BROWN
+                                  : COLOR_WHITE;
 }
 
-sub los_color {
-    my $self = shift;
-
-    return $self->in_los
-         ? display_ro(color => COLOR_YELLOW)
-         : display_ro(color => COLOR_WHITE, bold => 1);
-}
+sub los_color { shift->in_los ? COLOR_YELLOW : COLOR_GRAY }
 
 sub stepped_color {
     my $self = shift;
     my $stepped = $self->stepped_on;
 
-    return display_ro(color => COLOR_WHITE, bold => 1) if $stepped == 0;
-    return display_ro(color => COLOR_RED)              if $stepped == 1;
-    return display_ro(color => COLOR_ORANGE)           if $stepped == 2;
-    return display_ro(color => COLOR_BROWN)            if $stepped < 5;
-    return display_ro(color => COLOR_YELLOW)           if $stepped < 8;
-    return display_ro(color => COLOR_MAGENTA);
+    return COLOR_WHITE  if $stepped == 0;
+    return COLOR_RED    if $stepped == 1;
+    return COLOR_ORANGE if $stepped == 2;
+    return COLOR_BROWN  if $stepped < 5;
+    return COLOR_YELLOW if $stepped < 8;
+    return COLOR_MAGENTA;
 }
 
 sub time_color {
@@ -741,27 +724,25 @@ sub time_color {
     my $last_turn = $self->last_turn;
     my $dt = TAEB->turn - $last_turn;
 
-    return display_ro(color => COLOR_WHITE, bold => 1)   if $last_turn == 0;
-    return display_ro(color => COLOR_RED)                if $dt > 1000;
-    return display_ro(color => COLOR_ORANGE)             if $dt > 500;
-    return display_ro(color => COLOR_BROWN)              if $dt > 100;
-    return display_ro(color => COLOR_YELLOW)             if $dt > 50;
-    return display_ro(color => COLOR_MAGENTA)            if $dt > 25;
-    return display_ro(color => COLOR_MAGENTA, bold => 1) if $dt > 15;
-    return display_ro(color => COLOR_GREEN)              if $dt > 10;
-    return display_ro(color => COLOR_GREEN, bold => 1)   if $dt > 5;
-    return display_ro(color => COLOR_CYAN)               if $dt > 3;
-    return display_ro(color => COLOR_CYAN, bold => 1);
+    return COLOR_WHITE          if $last_turn == 0;
+    return COLOR_RED            if $dt > 1000;
+    return COLOR_ORANGE         if $dt > 500;
+    return COLOR_BROWN          if $dt > 100;
+    return COLOR_YELLOW         if $dt > 50;
+    return COLOR_MAGENTA        if $dt > 25;
+    return COLOR_BRIGHT_MAGENTA if $dt > 15;
+    return COLOR_GREEN          if $dt > 10;
+    return COLOR_BRIGHT_GREEN   if $dt > 5;
+    return COLOR_CYAN           if $dt > 3;
+    return COLOR_BRIGHT_CYAN;
 }
 
 sub engraving_color {
     my $self = shift;
-    my $engraving = $self->engraving ne '';
-    my $bold = $self->elbereths ? 1 : 0;
 
-    return $engraving
-         ? display_ro(color => COLOR_GREEN, bold => $bold)
-         : display_ro(color => COLOR_BROWN);
+    return COLOR_BRIGHT_MAGENTA if $self->elbereths;
+    return COLOR_GREEN if $self->engraving ne '';
+    return COLOR_GRAY;
 }
 
 sub normal_glyph {

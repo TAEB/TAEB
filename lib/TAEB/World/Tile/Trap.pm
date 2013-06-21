@@ -1,15 +1,18 @@
 package TAEB::World::Tile::Trap;
 use Moose;
 use TAEB::OO;
-use TAEB::Util qw/:colors display/;
+use TAEB::Util::Colors;
+use TAEB::Util::World 'trap_colors';
 extends 'TAEB::World::Tile';
+
+our %TRAP_COLORS = %{ trap_colors() };
 
 has trap_type => (
     is  => 'rw',
     isa => 'TAEB::Type::Trap',
 );
 
-sub debug_color { display(color => COLOR_BLUE, bold => 1) }
+sub debug_color { COLOR_BRIGHT_BLUE }
 
 sub reblessed {
     my $self = shift;
@@ -21,7 +24,7 @@ sub reblessed {
         return;
     }
 
-    $trap_type = $TAEB::Util::trap_colors{$self->color};
+    $trap_type = $TRAP_COLORS{$self->color};
     if (ref $trap_type) {
         if (defined $self->level->branch &&
             $self->level->branch eq 'sokoban') {

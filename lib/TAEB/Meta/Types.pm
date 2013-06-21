@@ -1,6 +1,6 @@
 package TAEB::Meta::Types;
 use Moose::Util::TypeConstraints;
-use TAEB::Util qw/tile_types trap_types/;
+use TAEB::Util::World qw/tile_types trap_types/;
 
 enum 'TAEB::Type::PlayState' => qw(logging_in unable_to_login playing dying human_override);
 
@@ -27,6 +27,8 @@ enum 'TAEB::Type::Disposition' => qw(hostile peaceful tame);
 enum 'TAEB::Type::Menu' => qw(none single multi);
 
 enum 'TAEB::Type::DeathState' => qw(inventory attributes kills conducts summary scores);
+
+enum 'TAEB::Type::TermColor' => 0 .. 7;
 
 1;
 

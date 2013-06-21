@@ -1,7 +1,8 @@
 package TAEB::World::Monster;
 use Moose;
 use TAEB::OO;
-use TAEB::Util qw/:colors align2str max min any all string_color/;
+use TAEB::Util::Colors ':colors', 'string_color';
+use TAEB::Util qw/align2str max min any all/;
 use TAEB::Spoilers::Combat;
 
 with 'TAEB::Role::Overload';
@@ -14,7 +15,7 @@ has glyph => (
 
 has color => (
     is       => 'ro',
-    isa      => 'Int',
+    isa      => 'TAEB::Display::Color',
     required => 1,
 );
 

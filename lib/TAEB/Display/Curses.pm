@@ -2,14 +2,16 @@ package TAEB::Display::Curses;
 use Moose;
 use TAEB::OO;
 use Curses ();
-use TAEB::Util qw/:colors max tile_type_to_glyph tile_type_to_color display refaddr/;
+use TAEB::Util::Colors;
+use TAEB::Util qw/max refaddr/;
+use TAEB::Util::World qw/tile_type_to_glyph tile_type_to_color/;
 use Time::HiRes 'gettimeofday';
 
 extends('TAEB::Display');
 
 use constant to_screen => 1;
 
-has(color_method => (
+has color_method => (
     is      => 'rw',
     isa     => 'Str',
     clearer => 'reset_color_method',
@@ -17,9 +19,9 @@ has(color_method => (
     default => sub {
         TAEB->config->get_display_config->{color_method} || 'normal';
     },
-));
+);
 
-has(glyph_method => (
+has glyph_method => (
     is      => 'rw',
     isa     => 'Str',
     clearer => 'reset_glyph_method',
@@ -27,24 +29,24 @@ has(glyph_method => (
     default => sub {
         TAEB->config->get_display_config->{glyph_method} || 'normal';
     },
-));
+);
 
-has(time_buffer => (
+has time_buffer => (
     is      => 'ro',
     isa     => 'ArrayRef[Num]',
     default => sub { [] },
-));
+);
 
-has(initialized => (
+has initialized => (
     is  => 'rw',
     isa => 'Bool',
-));
+);
 
-has(requires_redraw => (
+has requires_redraw => (
     is  => 'rw',
     isa => 'Bool',
     default => 1,
-));
+);
 
 sub institute {
     shift->initialized(1);
@@ -96,9 +98,9 @@ sub notify {
     $msg =~ s/\n.*//s;
 
     Curses::move(1, 0);
-    Curses::attron(Curses::COLOR_PAIR($color));
+    Curses::attron(Curses::COLOR_PAIR($color->index));
     Curses::addstr($msg);
-    Curses::attroff(Curses::COLOR_PAIR($color));
+    Curses::attroff(Curses::COLOR_PAIR($color->index));
     Curses::clrtoeol;
 
     # using TAEB->x and TAEB->y here could screw up horrifically if the dungeon
@@ -162,7 +164,7 @@ sub redraw {
         $color_mode != $glyph_mode;
 
     my $curses_color;
-    my $lastcolorra = 0;
+    my $lastcolor_addr = 0;
     for my $y ($bb_t .. $bb_b) {
         Curses::move($y, $bb_l);
         for my $x ($bb_l .. $bb_r) {
@@ -172,12 +174,12 @@ sub redraw {
             # Note: $color and $glyph may not be mutated by this function,
             # as they may be memoized constant colours
 
-            my $colorra = refaddr $color;
-            $curses_color = Curses::COLOR_PAIR($color->color)
-                          | ($color->bold    ? Curses::A_BOLD    : 0)
-                          | ($color->reverse ? Curses::A_REVERSE : 0)
-                if $colorra != $lastcolorra;
-            $lastcolorra = $colorra;
+            my $color_addr = refaddr $color;
+            if ($color_addr != $lastcolor_addr) {
+                $curses_color = Curses::COLOR_PAIR($color->index);
+                $curses_color |= Curses::A_BOLD if $color->bold;
+                $lastcolor_addr = $color_addr;
+            }
 
             Curses::addch($curses_color | ord($glyph));
         }
@@ -319,8 +321,8 @@ sub display_topline {
             Curses::move $y++, 0;
 
             my $color = $matched
-                      ? Curses::COLOR_PAIR(COLOR_GREEN)
-                      : Curses::COLOR_PAIR(COLOR_BROWN);
+                      ? Curses::COLOR_PAIR(COLOR_GREEN->index)
+                      : Curses::COLOR_PAIR(COLOR_BROWN->index);
 
             Curses::attron($color);
             Curses::addstr($line);
@@ -537,11 +539,11 @@ sub draw_menu {
                    bounding_box_only => 1,},
     terrain =>   { description => 'Display terrain knowledge',
                    glyph => sub { tile_type_to_glyph(shift->type) },
-                   color => sub { display(tile_type_to_color(shift->type)) },
+                   color => sub { tile_type_to_color(shift->type) },
                    bounding_box_only => 1,},
     item =>      { description => 'Hide monsters',
                    glyph => sub { shift->itemly_glyph },
-                   color => sub { shift->item_display_color },
+                   color => sub { shift->itemly_color },
                    bounding_box_only => 1,},
     reset =>     { description => 'Reset to configured settings',
                    immediate => sub {

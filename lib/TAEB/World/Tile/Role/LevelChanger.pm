@@ -1,6 +1,6 @@
 package TAEB::World::Tile::Role::LevelChanger;
 use Moose::Role;
-use TAEB::Util qw/:colors display/;
+use TAEB::Util::Colors;
 
 has other_side => (
     is        => 'rw',
@@ -19,7 +19,7 @@ override debug_color => sub {
                         && $self->branch ne $self->other_side->branch;
 
     return $different_branch
-         ? display(COLOR_YELLOW)
+         ? COLOR_YELLOW
          : super;
 };
 

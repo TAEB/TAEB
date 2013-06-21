@@ -1,7 +1,8 @@
 package TAEB::Debug::Map;
 use Moose;
 use TAEB::OO;
-use TAEB::Util qw/item_menu vi2delta/;
+use TAEB::Util::World 'vi2delta';
+use TAEB::Util::Menu 'item_menu';
 
 TAEB->register_debug_commands(
     ';' => {

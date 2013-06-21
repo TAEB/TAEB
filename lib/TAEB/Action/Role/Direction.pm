@@ -1,7 +1,8 @@
 package TAEB::Action::Role::Direction;
 use Moose::Role;
 use TAEB::OO;
-use TAEB::Util 'none', 'vi2delta';
+use TAEB::Util 'none';
+use TAEB::Util::World 'vi2delta';
 
 has direction => (
     is       => 'ro',

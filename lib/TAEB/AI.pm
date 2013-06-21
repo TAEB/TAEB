@@ -165,12 +165,12 @@ A string that states what the AI is currently doing.
 
 Hook for AI-specific drawing modes. Example:
 
-    use TAEB::Util qw/:colors display/;
+    use TAEB::Util::Colors;
     
     sub drawing_modes {
         white => {
             description => "All white",
-            color => sub { display(COLOR_WHITE) },
+            color => sub { COLOR_WHITE },
         },
         rot13 => {
             description => "Rot-13",
