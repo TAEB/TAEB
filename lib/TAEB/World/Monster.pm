@@ -35,7 +35,7 @@ has possibilities => (
         my $self = shift;
         return [TAEB::Spoilers::Monster->lookup(
             glyph => $self->glyph,
-            color => $self->color,
+            color => $self->color->standard_index,
         )];
     },
 );
@@ -78,7 +78,7 @@ sub set_possibilities {
     my $self = shift;
     $self->possibilities([TAEB::Spoilers::Monster->lookup(
         glyph => $self->glyph,
-        color => $self->color,
+        color => $self->color->standard_index,
         @_,
     )]);
 }

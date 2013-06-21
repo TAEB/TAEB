@@ -20,6 +20,11 @@ has reverse => (
     default => 0,
 );
 
+sub standard_index {
+    my $self = shift;
+    return $self->color + 8 * $self->bold;
+}
+
 # XXX this is just a temporary debugging measure while I convert the code to sane color usage :)
 use Scalar::Util 'refaddr';
 use overload (
