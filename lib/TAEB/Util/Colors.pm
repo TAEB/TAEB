@@ -66,6 +66,9 @@ sub COLOR_WHITE          { _color(7, 1, 0) }
 sub string_color {
     my $index = shift;
 
+    # handle TAEB::Display::Color argument
+    if (blessed($index)) { $index = $index->standard_index }
+
     my $name = lc($colors[$index]);
     $name =~ s/^color_//;
     return $name;
