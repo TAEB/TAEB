@@ -9,7 +9,6 @@ use Scalar::Util qw(blessed isweak refaddr weaken);
 use List::Util qw(first min max minstr maxstr reduce sum shuffle);
 use List::MoreUtils ':all';
 
-use Memoize;
 
 our %colors;
 
@@ -40,7 +39,7 @@ use Sub::Exporter -setup => {
     exports => [
         qw(tile_types tile_type_to_glyph tile_type_to_color trap_types),
         qw(delta2vi vi2delta deltas dice colors crow_flies angle align2str),
-        qw(display display_ro assert assert_is item_menu hashref_menu object_menu),
+        qw(display assert assert_is item_menu hashref_menu object_menu),
         qw(list_menu numeric_color string_color),
         keys %colors,
         qw(blessed isweak refaddr weaken),
@@ -308,10 +307,6 @@ sub display {
     require TAEB::Display::Color;
     TAEB::Display::Color->new(@_)
 }
-# T::D::Color values are mutable, so memoizing by default is a Bad Idea.
-# However, memoization gains a lot of speed, so we install a memoized
-# version for use by callers who know that it's safe.
-memoize 'display', INSTALL => 'display_ro', LIST_CACHE => 'MERGE';
 
 sub _canonicalize_name_value {
     my ($name, $value) = @_;
