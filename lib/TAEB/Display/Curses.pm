@@ -129,9 +129,7 @@ sub redraw {
         Curses::refresh;
         $self->requires_redraw(1);
     }
-    my $requires_redraw = $self->requires_redraw;
-
-    $last_level_redrawn = undef if $requires_redraw;
+    $last_level_redrawn = undef if $self->requires_redraw;
 
     my $level  = $args{level} || TAEB->current_level;
 
@@ -185,7 +183,7 @@ sub redraw {
 
             Curses::addch($curses_color | ord($glyph));
         }
-        Curses::clrtoeol if $requires_redraw;
+        Curses::clrtoeol if $self->requires_redraw;
     }
 
     ($drawn_cursorx, $drawn_cursory) = (TAEB->x, TAEB->y);
