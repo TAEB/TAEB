@@ -34,17 +34,19 @@ use Sub::Exporter -setup => {
     },
 };
 
-use Memoize;
-memoize '_color';
-
+my %color_cache;
 sub _color {
     my ($index, $bold, $reverse) = @_;
+    $bold ||= 0;
+    $reverse ||= 0;
 
-    TAEB::Display::Color->new(
-        index   => $index,
-        bold    => $bold,
-        reverse => $reverse,
-    );
+    no warnings 'uninitialized';
+    $color_cache{"$index/$bold/$reverse"} ||=
+        TAEB::Display::Color->new(
+            index   => $index,
+            bold    => $bold,
+            reverse => $reverse,
+        );
 }
 
 sub COLOR_BLACK          { _color(0, 0, 0) }
