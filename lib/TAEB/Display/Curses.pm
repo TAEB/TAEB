@@ -7,7 +7,7 @@ use TAEB::Util qw/max refaddr/;
 use TAEB::Util::World qw/tile_type_to_glyph tile_type_to_color/;
 use Time::HiRes 'gettimeofday';
 
-extends('TAEB::Display');
+extends 'TAEB::Display';
 
 use constant to_screen => 1;
 
@@ -62,7 +62,7 @@ sub institute {
     Curses::init_pair($_, $_, 0) for 0 .. 7;
 }
 
-augment(reinitialize => sub {
+augment reinitialize => sub {
     my $self = shift;
     $self->initialized(1);
 
@@ -70,7 +70,7 @@ augment(reinitialize => sub {
 
     # need to do this again for some reason
     $self->redraw(force_clear => 1);
-});
+};
 
 sub deinitialize {
     my $self = shift;
@@ -344,7 +344,7 @@ sub display_topline {
     $self->place_cursor;
 }
 
-augment(display_menu => sub {
+augment display_menu => sub {
     my $self = shift;
     my $menu = shift;
 
@@ -433,7 +433,7 @@ augment(display_menu => sub {
             }
         }
     }
-});
+};
 
 sub draw_menu {
     my $self   = shift;
@@ -581,14 +581,14 @@ sub change_draw_mode {
     $self->requires_redraw(1);
 }
 
-subscribe(step => sub {
+subscribe step => sub {
     my $self = shift;
     my $time = gettimeofday;
     my $list = $self->time_buffer;
 
     unshift @$list, $time;
     splice @$list, 2 if @$list > 2;
-});
+};
 
 sub get_key { Curses::getch }
 
