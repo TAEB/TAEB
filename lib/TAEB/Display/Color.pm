@@ -22,7 +22,7 @@ has reverse => (
 
 sub standard_index {
     my $self = shift;
-    return $self->color + 8 * $self->bold;
+    return $self->index + 8 * $self->bold;
 }
 
 # XXX this is just a temporary debugging measure while I convert the code to sane color usage :)
