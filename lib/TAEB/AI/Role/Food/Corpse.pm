@@ -17,7 +17,7 @@ sub beneficial_to_eat {
     for my $resist (qw/shock poison fire cold sleep disintegration/) {
         my $prop = "${resist}_resistance";
         my $res  = "${resist}_resistant";
-        return 1 if $self->$prop && !TAEB->$res;
+        return 1 if $self->$prop && !TAEB->senses->$res;
     }
 
     return 0;
