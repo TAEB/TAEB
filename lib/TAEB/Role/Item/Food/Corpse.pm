@@ -125,7 +125,7 @@ around is_safely_edible => sub {
     # Acidic items deal damage.
     return 0 if $self->acidic && TAEB->hp <= 15;
 
-    # Worst case is Str-dependant and usually milder.
+    # Worst case is Str-dependent and usually milder.
     return 0 if $self->poisonous && !TAEB->senses->poison_resistant
              && TAEB->hp <= 29;
 
@@ -136,9 +136,6 @@ around is_safely_edible => sub {
 
     # Don't eat quantum mechanics if we're already fast
     return 0 if $self->speed_toggle && TAEB->is_fast;
-
-    # Teleportitis is actually pretty good for bots.
-    #return 0 if $self->teleportitis && !$self->teleport_control;
 
     if (!$unihorn) {
         # Don't inflict very bad conditions
