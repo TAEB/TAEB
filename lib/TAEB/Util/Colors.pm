@@ -2,6 +2,7 @@ package TAEB::Util::Colors;
 use strict;
 use warnings;
 use TAEB::Display::Color;
+use Scalar::Util 'blessed';
 
 our @colors;
 BEGIN {
