@@ -869,17 +869,27 @@ has messages => (
 );
 
 has old_messages => (
-    is         => 'ro',
-    isa        => 'ArrayRef',
-    auto_deref => 1,
-    default    => sub { [] },
+    traits  => ['Array'],
+    isa     => 'ArrayRef',
+    default => sub { [] },
+    handles => {
+        old_messages      => 'elements',
+        add_old_message   => 'push',
+        shift_old_message => 'shift',
+        old_message_count => 'count',
+    },
 );
 
 has parsed_messages => (
-    is         => 'ro',
-    isa        => 'ArrayRef',
-    auto_deref => 1,
-    default    => sub { [] },
+    traits  => ['Array'],
+    isa     => 'ArrayRef',
+    writer  => '_set_parsed_messages',
+    lazy    => 1,
+    default => sub { [] },
+    handles => {
+        parsed_messages    => 'elements',
+        add_parsed_message => 'push',
+    },
 );
 
 has calls_this_turn => (
@@ -978,7 +988,7 @@ sub clear {
     my $self = shift;
 
     $self->messages('');
-    splice @{ $self->parsed_messages };
+    $self->clear_parsed_messages;
 }
 
 sub handle_exceptions {
@@ -1522,9 +1532,9 @@ sub send_messages {
             TAEB->log->scraper("I don't understand this message: $line");
         }
 
-        push @{ $self->parsed_messages }, [$line => scalar @messages];
-        push @{ $self->old_messages }, $line;
-        shift @{ $self->old_messages } if @{ $self->old_messages } > 100;
+        $self->add_parsed_message([$line => scalar @messages]);
+        $self->add_old_message($line);
+        $self->shift_old_message if $self->old_message_count > 100;
     }
 }
 
@@ -1543,7 +1553,7 @@ sub farlook {
 
     # use TAEB->messages as it may consist of multiple lines
     my $description = TAEB->messages;
-    @{ $self->parsed_messages } = @parsed; #hide from UI
+    $self->_set_parsed_messages(\@parsed);
 
     return $description =~ /^(.)\s*(.*?)\s*\((.*)\)\s*(?:\[(.*)\])?\s*$/
         if wantarray;
