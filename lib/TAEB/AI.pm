@@ -63,7 +63,8 @@ sub respond_continue_lifting { "y" }
 
 sub respond_wish {
     # We all know how much TAEB loves Elbereth. Let's give it Elbereth's best buddy.
-    return "blessed fixed +3 Magicbane\n" unless TAEB->seen_artifact("Magicbane");
+    return "blessed fixed +3 Magicbane\n"
+        unless TAEB->seen_artifact("Magicbane");
 
     # Half physical damage? Don't mind if I do! (Now with added grease for Eidolos!)
     return "blessed fixed greased Master Key of Thievery\n"
@@ -71,13 +72,17 @@ sub respond_wish {
         && !TAEB->role eq 'Rog'
         && !TAEB->seen_artifact('Master Key of Thievery');
 
-    return "blessed fixed greased +3 silver dragon scale mail" unless TAEB->has_item(qr/silver dragon scale mail/);
+    return "blessed fixed greased +3 silver dragon scale mail"
+        unless TAEB->has_item(qr/silver dragon scale mail/)
+            || TAEB->role eq 'Mon';
 
     # Healing sounds good, too.
-    return "2 blessed potions of full healing\n" if TAEB->has_identified("potion of full healing");
+    return "2 blessed potions of full healing\n"
+        if TAEB->has_identified("potion of full healing");
 
     # Curing status effects sounds good, too.
-    return "blessed fixed greased +3 unicorn horn" unless TAEB->has_item('unicorn horn');
+    return "blessed fixed greased +3 unicorn horn"
+        unless TAEB->has_item('unicorn horn');
 
     # When in doubt, ask for more shit to throw at people.
     return "3 blessed fixed +3 silver daggers";
