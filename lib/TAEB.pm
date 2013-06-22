@@ -292,8 +292,10 @@ class_has item_pool => (
     isa     => 'TAEB::World::ItemPool',
     default => sub { TAEB::World::ItemPool->new },
     handles => {
-        get_artifact  => 'get_artifact',
-        seen_artifact => 'get_artifact',
+        get_artifact    => 'get_artifact',
+        seen_artifact   => 'get_artifact',
+        inventory       => 'inventory',
+        inventory_items => 'inventory_items',
     },
 );
 
@@ -596,10 +598,6 @@ sub new_item {
     $taeb_class->meta->rebless_instance($item);
     return $item;
 }
-
-sub inventory { shift->item_pool->inventory }
-
-sub inventory_items { shift->item_pool->inventory->items }
 
 sub has_item {
     my $self = shift;
