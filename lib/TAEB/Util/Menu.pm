@@ -1,20 +1,11 @@
 package TAEB::Util::Menu;
 use strict;
 use warnings;
-use TAEB::Util::Pair;
 use TAEB::Util 'blessed';
 
 use Sub::Exporter -setup => {
     exports => [ qw(item_menu hashref_menu object_menu list_menu) ],
 };
-
-sub _canonicalize_name_value {
-    my ($name, $value) = @_;
-    $value = "(undef)" if !defined($value);
-    $value = "(empty)" if !length($value);
-
-    return TAEB::Util::Pair->new(name => $name, value => $value);
-}
 
 sub _shorten_title {
     my $title = shift;
@@ -52,28 +43,34 @@ sub hashref_menu {
 
     $title ||= "${hash}'s keys/values";
 
-    my @hash_data = (
+    my @menu_items = (
         map {
-            _canonicalize_name_value($_, $hash->{$_});
+            my $value = $hash->{$_};
+            $value = "(undef)" if !defined($value);
+            $value = "(empty)" if !length($value);
+
+            TAEB::Display::Menu::Item->new(
+                user_data => $value,
+                title     => "$_: $value",
+            ),
         }
         sort keys %$hash
     );
 
     my $menu = TAEB::Display::Menu->new(
         description => _shorten_title($title),
-        items       => \@hash_data,
+        items       => \@menu_items,
         select_type => $options->{select_type} || 'single',
     );
     my $item = TAEB->display_menu($menu) or return;
-    my $selected = $item->user_data;
 
     if ($options->{no_recurse}) {
-        return $selected;
+        return $item->user_data;
     }
 
     item_menu(
-        "$title -> " . $selected->name,
-        $selected->value,
+        "$title -> " . $item->title,
+        $item->user_data,
         { %$options, quiet => 1 },
     );
 }
@@ -85,30 +82,37 @@ sub object_menu {
 
     $title ||= "${object}'s attributes";
 
-    my @object_data = (
-        sort map {
-            my $name = $_->name;
+    my @menu_items = (
+        map {
+            my $name   = $_->name;
             my $reader = $_->get_read_method_ref;
-            _canonicalize_name_value($name, scalar $reader->($object));
+            my $value  = $reader->($object);
+
+            $value = "(undef)" if !defined($value);
+            $value = "(empty)" if !length($value);
+
+            TAEB::Display::Menu::Item->new(
+                user_data => $value,
+                title     => "$name: $value",
+            ),
         }
         $object->meta->get_all_attributes
     );
 
     my $menu = TAEB::Display::Menu->new(
         description => _shorten_title($title),
-        items       => \@object_data,
+        items       => \@menu_items,
         select_type => $options->{select_type} || 'single',
     );
     my $item = TAEB->display_menu($menu) or return;
-    my $selected = $item->user_data;
 
     if ($options->{no_recurse}) {
-        return $selected;
+        return $item->user_data;
     }
 
     item_menu(
-        "$title -> " . $selected->name,
-        $selected->value,
+        "$title -> " . $item->title,
+        $item->user_data,
         { %$options, quiet => 1 },
     );
 }
