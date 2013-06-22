@@ -2,7 +2,7 @@ package TAEB;
 use 5.008001;
 use TAEB::Util::Colors ':all';
 use TAEB::Util::World 'tile_types';
-use TAEB::Util::Menu 'item_menu';
+use TAEB::Util::Menu;
 
 use Moose;
 use TAEB::OO;

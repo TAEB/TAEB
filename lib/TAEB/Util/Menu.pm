@@ -4,7 +4,10 @@ use warnings;
 use TAEB::Util 'blessed';
 
 use Sub::Exporter -setup => {
-    exports => [ qw(item_menu hashref_menu object_menu list_menu) ],
+    exports => [ 'item_menu' ],
+    groups  => {
+        default => [ 'item_menu' ],
+    },
 };
 
 sub _shorten_title {
