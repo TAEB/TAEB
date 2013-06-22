@@ -418,6 +418,7 @@ augment display_menu => sub {
                 my @visible_items = map { $menu->item($_ - 1) }
                                     $pager->first .. $pager->last;
 
+                no warnings 'uninitialized';
                 ITEM: for my $i (0 .. $#visible_items) {
                     my $item = $visible_items[$i];
 
