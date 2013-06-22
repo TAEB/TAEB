@@ -1534,7 +1534,7 @@ sub send_messages {
 
         $self->add_parsed_message([$line => scalar @messages]);
         $self->add_old_message($line);
-        $self->shift_old_message if $self->old_message_count > 100;
+        $self->shift_old_message if $self->old_message_count > 1000;
     }
 }
 
