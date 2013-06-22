@@ -73,7 +73,7 @@ has monsters => (
         clear_monsters   => 'clear',
         has_monsters     => 'count',
         monster_count    => 'count',
-        delete_monster   => 'delete',
+        remove_monster   => 'delete',
     }
 );
 
@@ -107,12 +107,13 @@ has tiles_by_type => (
 
 has items => (
     traits     => ['Array'],
-    is         => 'ro',
     isa        => 'ArrayRef[NetHack::Item]',
     default    => sub { [] },
-    auto_deref => 1,
     handles    => {
+        items       => 'elements',
         item_count  => 'count',
+        remove_item => 'delete',
+        item_idx    => 'get',
     },
 );
 
@@ -346,7 +347,7 @@ sub remove_monster {
 
     for (my $i = 0; $i < $self->monster_count; ++$i) {
         if ($self->monster_idx($i) == $monster) {
-            $self->delete_monster($i);
+            $self->remove_monster($i);
             return 1;
         }
     }

@@ -143,11 +143,11 @@ has monster => (
 
 has items => (
     traits     => ['Array'],
-    is         => 'ro',
     isa        => 'ArrayRef[NetHack::Item]',
     default    => sub { [] },
-    auto_deref => 1,
     handles    => {
+        items       => 'elements',
+        item_idx    => 'get',
         add_item    => 'push',
         clear_items => 'clear',
         remove_item => 'delete',
@@ -758,7 +758,7 @@ sub farlooked {}
 # keep track of our items on the level object {{{
 after add_item => sub {
     my $self = shift;
-    push @{ $self->level->items }, @_;
+    $self->level->add_item(@_);
 
     for my $item (@_) {
         next unless $item->match(subtype => 'corpse');
@@ -807,15 +807,15 @@ after add_item => sub {
 
 before clear_items => sub {
     my $self = shift;
-    for ($self->items) {
-        $self->_remove_level_item($_);
+    for my $item ($self->items) {
+        $self->_remove_level_item($item);
     }
 };
 
 before remove_item => sub {
     my $self = shift;
     my $idx = shift;
-    $self->_remove_level_item($self->items->[$idx]);
+    $self->_remove_level_item($self->item_idx($idx));
 };
 
 sub _remove_level_item {
@@ -824,9 +824,9 @@ sub _remove_level_item {
     my $level = $self->level;
 
     for my $i (0 .. $level->item_count - 1) {
-        my $level_item = $level->items->[$i];
+        my $level_item = $level->items_idx($i);
         if ($item == $level_item) {
-            splice @{ $level->items }, $i, 1;
+            $level->remove_item($i);
             return;
         }
     }
