@@ -247,17 +247,23 @@ NETHACKRC
 # yes autoload is bad. but, I am lazy
 our $AUTOLOAD;
 sub AUTOLOAD {
-    my $self = shift;
     $AUTOLOAD =~ s{.*::}{};
+    my $method = $AUTOLOAD;
 
-    if (@_) {
-        TAEB->config->contents->{$AUTOLOAD} = shift;
-    }
+    my $implementation = sub {
+        my $self = shift;
 
-    return TAEB->config->contents->{$AUTOLOAD};
+        if (@_) {
+            $self->contents->{$method} = shift;
+        }
+
+        return $self->contents->{$method};
+    };
+
+    __PACKAGE__->meta->add_method($method => $implementation);
+
+    return $implementation->(@_);
 }
-
-__PACKAGE__->meta->make_immutable;
 
 1;
 
