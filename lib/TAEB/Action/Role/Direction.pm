@@ -29,6 +29,8 @@ sub respond_what_direction { shift->direction }
 before run => sub {
     my $self = shift;
 
+    return unless $self->direction;
+
     my ( $x,  $y) = (TAEB->x, TAEB->y);
     my ($dx, $dy) = vi2delta($self->direction);
 
