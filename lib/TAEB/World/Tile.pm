@@ -679,8 +679,8 @@ sub is_engravable {
 
 sub normal_color {
     my $color = shift->color;
-    $color = COLOR_WHITE if $color == COLOR_NONE;
     return COLOR_NONE if !defined($color);
+    $color = COLOR_WHITE if $color == COLOR_NONE;
     return $color;
 }
 
