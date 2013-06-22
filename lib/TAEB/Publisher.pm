@@ -150,12 +150,13 @@ sub _get_generic_response {
     while (my ($re, $name) = $it->()) {
         my $matched = 0;
         my @captures;
-
-        TAEB->send_message("will_$args{method}_$name");
+        my $sent_will = 0;
 
         for my $responder (@{ $args{responders} }) {
             if (my $code = $responder->can("$args{method}_$name")) {
                 if ($matched ||= @captures = $args{msg} =~ $re) {
+                    TAEB->send_message("will_$args{method}_$name")
+                        unless $sent_will++;
 
                     my $response = $responder->$code(
                         @captures,
