@@ -274,6 +274,12 @@ has is_full_moon => (
     default => 0,
 );
 
+has is_pie_blind => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
+
 has statuses => (
     traits  => ['Array'],
     isa     => 'ArrayRef[Str]',
@@ -393,6 +399,10 @@ sub find_statuses {
     }
 
     $self->is_blind($botl =~ /\bBli/ ? 1 : 0);
+    if (!$self->is_blind) {
+        $self->is_pie_blind(0);
+    }
+
     $self->is_stunned($botl =~ /\bStun/ ? 1 : 0);
     $self->is_confused($botl =~ /\bConf/ ? 1 : 0);
     $self->is_hallucinating($botl =~ /\bHal/ ? 1 : 0);
@@ -562,6 +572,11 @@ sub msg_web {
     my $self = shift;
     $self->msg_status_change(web => @_);
     TAEB->send_message('dungeon_feature' => 'trap' => 'web');
+}
+
+sub msg_pie_blind {
+    my $self = shift;
+    $self->is_pie_blind(1);
 }
 
 sub msg_life_saving {

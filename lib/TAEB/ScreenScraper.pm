@@ -362,6 +362,8 @@ our %msg_string = (
         ['sacrifice_gone'],
     'You have no secondary weapon readied.' =>
         ['slot_empty', 'offhand'],
+    "You've been creamed." =>
+        ['pie_blind'],
 );
 
 our @msg_regex = (
