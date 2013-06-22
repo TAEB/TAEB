@@ -8,7 +8,7 @@ display_options:
 
 kiosk_mode: 0
 
-interface: Local
+interface: Telnet
 interface_options:
     Telnet:
         account: TAEB
@@ -23,8 +23,11 @@ character:
     race: Dwarf
     gender: Female
     align: Lawful
+    # role: Monk
+    # race: Human
+    # gender: Male
+    # align: Neutral
 
 other_config:
     - pass_config.yml
-    - temp_config.yml
 
