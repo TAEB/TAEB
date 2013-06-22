@@ -64,15 +64,16 @@ has z => (
 
 has monsters => (
     traits     => ['Array'],
-    is         => 'ro',
     isa        => 'ArrayRef[TAEB::World::Monster]',
-    auto_deref => 1,
     default    => sub { [] },
     handles    => {
-        add_monster    => 'push',
-        clear_monsters => 'clear',
-        has_monsters   => 'count', # XXX: probably just drop this?
-        monster_count  => 'count',
+        monsters         => 'elements',
+        monster_idx      => 'get',
+        add_monster      => 'push',
+        clear_monsters   => 'clear',
+        has_monsters     => 'count',
+        monster_count    => 'count',
+        delete_monster   => 'delete',
     }
 );
 
@@ -344,8 +345,8 @@ sub remove_monster {
     my $monster = shift;
 
     for (my $i = 0; $i < $self->monster_count; ++$i) {
-        if ($self->monsters->[$i] == $monster) {
-            splice @{ $self->monsters }, $i, 1;
+        if ($self->monster_idx($i) == $monster) {
+            $self->delete_monster($i);
             return 1;
         }
     }
