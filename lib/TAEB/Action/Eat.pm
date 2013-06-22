@@ -10,6 +10,12 @@ has '+food' => (
     required => 1,
 );
 
+has interrupted => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
+
 sub respond_eat_ground {
     my $self = shift;
     my $floor = shift;
@@ -46,6 +52,7 @@ sub msg_stopped_eating {
     my $what = (blessed $item && $item->slot) ? 'inventory' : 'floor';
     TAEB->log->action("Stopped eating $item from $what");
     TAEB->send_message(check => $what);
+    $self->interrupted(1);
 
     return;
 }
@@ -57,7 +64,7 @@ sub done {
     if ($item->slot)  {
         TAEB->inventory->decrease_quantity($item->slot)
     }
-    else {
+    elsif (!$self->interrupted) {
         #This doesn't work well with a stack of corpses on the floor
         #because maybe_is used my remove_floor_item tries to match quantity
         TAEB->send_message(remove_floor_item => $item, $self->starting_tile);
