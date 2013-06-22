@@ -824,14 +824,29 @@ TAEB->register_debug_commands(
     "e" => {
         help    => "Display TAEB's equipment",
         command => sub {
-            my $eq = TAEB->equipment;
-            my @eq = (
-                map { "$_: " . ($eq->$_ ? $eq->$_->debug_line : "(none)") }
-                sort { ($eq->$b ? 1 : 0) <=> ($eq->$a ? 1 : 0) }
-                $eq->slots
-            );
+            my $equipment = TAEB->equipment;
+            my @menu_items;
 
-            item_menu("Equipment", \@eq);
+            for my $slot ($equipment->slots) {
+                my $item = $equipment->$slot;
+                my $title = "$slot: " . ($item ? $item->debug_line : "(none)");
+
+                my $menu_item = TAEB::Display::Menu::Item->new(
+                    title     => $title,
+                    user_data => $item,
+                    ($item ? (selector => $item->slot) : ()),
+                );
+
+                # put slots with items at the top, empty slots at the bottom
+                if ($item) {
+                    unshift @menu_items, $menu_item;
+                }
+                else {
+                    push @menu_items, $menu_item;
+                }
+            }
+
+            item_menu("Equipment", \@menu_items);
         },
     },
     "I" => {
