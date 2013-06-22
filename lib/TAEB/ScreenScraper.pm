@@ -364,6 +364,8 @@ our %msg_string = (
         ['slot_empty', 'offhand'],
     "You've been creamed." =>
         ['pie_blind'],
+    "Your face is already clean." =>
+        ['face_clean'],
 );
 
 our @msg_regex = (
