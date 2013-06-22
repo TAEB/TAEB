@@ -27,9 +27,8 @@ has tile => (
 );
 
 has possibilities => (
-    is       => 'rw',
+    traits   => ['Array'],
     isa      => 'ArrayRef[TAEB::Spoilers::Monster]',
-    auto_deref => 1,
     lazy     => 1,
     default  => sub {
         my $self = shift;
@@ -37,6 +36,11 @@ has possibilities => (
             glyph => $self->glyph,
             color => $self->color->standard_index,
         )];
+    },
+    handles => {
+        possibilities     => 'elements',
+        possibility_count => 'count',
+        possibility       => 'get',
     },
 );
 
@@ -65,22 +69,24 @@ sub definitely {
 
 sub definitely_known {
     my $self = shift;
-    return @{ $self->possibilities } == 1;
+    return $self->possibility_count == 1;
 }
 
 sub spoiler {
     my $self = shift;
     return unless $self->definitely_known;
-    return ($self->possibilities)[0];
+    return $self->possibility(0);
 }
 
-sub set_possibilities {
+sub reset_possibilities {
     my $self = shift;
-    $self->possibilities([TAEB::Spoilers::Monster->lookup(
-        glyph => $self->glyph,
-        color => $self->color->standard_index,
-        @_,
-    )]);
+    $self->possibilities(
+        [TAEB::Spoilers::Monster->lookup(
+            glyph => $self->glyph,
+            color => $self->color->standard_index,
+            @_,
+        )]
+    );
 }
 
 sub farlook {
@@ -99,7 +105,7 @@ sub farlook {
 
     my $parse = NetHack::Monster::Spoiler->parse_description($species);
 
-    $self->set_possibilities(name => $parse->{monster});
+    $self->reset_possibilities(name => $parse->{monster});
 }
 
 sub is_shk {
@@ -118,7 +124,7 @@ sub is_shk {
     return 0 unless $self->tile->type eq 'obscured'
                  || $self->tile->type eq 'floor';
     return unless $self->in_shop;
-    $self->set_possibilities(name => 'shopkeeper');
+    $self->reset_possibilities(name => 'shopkeeper');
     return 1;
 }
 
@@ -128,7 +134,7 @@ sub is_priest {
              && $self->spoiler->name =~ /priest/;
     return 0 unless $self->glyph eq '@' && $self->color == COLOR_WHITE;
     return unless $self->in_temple;
-    $self->set_possibilities(name => 'priest');
+    $self->reset_possibilities(name => 'priest');
     return 1;
 }
 
@@ -149,7 +155,7 @@ sub is_oracle {
     return 0 unless $self->x == 39 && $self->y == 12;
     if (TAEB->is_hallucinating
      || ($self->glyph eq '@' && $self->color == COLOR_BRIGHT_BLUE)) {
-       $self->set_possibilities(name => 'Oracle');
+       $self->reset_possibilities(name => 'Oracle');
        return 1;
     }
     return 0;
@@ -161,7 +167,7 @@ sub is_vault_guard {
              && $self->spoiler->name eq 'guard';
     return 0 unless TAEB->following_vault_guard;
     if ($self->glyph eq '@' && $self->color == COLOR_BLUE) {
-        $self->set_possibilities(name => 'guard');
+        $self->reset_possibilities(name => 'guard');
         return 1;
     }
     return 0;
