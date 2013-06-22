@@ -71,8 +71,7 @@ sub respond_wish {
         && !TAEB->role eq 'Rog'
         && !TAEB->seen_artifact('Master Key of Thievery');
 
-    # We can always use more AC.
-    return "blessed fixed greased +3 dwarvish mithril-coat\n" unless TAEB->has_item(qr/mithril/);
+    return "blessed fixed greased +3 silver dragon scale mail" unless TAEB->has_item(qr/silver dragon scale mail/);
 
     # Healing sounds good, too.
     return "2 blessed potions of full healing\n" if TAEB->has_identified("potion of full healing");
