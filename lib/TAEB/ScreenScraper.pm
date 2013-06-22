@@ -295,7 +295,7 @@ our %msg_string = (
     # can also get this when losing sleep res
     #"You feel tired."
     "You feel momentarily lethargic." =>
-        [dungeon_feature => trap => "anti-magic trap"],
+        [dungeon_feature => trap => "anti-magic field"],
     "You feel momentarily different." =>
         [dungeon_feature => trap => "polymorph trap"],
     "Click! You trigger a rolling boulder trap!" =>
