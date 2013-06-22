@@ -43,6 +43,15 @@ sub respond_write_with    { shift->engrave_slot }
 sub respond_write_what    { shift->text . "\n" }
 sub respond_add_engraving { shift->add_engraving ? 'y' : 'n' }
 
+sub msg_will_respond_wish {
+    my $self = shift;
+    TAEB->log->debug("Engrave netted us a wish... :)");
+    if ($self->engraver->match(type => 'wand')) {
+        $self->engraver->tracker->identify_as('wand of wishing');
+        $self->got_identifying_message(1);
+    }
+}
+
 sub msg_wand {
     my $self = shift;
     $self->got_identifying_message(1);

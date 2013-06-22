@@ -151,6 +151,8 @@ sub _get_generic_response {
         my $matched = 0;
         my @captures;
 
+        TAEB->send_message("will_$args{method}_$name");
+
         for my $responder (@{ $args{responders} }) {
             if (my $code = $responder->can("$args{method}_$name")) {
                 if ($matched ||= @captures = $args{msg} =~ $re) {
@@ -165,6 +167,7 @@ sub _get_generic_response {
                     }
                     else {
                         TAEB->log->publisher(blessed($responder) . " is responding to $name with $response.");
+                        TAEB->send_message("did_$args{method}_$name" => $response);
                         return $response;
                     }
                 }
