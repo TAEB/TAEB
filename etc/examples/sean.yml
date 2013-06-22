@@ -1,0 +1,43 @@
+---
+
+#### Mandatory options ####
+ai: Behavioral::Personality::Explorer
+ai_options:
+    Behavioral:
+        avoid_branch: mines
+        avoid_teleportitis: 1
+
+
+interface: Telnet
+interface_options:
+    Telnet:
+        account: BEAT
+    OldLocal:
+        read_iterations: 2
+
+
+#### Character config #####
+character:
+    race: dwarf
+    role: valkyrie
+#    gender: '*'
+#    align: '*'
+
+
+#### Display config #######
+display: Curses
+display_options:
+    Curses:
+#        color_method: debug
+
+
+#### Misc config ##########
+logger:
+    log_rotate:
+        dir: logs
+        compress: 1
+
+
+#### External config ######
+other_config:
+    - password.yml
