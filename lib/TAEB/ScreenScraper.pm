@@ -366,6 +366,10 @@ our %msg_string = (
         ['pie_blind'],
     "Your face is already clean." =>
         ['face_clean'],
+    "Your lamp is now on." =>
+        ['lamp_on'],
+    "Your lamp is now off." =>
+        ['lamp_off'],
 );
 
 our @msg_regex = (

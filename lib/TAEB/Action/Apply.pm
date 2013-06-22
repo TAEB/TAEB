@@ -48,6 +48,24 @@ sub msg_negative_stethoscope {
     $self->target_tile->inc_searched(50); # should be infinity
 }
 
+sub msg_lamp_on {
+    my $self = shift;
+    my $item = $self->item;
+
+    if ($item->can('is_lit')) {
+        $item->is_lit(1);
+    }
+}
+
+sub msg_lamp_off {
+    my $self = shift;
+    my $item = $self->item;
+
+    if ($item->can('is_lit')) {
+        $item->is_lit(0);
+    }
+}
+
 # falling into a pit makes the new level the same branch as the old level
 # this can trigger when applying a pickaxe downward
 subscribe trapdoor => sub {
