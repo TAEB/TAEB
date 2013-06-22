@@ -7,7 +7,7 @@ use autodie;
 use namespace::autoclean ();
 
 use TAEB::Meta::Trait::Persistent;
-use TAEB::Meta::Trait::GoodStatus;
+use TAEB::Meta::Trait::DisplayStatus;
 use TAEB::Meta::Trait::DontInitialize;
 use TAEB::Meta::Types;
 

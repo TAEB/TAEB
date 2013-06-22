@@ -54,13 +54,21 @@ has nutrition => (
 );
 
 has [qw/is_blind is_stunned is_confused is_hallucinating is_lycanthropic is_engulfed is_grabbed is_petrifying is_levitating is_food_poisoned is_ill is_wounded_legs/] => (
+    traits  => ['TAEB::DisplayStatus'],
     is      => 'rw',
     isa     => 'Bool',
     default => 0,
+    trigger => sub {
+        my ($self, $old, $new);
+        no warnings 'uninitialized';
+        return unless (!defined($old) && defined($new))
+                   || (!defined($new) && defined($old))
+                   || $old != $new;
+        $self->_clear_statuses;
+    },
 );
 
 has [qw/is_fast is_very_fast is_stealthy is_teleporting/] => (
-    traits  => ['TAEB::GoodStatus'],
     is      => 'rw',
     isa     => 'Bool',
     default => 0,
@@ -266,6 +274,32 @@ has is_full_moon => (
     default => 0,
 );
 
+has statuses => (
+    traits  => ['Array'],
+    isa     => 'ArrayRef[Str]',
+    lazy    => 1,
+    builder => '_build_statuses',
+    clearer => '_clear_statuses',
+    handles => {
+        statuses => 'elements',
+    },
+);
+
+sub _build_statuses {
+    my $self = shift;
+    my @statuses;
+    my @attr = grep { $_->does('TAEB::DisplayStatus') }
+               $self->meta->get_all_attributes;
+
+    for my $attr (@attr) {
+        next unless $attr->get_value($self);
+        my $status = $attr->name;
+        $status =~ s/^is_//;
+        push @statuses, $status;
+    }
+    return \@statuses;
+}
+
 sub parse_botl {
     my $self = shift;
     my $status = TAEB->vt->row_plaintext(22);
@@ -364,21 +398,6 @@ sub find_statuses {
     $self->is_hallucinating($botl =~ /\bHal/ ? 1 : 0);
     $self->is_food_poisoned($botl =~ /\bFoo/ ? 1 : 0);
     $self->is_ill($botl =~ /\bIll/ ? 1 : 0);
-}
-
-sub statuses {
-    my $self = shift;
-    my @statuses;
-    my @attr = grep { $_->name =~ /^is_/ }
-               grep { !$_->does('TAEB::GoodStatus') }
-               $self->meta->get_all_attributes;
-
-    for my $attr (@attr) {
-        next unless $attr->get_value($self);
-        my ($status) = $attr->name =~ /^is_(\w+)$/;
-        push @statuses, $status;
-    }
-    return @statuses;
 }
 
 sub resistances {
