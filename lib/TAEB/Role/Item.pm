@@ -57,6 +57,10 @@ sub debug_line {
         push @fields, '(worn)';
     }
 
+    if ($self->can('is_lit') && $self->is_lit) {
+        push @fields, '(lit)';
+    }
+
     if ($self->is_wielded) {
         push @fields, '(wielded)';
     }
