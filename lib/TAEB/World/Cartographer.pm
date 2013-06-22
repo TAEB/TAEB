@@ -393,7 +393,7 @@ sub msg_item_price {
     my $tile = TAEB->current_tile;
 
     for my $i (0 .. $tile->item_count - 1) {
-        my $tile_item = $tile->items->[$i];
+        my $tile_item = $tile->item_idx($i);
 
         if ($item->maybe_is($tile_item)) {
             $tile_item->cost_each($cost_each);
@@ -412,7 +412,7 @@ sub msg_remove_floor_item {
     return if ($tile != TAEB->current_tile && !$tile->item_count);
 
     for my $i (0 .. $tile->item_count - 1) {
-        my $tile_item = $tile->items->[$i];
+        my $tile_item = $tile->item_idx($i);
 
         if ($item->maybe_is($tile_item)) {
             $tile->remove_item_idx($i);

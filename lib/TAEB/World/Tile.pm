@@ -824,7 +824,7 @@ sub _remove_level_item {
     my $level = $self->level;
 
     for my $i (0 .. $level->item_count - 1) {
-        my $level_item = $level->items_idx($i);
+        my $level_item = $level->item_idx($i);
         if ($item == $level_item) {
             $level->remove_item_idx($i);
             return;

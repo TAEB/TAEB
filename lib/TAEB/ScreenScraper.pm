@@ -447,7 +447,7 @@ our @msg_regex = (
                 if (defined TAEB->current_tile &&
                     TAEB->current_tile->item_count == 1) {
                     my $item = TAEB->new_item($1);
-                    if (@{TAEB->current_tile->items}[0]->maybe_is($item)) {
+                    if (TAEB->current_tile->item_idx(0)->maybe_is($item)) {
                         TAEB->log->scraper("Not updating the $item here ".
                                            "because it's consistent with ".
                                            "what we thought was there.");
@@ -884,6 +884,7 @@ has parsed_messages => (
     traits  => ['Array'],
     isa     => 'ArrayRef',
     writer  => '_set_parsed_messages',
+    clearer => '_clear_parsed_messages',
     lazy    => 1,
     default => sub { [] },
     handles => {
@@ -988,7 +989,7 @@ sub clear {
     my $self = shift;
 
     $self->messages('');
-    $self->clear_parsed_messages;
+    $self->_clear_parsed_messages;
 }
 
 sub handle_exceptions {

@@ -114,6 +114,7 @@ has items => (
         item_count      => 'count',
         remove_item_idx => 'delete',
         item_idx        => 'get',
+        add_item        => 'push',
     },
 );
 

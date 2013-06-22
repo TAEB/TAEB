@@ -29,14 +29,9 @@ has tile => (
 has possibilities => (
     traits   => ['Array'],
     isa      => 'ArrayRef[TAEB::Spoilers::Monster]',
+    writer   => '_set_possibilities',
     lazy     => 1,
-    default  => sub {
-        my $self = shift;
-        return [TAEB::Spoilers::Monster->lookup(
-            glyph => $self->glyph,
-            color => $self->color->standard_index,
-        )];
-    },
+    default  => sub { [shift->_lookup_spoiler] },
     handles => {
         possibilities     => 'elements',
         possibility_count => 'count',
@@ -78,15 +73,18 @@ sub spoiler {
     return $self->possibility(0);
 }
 
+sub _lookup_spoiler {
+    my $self = shift;
+    return TAEB::Spoilers::Monster->lookup(
+        glyph => $self->glyph,
+        color => $self->color->standard_index,
+        @_,
+    );
+}
+
 sub reset_possibilities {
     my $self = shift;
-    $self->possibilities(
-        [TAEB::Spoilers::Monster->lookup(
-            glyph => $self->glyph,
-            color => $self->color->standard_index,
-            @_,
-        )]
-    );
+    $self->_set_possibilities([$self->_lookup_spoiler(@_)]);
 }
 
 sub farlook {
