@@ -36,6 +36,7 @@ has itemly_glyph => (
 has itemly_color => (
     is      => 'rw',
     isa     => 'TAEB::Display::Color',
+    default => sub { COLOR_NONE },
 );
 
 has floor_glyph => (
@@ -47,6 +48,7 @@ has floor_glyph => (
 has color => (
     is      => 'rw',
     isa     => 'TAEB::Display::Color',
+    default => sub { COLOR_NONE },
 );
 
 has stepped_on => (
