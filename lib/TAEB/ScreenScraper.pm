@@ -1345,7 +1345,7 @@ sub handle_fallback {
         else {
             $self->messages($self->messages . "(escaped)");
             TAEB->write("\e");
-            TAEB->log->scraper("Escaped out of unhandled prompt: " . $topline, level => 'warning');
+            TAEB->log->unnoted("Escaped out of unhandled prompt: " . $topline, level => 'warning');
             _recurse;
         }
     }
@@ -1530,7 +1530,7 @@ sub send_messages {
             }
         }
         else {
-            TAEB->log->scraper("I don't understand this message: $line");
+            TAEB->log->unnoted("I don't understand this message: $line");
         }
 
         $self->add_parsed_message([$line => scalar @messages]);
