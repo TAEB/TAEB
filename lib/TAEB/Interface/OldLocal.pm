@@ -15,10 +15,12 @@ has name => (
 );
 
 has args => (
-    is         => 'ro',
-    isa        => 'ArrayRef[Str]',
-    auto_deref => 1,
-    default    => sub { [] },
+    traits  => ['Array'],
+    isa     => 'ArrayRef[Str]',
+    default => sub { [] },
+    handles => {
+        args => 'elements',
+    },
 );
 
 has pty => (
