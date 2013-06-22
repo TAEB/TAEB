@@ -5,12 +5,11 @@ extends 'TAEB::Announcement::Report';
 
 has conducts => (
     traits     => ['Array'],
-    is         => 'ro',
     isa        => 'ArrayRef',
     lazy       => 1,
     default    => sub { [] },
-    auto_deref => 1,
     handles    => {
+        conducts    => 'elements',
         add_conduct => 'push',
     },
 );
