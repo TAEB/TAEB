@@ -146,12 +146,12 @@ has items => (
     isa        => 'ArrayRef[NetHack::Item]',
     default    => sub { [] },
     handles    => {
-        items       => 'elements',
-        item_idx    => 'get',
-        add_item    => 'push',
-        clear_items => 'clear',
-        remove_item => 'delete',
-        item_count  => 'count',
+        items           => 'elements',
+        item_idx        => 'get',
+        add_item        => 'push',
+        clear_items     => 'clear',
+        remove_item_idx => 'delete',
+        item_count      => 'count',
     },
 );
 
@@ -812,7 +812,7 @@ before clear_items => sub {
     }
 };
 
-before remove_item => sub {
+before remove_item_idx => sub {
     my $self = shift;
     my $idx = shift;
     $self->_remove_level_item($self->item_idx($idx));
@@ -826,7 +826,7 @@ sub _remove_level_item {
     for my $i (0 .. $level->item_count - 1) {
         my $level_item = $level->items_idx($i);
         if ($item == $level_item) {
-            $level->remove_item($i);
+            $level->remove_item_idx($i);
             return;
         }
     }

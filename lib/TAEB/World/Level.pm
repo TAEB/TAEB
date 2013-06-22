@@ -67,13 +67,13 @@ has monsters => (
     isa        => 'ArrayRef[TAEB::World::Monster]',
     default    => sub { [] },
     handles    => {
-        monsters         => 'elements',
-        monster_idx      => 'get',
-        add_monster      => 'push',
-        clear_monsters   => 'clear',
-        has_monsters     => 'count',
-        monster_count    => 'count',
-        remove_monster   => 'delete',
+        monsters           => 'elements',
+        monster_idx        => 'get',
+        add_monster        => 'push',
+        clear_monsters     => 'clear',
+        has_monsters       => 'count',
+        monster_count      => 'count',
+        remove_monster_idx => 'delete',
     }
 );
 
@@ -110,10 +110,10 @@ has items => (
     isa        => 'ArrayRef[NetHack::Item]',
     default    => sub { [] },
     handles    => {
-        items       => 'elements',
-        item_count  => 'count',
-        remove_item => 'delete',
-        item_idx    => 'get',
+        items           => 'elements',
+        item_count      => 'count',
+        remove_item_idx => 'delete',
+        item_idx        => 'get',
     },
 );
 
@@ -347,7 +347,7 @@ sub remove_monster {
 
     for (my $i = 0; $i < $self->monster_count; ++$i) {
         if ($self->monster_idx($i) == $monster) {
-            $self->remove_monster($i);
+            $self->remove_monster_idx($i);
             return 1;
         }
     }

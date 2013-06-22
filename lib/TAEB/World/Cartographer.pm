@@ -415,7 +415,7 @@ sub msg_remove_floor_item {
         my $tile_item = $tile->items->[$i];
 
         if ($item->maybe_is($tile_item)) {
-            $tile->remove_item($i);
+            $tile->remove_item_idx($i);
             return;
         }
     }
