@@ -1,6 +1,7 @@
 package TAEB::World::Cartographer;
 use Moose;
 use TAEB::OO;
+use NetHack::Engravings 'is_degradation';
 use NetHack::FOV 'calculate_fov';
 use TAEB::Util 'assert';
 use TAEB::Util::World 'tile_type_to_glyph';
@@ -434,7 +435,7 @@ sub msg_floor_message {
 
     my @doors = TAEB->current_tile->grep_adjacent(sub { $_->type eq 'closeddoor' });
     if (@doors) {
-        if (TAEB::Spoilers::Engravings->is_degradation("Closed for inventory" => $message)) {
+        if (is_degradation("Closed for inventory" => $message)) {
             $_->is_shop(1) for @doors;
         }
     }

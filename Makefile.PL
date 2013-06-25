@@ -48,6 +48,7 @@ requires 'NetHack::Menu' => 0.06;
 requires 'NetHack::FOV'  => 0.01;
 requires 'NetHack::Item' => 0.09;
 requires 'NetHack::Monster::Spoiler' => 0.02;
+requires 'NetHack::Engravings';
 
 my $has_nethack = can_run('nethack');
 if (!$has_nethack) {
