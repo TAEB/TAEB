@@ -21,17 +21,17 @@ sub repl {
     # using require doesn't call import, so no die handler is installed
     my $loaded = try {
         local $SIG{__DIE__};
-        require Carp::REPL;
+        require Carp::Reply;
         1;
     }
     catch {
         if ($_ && @_ && defined($_[0])) {
             # We're dropping into the REPL because of an error from somewhere,
-            # but Carp::REPL doesn't load (not installed?).  Report the actual
+            # but Carp::Reply doesn't load (not installed?).  Report the actual
             # error.
             die @_;
         } else {
-            # Otherwise, Carp::REPL just didn't load, so let the user know
+            # Otherwise, Carp::Reply just didn't load, so let the user know
             # what's up.
             TAEB->complain($_);
         }
@@ -55,7 +55,7 @@ sub repl {
         local $SIG{__WARN__};
         local $SIG{__DIE__};
         local $SIG{INT} = sub { die "Interrupted." };
-        Carp::REPL::repl(@_);
+        Carp::Reply::repl(@_);
     };
 
     TAEB->display->reinitialize;
