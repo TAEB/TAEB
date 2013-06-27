@@ -383,7 +383,7 @@ sub is_inherently_unwalkable {
     # we can path through unlit areas that we haven't seen as rock for sure yet
     # if we're blind, then all bets are off
     return 0 if $through_unknown
-             && $self->is_unknown
+             && $self->is_unknown;
 
     return not $is_walkable{ $self->type };
 }
