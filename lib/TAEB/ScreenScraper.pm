@@ -766,6 +766,10 @@ our @msg_regex = (
         qr/^Your (.*?) corpses? rots? away\./ =>
             [corpse_rot => sub { $1 }],
     ],
+    [
+        qr/^This .* has no oil\./ =>
+            ['no_oil'],
+    ],
 );
 
 our @god_anger = (

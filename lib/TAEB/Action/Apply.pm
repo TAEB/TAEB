@@ -27,6 +27,14 @@ subscribe nothing_happens => sub {
     }
 };
 
+sub msg_no_oil {
+    my $self = shift;
+    my $item = $self->item;
+
+    TAEB->log->oil('setting no oil');
+    $item->has_oil(0);
+}
+
 sub msg_status_change {
     my $self = shift;
     my $status = shift;
