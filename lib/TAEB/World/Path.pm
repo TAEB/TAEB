@@ -390,14 +390,14 @@ sub each_tile {
 
 sub subpath_where {
     my $self = shift;
-    my $cb = shift;
+    my $predicate = shift;
 
     my $new_path = '';
 
     my $new_to = $self->each_tile(sub {
         my ($next, $previous, $dir) = @_;
 
-        return 0 unless $cb->(@_);
+        return 0 unless $predicate->(@_);
 
         $new_path .= $dir;
 
