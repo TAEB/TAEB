@@ -55,6 +55,13 @@ has tiles => (
     },
 );
 
+has is_through_unknown => (
+    is      => 'ro',
+    isa     => 'Bool',
+    lazy    => 1,
+    builder => '_build_is_through_unknown',
+);
+
 sub new {
     confess "You shouldn't call TAEB::World::Path->new directly. Use one of its path creation methods.";
 }
@@ -420,6 +427,23 @@ sub next_tile {
 
     return unless $dir;
     return $from->level->at_direction($from->x, $from->y, $dir);
+}
+
+sub _build_is_through_unknown {
+    my $self = shift;
+    my $through_unknown = 0;
+
+    $self->each_tile(sub {
+        my ($next, $previous, $dir) = @_;
+
+        if ($next->is_unknown) {
+            $through_unknown = 1;
+            return 0;
+        }
+        return 1;
+    });
+
+    return $through_unknown;
 }
 
 __PACKAGE__->meta->make_immutable(inline_constructor => 0);
