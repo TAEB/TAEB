@@ -370,6 +370,8 @@ our %msg_string = (
         ['lamp_on'],
     "Your lamp is now off." =>
         ['lamp_off'],
+    "This lamp has no oil." =>
+        ['no_oil'],
 );
 
 our @msg_regex = (

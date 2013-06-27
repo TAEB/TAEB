@@ -593,6 +593,9 @@ sub new_item {
     my $item = $self->item_pool->new_item(@_);
     my $class = $item->meta->name;
     (my $taeb_class = $class) =~ s/^NetHack::Item/TAEB::World::Item/;
+    if ($item->appearance =~ /lamp|lantern|candle/) {
+        $taeb_class = 'TAEB::World::Item::Tool::Lightable';
+    }
     $taeb_class->meta->rebless_instance($item);
     return $item;
 }

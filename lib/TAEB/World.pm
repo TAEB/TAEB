@@ -39,6 +39,12 @@ for my $class (__PACKAGE__->load_nhi_classes) {
     taebify($class);
 }
 
+Moose::Meta::Class->create(
+    'TAEB::World::Item::Tool::Lightable',
+    superclasses => 'TAEB::World::Item::Tool',
+    roles        => ['TAEB::Role::Item::Lightable'],
+);
+
 sub taebify {
     my $class = shift;
 

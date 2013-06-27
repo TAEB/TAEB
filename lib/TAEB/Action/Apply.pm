@@ -27,6 +27,13 @@ subscribe nothing_happens => sub {
     }
 };
 
+subscribe no_oil => sub {
+    my $self = shift;
+    my $item = $self->item;
+
+    $item->has_oil(0);
+}
+
 sub msg_status_change {
     my $self = shift;
     my $status = shift;
