@@ -16,7 +16,7 @@ Downloading the tarball or installing from CPAN means less work up
 front (no need to install git), but it'll be more work every time
 you want to update. We very strongly recommend using git.
 
-# Running from repository/tarball
+# Installing dependencies
 
 TAEB uses [`Dist::Zilla`](http://dzil.org) for its packaging and
 toolchain support.
