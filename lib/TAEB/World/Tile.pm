@@ -388,7 +388,7 @@ sub is_inherently_unwalkable {
     return not $is_walkable{ $self->type };
 }
 
-sub is_unknown { TAEB->is_blind && shift->type eq 'unexplored' }
+sub is_unknown { !TAEB->is_blind && shift->type eq 'unexplored' }
 
 sub update_lit {
     my $self = shift;
