@@ -372,25 +372,36 @@ sub spans_multiple_levels {
     return $self->from->level != $self->to->level;
 }
 
+sub each_tile {
+    my $self = shift;
+    my $cb = shift;
+
+    my $current = $self->from;
+
+    for my $dir (split '', $self->path) {
+        my $next = $current->level->at_direction($current->x, $current->y, $dir);
+        if (!$cb->($next, $current, $dir)) {
+            last;
+        }
+    }
+
+    return $current;
+}
+
 sub intralevel_subpath {
     my $self = shift;
 
-    my $full_path = $self->path;
     my $new_path = '';
-    my @tiles = $self->tiles;
 
-    my $new_to = $self->from;
+    my $new_to = $self->each_tile(sub {
+        my ($next, $previous, $dir) = @_;
 
-    for my $dir (split '', $self->path) {
-        my $start_level = $new_to->level;
-        my $next = $start_level->at_direction($new_to->x, $new_to->y, $dir);
-        if ($next->level != $start_level) {
-            last;
-        }
+        return 0 unless if $next->level == $previous->level;
 
-        $new_to = $next;
         $new_path .= $dir;
-    }
+
+        return 1;
+    });
 
     return if $new_path eq '';
 
