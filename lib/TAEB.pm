@@ -1,5 +1,6 @@
 package TAEB;
 use 5.008001;
+# ABSTRACT: the Tactical Amulet Extraction Bot (for NetHack)
 use TAEB::Util::Colors ':all';
 use TAEB::Util::World 'tile_types';
 use TAEB::Util::Menu;
@@ -9,8 +10,6 @@ use TAEB::OO;
 
 use Log::Dispatch::Null;
 use Try::Tiny;
-
-our $VERSION = '0.05';
 
 our %debug_commands;
 
@@ -961,10 +960,6 @@ __PACKAGE__->meta->make_immutable;
 
 __END__
 
-=head1 NAME
-
-TAEB - the Tactical Amulet Extraction Bot (for NetHack)
-
 =head1 DESCRIPTION
 
 TAEB is a framework for programmatically playing NetHack
@@ -987,19 +982,7 @@ TAEB is versioned using C<git>. You can get a checkout of the code with:
 
     http://taeb.github.io
 
-=head1 AUTHORS
-
-The primary authors of TAEB are:
-
-=over 4
-
-=item Shawn M Moore C<sartak@gmail.com>
-
-=item Jesse Luehrs C<doy@tozt.net>
-
-=item Stefan O'Rear C<stefanor@cox.net>
-
-=back
+=head1 CONTRIBUTORS
 
 TAEB has also had features, fixes, and improvements from:
 
@@ -1028,13 +1011,6 @@ TAEB has also had features, fixes, and improvements from:
 =item HanClinto
 
 =back
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2007-2013 TAEB DevTeam.
-
-This program is free software; you can redistribute it and/or modify it
-under terms of the GNU public license version 2.
 
 =cut
 

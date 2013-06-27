@@ -1,6 +1,6 @@
 package TAEB::OO;
 use Moose ();
-use MooseX::ClassAttribute ();
+use MooseX::ClassAttribute 0.24 ();
 use Moose::Exporter;
 
 use autodie;

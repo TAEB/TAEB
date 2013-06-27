@@ -2,7 +2,7 @@ package TAEB::World::Cartographer;
 use Moose;
 use TAEB::OO;
 use NetHack::Engravings 'is_degradation';
-use NetHack::FOV 'calculate_fov';
+use NetHack::FOV 0.01 'calculate_fov';
 use TAEB::Util 'assert';
 use TAEB::Util::World 'tile_type_to_glyph';
 use TAEB::Util::Colors 'color_from_index';

@@ -1,6 +1,8 @@
 package TAEB::World;
 use Moose;
 
+use NetHack::Item 0.09;
+
 use TAEB::Role::Overload ();
 
 use Module::Pluggable (

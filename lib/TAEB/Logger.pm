@@ -3,7 +3,7 @@ use Moose;
 use TAEB::OO;
 use Log::Dispatch::File;
 use Carp;
-use MooseX::NonMoose;
+use MooseX::NonMoose 0.18;
 use TAEB::Util qw/weaken/;
 extends 'Log::Dispatch::Channels';
 with 'TAEB::Role::Config';

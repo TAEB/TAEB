@@ -1,5 +1,5 @@
 package TAEB::Action::Role::Item;
-use MooseX::Role::Parameterized;
+use MooseX::Role::Parameterized 0.24;
 
 parameter items => (
     isa        => 'ArrayRef[Str]',

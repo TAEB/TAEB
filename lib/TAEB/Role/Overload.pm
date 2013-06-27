@@ -1,5 +1,5 @@
 package TAEB::Role::Overload;
-use MooseX::Role::WithOverloading;
+use MooseX::Role::WithOverloading 0.09;
 use TAEB::Util 'refaddr';
 
 my (%comparison, %conversion);

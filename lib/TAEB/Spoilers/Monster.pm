@@ -3,7 +3,7 @@ use Moose;
 use TAEB::OO;
 use TAEB::Util qw/min max firstidx dice/;
 use TAEB::Util::Colors 'string_color';
-extends 'NetHack::Monster::Spoiler';
+extends 'NetHack::Monster::Spoiler' => { -version => 0.02 };
 
 around lookup => sub {
     my $orig = shift;

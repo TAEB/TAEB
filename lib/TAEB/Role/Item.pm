@@ -2,6 +2,7 @@ package TAEB::Role::Item;
 use Moose::Role;
 use TAEB::OO;
 with 'MooseX::Role::Matcher' => {
+    -version => 0.03,
     default_match => 'name',
     allow_missing_methods => 1,
 };
