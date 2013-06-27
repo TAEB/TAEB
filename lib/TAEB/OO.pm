@@ -31,6 +31,7 @@ my ($import) = Moose::Exporter->setup_import_methods(
 # make sure using extends doesn't wipe out our base class roles
 sub extends {
     my ($meta, @superclasses) = @_;
+    @superclasses = map { $_->[0] } @{ Data::OptList::mkopt(\@superclasses) };
     Class::MOP::load_class($_) for @superclasses;
     for my $parent (@superclasses) {
         goto \&Moose::extends if $parent->can('does')
