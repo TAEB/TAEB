@@ -16,7 +16,14 @@ has iterations => (
     provided => 1,
 );
 
-sub command { shift->iterations . 's' }
+sub command {
+    my $self = shift;
+    my $iterations = $self->iterations;
+
+    return 's' if $iterations == 1;
+
+    return $iterations . 's';
+}
 
 sub done {
     my $self = shift;
