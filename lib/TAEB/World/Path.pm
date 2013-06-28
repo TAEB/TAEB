@@ -380,6 +380,8 @@ sub each_tile {
 
     for my $dir (split '', $self->path) {
         my $next = $current->level->at_direction($current->x, $current->y, $dir);
+        last if !$next;
+
         if (!$cb->($next, $current, $dir)) {
             last;
         }
