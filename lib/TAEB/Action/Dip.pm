@@ -15,6 +15,12 @@ has '+into' => (
     default => 'fountain',
 );
 
+has dipped_into_item => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
+
 sub respond_dip_what {
     my $self = shift;
     $self->current_item($self->item);
@@ -37,7 +43,10 @@ sub respond_dip_into_water {
 sub respond_dip_into_what {
     my $self = shift;
     $self->current_item($self->into);
-    return $self->into->slot if blessed($self->into);
+    if (blessed($self->into)) {
+        $self->dipped_into_item(1);
+        return $self->into->slot;
+    }
 
     TAEB->log->action("Unable to dip into '" . $self->into . "'. Sending escape, but I doubt this will work.", level => 'error');
     return "\e";
@@ -52,6 +61,14 @@ subscribe excalibur => sub {
     $excalibur->remove_damage;
     $excalibur->specific_name('Excalibur');
 };
+
+sub done {
+    my $self = shift;
+
+    if ($self->dipped_into_item) {
+        TAEB->inventory->decrease_quantity($self->into->slot);
+    }
+}
 
 __PACKAGE__->meta->make_immutable;
 
