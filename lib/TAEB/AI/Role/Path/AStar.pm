@@ -34,9 +34,7 @@ sub astar {
     return $self->_get_cached_astar_path($key)
         if $self->_has_cached_astar_path($key);
 
-    my $sokoban  = $from->known_branch
-                && $from->branch eq 'sokoban';
-    my $cant_squeeze = TAEB->inventory->weight > 500 || $sokoban;
+    my $cant_squeeze = $args{cant_squeeze} || 0;
 
     my @closed;
 
