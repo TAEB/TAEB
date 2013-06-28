@@ -78,6 +78,12 @@ has level => (
     is      => 'rw',
     isa     => 'Int',
     default => 1,
+    trigger => sub {
+        my ($self, $new, $old) = @_;
+        if (defined($old) && defined($new) && $new != $old) {
+            TAEB->send_message('experience_level_change', $old => $new);
+        }
+    },
 );
 
 has prev_turn => (
