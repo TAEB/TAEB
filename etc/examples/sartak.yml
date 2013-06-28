@@ -1,6 +1,4 @@
 ---
-ai: Behavioral::Personality::Explorer
-
 display: Curses
 display_options:
     Curses:
@@ -18,15 +16,19 @@ interface_options:
     OldLocal:
         read_iterations: 2
 
+ai: Magus
 character:
-    role: Valkyrie
-    race: Dwarf
-    gender: Female
-    align: Lawful
-    # role: Monk
-    # race: Human
-    # gender: Male
-    # align: Neutral
+    role: Wizard
+    race: Elf
+    gender: Male
+    align: Chaotic
+
+#ai: Behavioral::Personality::Explorer
+#character:
+#    role: Valkyrie
+#    race: Dwarf
+#    gender: Female
+#    align: Lawful
 
 other_config:
     - pass_config.yml
