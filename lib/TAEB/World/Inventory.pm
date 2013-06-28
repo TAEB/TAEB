@@ -75,6 +75,7 @@ subscribe got_item => sub {
 
     my $item = $event->item;
     my $slot = $item->slot;
+    return unless $slot;
 
     my $existing = $self->get($slot);
     if (!$item->is_evolution_of($existing)) {
