@@ -14,7 +14,7 @@ __PACKAGE__->parse_messages(
 has existing_item => (
     is     => 'ro',
     writer => '_set_existing_item',
-    isa    => 'TAEB::Item',
+    isa    => 'TAEB::World::Item',
 );
 
 sub BUILD {
