@@ -74,7 +74,16 @@ subscribe got_item => sub {
     my $event = shift;
 
     my $item = $event->item;
-    $self->add($item->slot => $item);
+    my $slot = $item->slot;
+
+    my $existing = $self->get($slot);
+    if (!$item->is_evolution_of($existing)) {
+        TAEB->log->inventory("$existing is not an evolution of $item; removing existing and rechecking inventory...");
+        $self->remove($slot);
+        TAEB->send_message(check => "inventory");
+    }
+
+    $self->add($slot => $item);
 };
 
 sub msg_lost_item {
