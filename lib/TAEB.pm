@@ -76,7 +76,12 @@ class_has ai => (
     writer    => 'set_ai', # for efficiency when TAEB->ai is in the inner loop
     lazy      => 1,
     default   => sub {
-        my $ai = TAEB->config->get_ai_class->new;
+        my $class = TAEB->config->get_ai_class;
+        my $ai = $class->new;
+
+        $ai->isa('TAEB::AI')
+            or die "$class does not inherit from TAEB::AI!";
+
         $ai->institute; # default doesn't fire triggers
         $ai;
     },
