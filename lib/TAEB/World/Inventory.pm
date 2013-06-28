@@ -86,6 +86,15 @@ subscribe got_item => sub {
     $self->add($slot => $item);
 };
 
+sub msg_enchanted {
+    my $self        = shift;
+    my $description = shift;
+    my $modifier    = shift;
+
+    # punt on figuring it out
+    TAEB->send_message(check => "inventory");
+}
+
 sub msg_lost_item {
     my $self = shift;
     my $item = shift;

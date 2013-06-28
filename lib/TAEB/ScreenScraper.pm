@@ -770,6 +770,10 @@ our @msg_regex = (
         qr/^This .* has no oil\./ =>
             ['no_oil'],
     ],
+    [
+        qr/^Your (.*) glows blue for a (moment|while)\./ =>
+            ['enchanted' => sub { ($1, $2) }],
+    ],
 );
 
 our @god_anger = (
