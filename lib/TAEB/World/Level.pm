@@ -310,6 +310,7 @@ sub radiate {
     my %args = @_;
 
     my $max          = $args{max} || 80;
+    my $stopper_max  = $args{stopper_max} || $args{max};
     my $stopper      = $args{stopper} || sub { 0 };
     my $allowself    = $args{allowself};
     my $bouncy       = $args{bouncy};
@@ -321,7 +322,7 @@ sub radiate {
         my ($dx, $dy) = @$_;
 
         my @accum;
-        $self->_beam_fly(\@accum, $bouncy, $dx, $dy, $x, $y, $max);
+        $self->_beam_fly(\@accum, $bouncy, $dx, $dy, $x, $y, $stopper_max);
 
         # first, is there any stopper anywhere in range? if so, bail
         for (@accum) {
@@ -329,6 +330,9 @@ sub radiate {
             next DIRECTION if $stopper->($tile);
             next DIRECTION if !$allowself && $tile == $current_tile;
         }
+
+        $self->_beam_fly(\@accum, $bouncy, $dx, $dy, $x, $y, $max)
+            if $max != $stopper_max;
 
         # next, does this direction actually have a target?
         my $target_tile;
