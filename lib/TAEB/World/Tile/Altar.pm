@@ -10,6 +10,12 @@ has align => (
     predicate => 'has_align',
 );
 
+sub is_coaligned {
+    my $self = shift;
+    return undef if !$self->has_align;
+    return $self->align eq TAEB->senses->align;
+}
+
 sub debug_color {
     my $self = shift;
     my $align = $self->align;
