@@ -13,7 +13,9 @@ has '+item' => (
 sub respond_read_what { shift->item->slot }
 
 sub msg_will_respond_difficult_spell {
-    shift->item->difficult_for_level(TAEB->level);
+    my $item = shift->item;
+    $item->difficult_for_level(TAEB->level);
+    $item->is_uncursed(1);
 }
 
 sub done {
