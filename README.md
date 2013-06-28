@@ -95,5 +95,4 @@ then try some of the exercises. The exercises are geared
 toward letting you explore TAEB's codebase. Very tricky, we are.
 
 We also write a lot about TAEB's architecture and dealing with programmatic
-NetHack on our blog, http://taeb-blog.sartak.org/
-
+NetHack on our blog, http://taeb-nethack.blogspot.com/.
