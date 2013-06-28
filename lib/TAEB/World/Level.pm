@@ -307,37 +307,49 @@ sub _beam_fly {
 sub radiate {
     my $self = shift;
     my $code = shift;
-    my %args = (
-        max => 80, # hey, we may want to throw all the way across the level..
-        @_,
-    );
+    my %args = @_;
 
-    my $stopper   = $args{stopper} || sub { 0 };
-    my $allowself = $args{allowself};
-    my $bouncy    = $args{bouncy};
+    my $max          = $args{max} || 80;
+    my $stopper      = $args{stopper} || sub { 0 };
+    my $allowself    = $args{allowself};
+    my $bouncy       = $args{bouncy};
+    my $current_tile = TAEB->current_tile;
+    my ($x, $y)      = (TAEB->x, TAEB->y);
 
     # check each direction
     DIRECTION: for (deltas) {
         my ($dx, $dy) = @$_;
 
-        my @accum = ();
+        my @accum;
+        $self->_beam_fly(\@accum, $bouncy, $dx, $dy, $x, $y, $max);
 
-        $self->_beam_fly(\@accum, $bouncy, $dx, $dy, TAEB->x, TAEB->y, $args{max});
-
-        if (grep { $stopper->($_->[1]) ||
-                $_->[1] == TAEB->current_tile && !$allowself } @accum) {
-            next DIRECTION;
+        # first, is there any stopper anywhere in range? if so, bail
+        for (@accum) {
+            my ($distance, $tile) = @$_;
+            next DIRECTION if $stopper->($tile);
+            next DIRECTION if !$allowself && $tile == $current_tile;
         }
 
-        my ($remaining_range, $tile) =
-            map { @$_ } grep { $code->($_->[1]) } @accum;
+        # next, does this direction actually have a target?
+        my $target_tile;
+        for (@accum) {
+            my ($distance, $tile) = @$_;
+            next unless $code->($tile);
 
-        if (defined $remaining_range) {
+            $remaining_range = $distance;
+            $target_tile = $tile;
+        }
+
+        if ($target_tile) {
             # if they ask for a scalar, give them the direction
             return delta2vi($dx, $dy) if !wantarray;
 
-            # if they ask for a list, give them (direction, distance, $tile)
-            return (delta2vi($dx, $dy), $args{max} - $remaining_range, $tile);
+            # if they ask for a list, give them more detail
+            return (
+                delta2vi($dx, $dy),
+                $max - $remaining_range,
+                $target_tile,
+            );
         }
     }
 }
