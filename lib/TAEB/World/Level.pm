@@ -338,24 +338,19 @@ sub radiate {
             if $max != $stopper_max || !@tile_set;
 
         # next, does this direction actually have a target?
-        my $target_tile;
         for (@tile_set) {
             my ($distance, $tile) = @$_;
+
             next unless $code->($tile);
 
-            $remaining_range = $distance;
-            $target_tile = $tile;
-        }
-
-        if ($target_tile) {
             # if they ask for a scalar, give them the direction
             return delta2vi($dx, $dy) if !wantarray;
 
             # if they ask for a list, give them more detail
             return (
                 delta2vi($dx, $dy),
-                $max - $remaining_range,
-                $target_tile,
+                $max - $distance,
+                $tile,
             );
         }
     }
