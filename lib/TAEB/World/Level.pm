@@ -863,6 +863,9 @@ How far to radiate outwards. You probably can't throw a dagger all the way
 across the level, so you may want to decrease it to something more realistic.
 Like 3, har har. You're weak.
 
+If you're casting a spell, L<TAEB::World::Spell/minimum_range> and
+L<TAEB::World::Spell/maximum_range> are your friends.
+
 =item bouncy (default: false)
 
 If true, the item will be assumed capable of bouncing.
