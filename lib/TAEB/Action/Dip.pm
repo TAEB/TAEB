@@ -70,6 +70,25 @@ sub done {
     }
 }
 
+subscribe got_item => sub {
+    my $self = shift;
+    my $event = shift;
+
+    my $new_item = $event->item;
+
+    return unless $self->dipped_into_item;
+
+    my $into_item = $self->into;
+    my $identity = $into_item->identity
+        or return;
+
+    my $dipped_item = $self->item;
+
+    if ($identity eq 'potion of polymorph') {
+        $new_item->did_polymorph_from($dipped_item);
+    }
+};
+
 __PACKAGE__->meta->make_immutable;
 
 1;
