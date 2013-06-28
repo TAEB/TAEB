@@ -77,7 +77,7 @@ subscribe got_item => sub {
     my $slot = $item->slot;
     return unless $slot;
 
-    my $existing = $self->get($slot);
+    my $existing = $event->existing_item;
     if (!$item->is_evolution_of($existing)) {
         TAEB->log->inventory("$existing is not an evolution of $item; removing existing and rechecking inventory...");
         $self->remove($slot);

@@ -11,6 +11,24 @@ __PACKAGE__->parse_messages(
     },
 );
 
+has existing_item => (
+    is     => 'ro',
+    writer => '_set_existing_item',
+    isa    => 'TAEB::Item',
+);
+
+sub BUILD {
+    my $self = shift;
+    my $item = $self->item;
+
+    return unless $item->slot;
+
+    my $existing = TAEB->inventory->get($item->slot);
+    return unless $existing;
+
+    $self->_set_existing_item($existing);
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
