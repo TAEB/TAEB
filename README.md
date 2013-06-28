@@ -67,8 +67,8 @@ Or a tarball snapshot of the GitHub mirror:
 TAEB itself has a lot of configuration. It sets up some sensible
 defaults for you (such as playing `nethack` locally with the Demo
 AI and communicating with you via Curses). You aren't required to
-set up config, but if you want to change how TAEB operates, such
-as by making him play on a NetHack server, you can. Specify
+set up a config, but if you want to change how TAEB operates, such
+as by making him play on a NetHack server, you can. Specify the
 configuration in `~/.taeb/config.yml`, which is written in
 [YAML](http://en.wikipedia.org/wiki/Yaml). The full list of
 configuration options, including the required `.nethackrc` file is
