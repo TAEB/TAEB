@@ -234,6 +234,10 @@ sub did_cast {
 sub minimum_range { 6 }
 sub maximum_range { 13 }
 
+sub msg_experience_level_changed {
+    TAEB->send_message(check => "spells");
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
