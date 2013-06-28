@@ -311,7 +311,7 @@ sub radiate {
 
     my $max          = $args{max} || 80;
     my $stopper_max  = $args{stopper_max} || $args{max};
-    my $stopper      = $args{stopper} || sub { 0 };
+    my $stopper      = $args{stopper};
     my $allowself    = $args{allowself};
     my $bouncy       = $args{bouncy};
     my $current_tile = TAEB->current_tile;
@@ -321,22 +321,25 @@ sub radiate {
     DIRECTION: for (deltas) {
         my ($dx, $dy) = @$_;
 
-        my @accum;
-        $self->_beam_fly(\@accum, $bouncy, $dx, $dy, $x, $y, $stopper_max);
+        my @tile_set;
 
-        # first, is there any stopper anywhere in range? if so, bail
-        for (@accum) {
-            my ($distance, $tile) = @$_;
-            next DIRECTION if $stopper->($tile);
-            next DIRECTION if !$allowself && $tile == $current_tile;
+        if ($stopper) {
+            $self->_beam_fly(\@tile_set, $bouncy, $dx, $dy, $x, $y, $stopper_max);
+
+            # first, is there any stopper anywhere in range? if so, bail
+            for (@tile_set) {
+                my ($distance, $tile) = @$_;
+                next DIRECTION if $stopper->($tile);
+                next DIRECTION if !$allowself && $tile == $current_tile;
+            }
         }
 
-        $self->_beam_fly(\@accum, $bouncy, $dx, $dy, $x, $y, $max)
-            if $max != $stopper_max;
+        $self->_beam_fly(\@tile_set, $bouncy, $dx, $dy, $x, $y, $max)
+            if $max != $stopper_max || !@tile_set;
 
         # next, does this direction actually have a target?
         my $target_tile;
-        for (@accum) {
+        for (@tile_set) {
             my ($distance, $tile) = @$_;
             next unless $code->($tile);
 
@@ -886,9 +889,16 @@ L<TAEB::World::Spell/maximum_range> are your friends.
 
 If true, the item will be assumed capable of bouncing.
 
-=item stopper (default: sub { 0 })
+=item stopper
 
-If a path intersects a tile with this set, we will not allow that path.
+If provided, this callback can be used to forbid a particular
+direction because something is in the way (such as casting force
+bolt when it could potentially hit a shopkeeper).
+
+=item stopper_max (default: same as stopper)
+
+This may be used to vary how far down the path you want to consider
+stoppers, as separate from the regular target matching.
 
 =item allowself (default: 0)
 
