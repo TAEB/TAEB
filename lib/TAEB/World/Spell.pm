@@ -229,6 +229,11 @@ sub did_cast {
     $self->casted_count(($self->casted_count || 0) + 1);
 }
 
+# I'm going by zap.c:2470
+# (void) bhit(u.dx,u.dy, rn1(8,6),ZAPPED_WAND, bhitm,bhito, obj);
+sub minimum_range { 6 }
+sub maximum_range { 13 }
+
 __PACKAGE__->meta->make_immutable;
 
 1;
