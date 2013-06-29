@@ -92,9 +92,12 @@ sub debug_line {
         $values{$attr->name} = $value;
     }
 
-    return sprintf '[%s %s]',
-            $self->name,
-            join ', ', map { "$_:$values{$_}" } sort keys %values;
+    my $out = '[' . $self->name;
+    $out .= ' ' . (join ', ', map { "$_:$values{$_}" } sort keys %values)
+        if %values;
+    $out .= ']';
+    return $out;
+
 }
 
 __PACKAGE__->meta->make_immutable;
