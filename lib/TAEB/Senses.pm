@@ -402,11 +402,11 @@ subscribe turn => sub {
 
     # http://nethackwiki.com/wiki/Dual_ring_of_slow_digestion_bug
 
-    if (TAEB->equipment->has_left_sd) {
+    if (TAEB->equipment->left_ring_is("ring of slow digestion")) {
         $self->nutrition($self->nutrition - 1)
             if $turn % 20 == 4;
     }
-    elsif (TAEB->equipment->has_right_sd) {
+    elsif (TAEB->equipment->right_ring_is("ring of slow digestion")) {
         $self->nutrition($self->nutrition - 1)
             if $turn % 20 == 12;
     }

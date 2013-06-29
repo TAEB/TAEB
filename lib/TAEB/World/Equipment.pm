@@ -37,18 +37,22 @@ subscribe now_wielding => sub {
     TAEB->inventory->update($item->slot => $item);
 };
 
-sub has_left_sd {
+sub left_ring_is {
     my $self = shift;
+    my $desired = shift;
+
     my $ring = $self->left_ring or return;
     my $identity = $ring->identity or return;
-    return $identity eq "ring of slow digestion";
+    return $identity eq $desired;
 }
 
-sub has_right_sd {
+sub right_ring_is {
     my $self = shift;
+    my $desired = shift;
+
     my $ring = $self->right_ring or return;
     my $identity = $ring->identity or return;
-    return $identity eq "ring of slow digestion";
+    return $identity eq $desired;
 }
 
 __PACKAGE__->meta->make_immutable;
