@@ -32,4 +32,5 @@ character:
 
 other_config:
     - pass_config.yml
+    - temp_config.yml
 
