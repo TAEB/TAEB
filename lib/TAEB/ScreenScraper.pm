@@ -1611,6 +1611,9 @@ sub parse_row_22 {
     my $self = shift;
     my $line = TAEB->vt->row_plaintext(22);
 
+    return if $line eq $self->previous_row_22;
+    $self->previous_row_22($line);
+
     my $senses = TAEB->senses;
 
     if ($line =~ /^(\w+)?.*?St:(\d+(?:\/(?:\*\*|\d+))?) Dx:(\d+) Co:(\d+) In:(\d+) Wi:(\d+) Ch:(\d+)\s*(\w+)\s*(.*)$/) {
@@ -1642,6 +1645,9 @@ sub parse_row_22 {
 sub parse_row_23 {
     my $self = shift;
     my $line = TAEB->vt->row_plaintext(23);
+
+    return if $line eq $self->previous_row_23;
+    $self->previous_row_23($line);
 
     my $senses = TAEB->senses;
 
