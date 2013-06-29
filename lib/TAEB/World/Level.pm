@@ -899,7 +899,10 @@ stoppers, as separate from the regular target matching.
 
 =item allowself (default: 0)
 
-Like stopper, but for our own tile (a common special case).
+Like stopper, but for our own tile.
+
+You might set this if you're zapping sleep which will bounce back
+at you, but you have reflection or sleep resistance.
 
 =back
 
