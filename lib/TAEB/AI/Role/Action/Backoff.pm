@@ -17,7 +17,8 @@ parameter clear_when => (
 );
 
 parameter filter => (
-    isa => 'CodeRef',
+    isa     => 'CodeRef',
+    default => sub { sub { 1 } },
 );
 
 parameter label => (
