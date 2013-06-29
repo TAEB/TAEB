@@ -4,7 +4,7 @@ use TAEB::OO;
 use Curses ();
 use TAEB::Util::Colors;
 use TAEB::Util qw/max refaddr/;
-use TAEB::Util::World qw/tile_type_to_glyph tile_type_to_color/;
+use TAEB::Util::World qw/tile_type_to_glyph tile_type_to_color deltas/;
 use Time::HiRes 'gettimeofday';
 
 extends 'TAEB::Display';
@@ -516,6 +516,11 @@ sub draw_menu {
     Curses::move($row - 1, length($rows[-1]) + $x + 1);
 }
 
+my %spell_in_minimum;
+my %spell_in_maximum;
+my %spell_in_bounce_minimum;
+my %spell_in_bounce_maximum;
+
 %standard_modes = (
     normal =>    { description => 'Normal NetHack colors',
                    color => sub { shift->normal_color },
@@ -552,6 +557,50 @@ sub draw_menu {
                        $self->reset_color_method;
                        $self->reset_glyph_method;
                    } },
+
+    spell => {
+        description => 'Spell targets',
+        color       => sub {
+            my $ref = refaddr(shift);
+            return $spell_in_minimum{$ref}        ? COLOR_RED
+                 : $spell_in_maximum{$ref}        ? COLOR_YELLOW
+                 : $spell_in_bounce_minimum{$ref} ? COLOR_BRIGHT_BLUE
+                 : $spell_in_bounce_maximum{$ref} ? COLOR_CYAN
+                                                  : COLOR_GRAY;
+        },
+        onframe     => sub {
+            my $min = 6;
+            my $max = 13;
+
+            %spell_in_minimum = ();
+            %spell_in_maximum = ();
+            %spell_in_bounce_minimum = ();
+            %spell_in_bounce_maximum = ();
+
+            my ($x, $y) = (TAEB->x, TAEB->y);
+
+            for (deltas) {
+                my ($dx, $dy) = @$_;
+
+                my @tile_set;
+                TAEB->current_level->_beam_fly(\@tile_set, 0, $dx, $dy, $x, $y, $min);
+                $spell_in_minimum{refaddr $_->[1]} = 1 for @tile_set;
+
+                @tile_set = ();
+                TAEB->current_level->_beam_fly(\@tile_set, 0, $dx, $dy, $x, $y, $max);
+                $spell_in_maximum{refaddr $_->[1]} = 1 for @tile_set;
+
+                @tile_set = ();
+                TAEB->current_level->_beam_fly(\@tile_set, 1, $dx, $dy, $x, $y, $min);
+                $spell_in_bounce_minimum{refaddr $_->[1]} = 1 for @tile_set;
+
+                @tile_set = ();
+                TAEB->current_level->_beam_fly(\@tile_set, 1, $dx, $dy, $x, $y, $max);
+                $spell_in_bounce_maximum{refaddr $_->[1]} = 1 for @tile_set;
+
+            }
+        }
+    },
 );
 
 sub change_draw_mode {
