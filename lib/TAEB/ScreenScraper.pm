@@ -778,6 +778,10 @@ our @msg_regex = (
         qr/You carefully open the bag\.\.\.  It develops a huge set of teeth and bites you!/ =>
             ['bag_of_tricks'],
     ],
+    [
+        qr/You are carrying too much to get through\./ =>
+            [check => 'inventory'],
+    ],
 );
 
 our @god_anger = (
