@@ -36,6 +36,17 @@ sub msg_container_item {
     $container->add_item($item) if $item;
 }
 
+sub msg_container_locked {
+    my $self = shift;
+
+    if (my $container = TAEB->current_tile->container) {
+        $container->locked(1);
+    }
+    else {
+        TAEB->log->action("Got a locked message, but no container here!");
+    }
+}
+
 sub begin_select_pickup {
     my $self = shift;
     my ($container) = @_;

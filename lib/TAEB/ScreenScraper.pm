@@ -788,6 +788,10 @@ our @msg_regex = (
         qr/You are carrying too much to get through\./ =>
             [check => 'inventory'],
     ],
+    [
+        qr/Hmmm, it seems to be locked\./ =>
+            ['container_locked'],
+    ],
 );
 
 our @god_anger = (
@@ -818,7 +822,9 @@ our @prompts = (
     qr/^Talk to whom\? \(in what direction\)/ => 'what_direction',
     qr/^Itemized billing\? \[yn\] \(n\)/    => 'itemized_billing',
     qr/^Lock it\?/                          => 'lock',
+    qr/^There is a (.*) here, lock it\?/    => 'lock',
     qr/^Unlock it\?/                        => 'unlock',
+    qr/^There is a (.*) here, unlock it\?/  => 'unlock',
     qr/^Drink from the (fountain|sink)\?/   => 'drink_from',
     qr/^What do you want to drink\?/        => 'drink_what',
     qr/^What do you want to eat\?/          => 'eat_what',
