@@ -106,6 +106,11 @@ sub knows_spell {
     return 1;
 }
 
+sub msg_experience_level_change {
+    my $self = shift;
+    TAEB->send_message(check => "spells");
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
