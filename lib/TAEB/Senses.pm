@@ -86,16 +86,20 @@ has level => (
     },
 );
 
-has prev_turn => (
-    is      => 'rw',
-    isa     => 'Int',
-    default => 0,
-);
-
 has turn => (
     is      => 'rw',
     isa     => 'Int',
     default => 0,
+    trigger => sub {
+        my ($self, $new, $old) = @_;
+        if (defined($old) && defined($new) && $new != $old) {
+            for ($old + 1 .. $new) {
+                TAEB->send_message(
+                    turn => TAEB::Announcement::Turn->new(turn_number => $_)
+                );
+            }
+        }
+    },
 );
 
 has step => (
@@ -328,26 +332,7 @@ sub resistances {
 
 sub update {
     my $self = shift;
-    my $main = shift;
 
-    if ($main) {
-        $self->inc_step;
-        TAEB->send_message(step => TAEB::Announcement::Step->new);
-    }
-
-    $self->parse_botl;
-    $self->find_statuses;
-
-    if ($self->prev_turn) {
-        if ($self->turn != $self->prev_turn) {
-            for ($self->prev_turn + 1 .. $self->turn) {
-                TAEB->send_message(
-                    turn => TAEB::Announcement::Turn->new(turn_number => $_));
-            }
-        }
-    }
-
-    $self->prev_turn($self->turn);
 }
 
 sub msg_autopickup {

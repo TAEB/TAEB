@@ -500,7 +500,9 @@ sub full_input {
 
     unless ($self->state eq 'logging_in') {
         $self->dungeon->update($main_call);
-        $self->senses->update($main_call);
+
+        $self->senses->inc_step;
+        $self->send_message(step => TAEB::Announcement::Step->new);
     }
     $self->publisher->unpause;
 }
