@@ -18,7 +18,7 @@ subscribe door => sub {
     my $door  = $event->tile;
 
     # The tile may have been changed between the announcement's origin and now
-    return unless $door->isa('TAEB::World::Tile::Door');
+    return unless $door && $door->isa('TAEB::World::Tile::Door');
 
     if ($state eq 'locked') {
         $door->door_state('locked');

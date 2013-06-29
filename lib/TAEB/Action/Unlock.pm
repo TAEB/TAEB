@@ -33,7 +33,7 @@ subscribe door => sub {
     my $door = $event->tile;
 
     # if the door explodes as we're unlocking it, it's not a door any more
-    return unless $door->isa('TAEB::World::Tile::Door');
+    return unless $door && $door->isa('TAEB::World::Tile::Door');
 
     my $state = $event->state;
 
