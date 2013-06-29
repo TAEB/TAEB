@@ -228,6 +228,7 @@ sub get_location_request {
 sub menu_select {
     my $self = shift;
     my $name = shift;
+    my @args = @_;
     my $num  = 0;
 
     return sub {
@@ -237,14 +238,14 @@ sub menu_select {
         if ($num++ == 0) {
             for my $responder ($self->responders) {
                 if (my $method = $responder->can("begin_select_$name")) {
-                    $method->($responder);
+                    $method->($responder, @args);
                 }
             }
         }
 
         for my $responder ($self->responders) {
             if (my $method = $responder->can("select_$name")) {
-                my $rt = $method->($responder, $slot, $item);
+                my $rt = $method->($responder, $slot, $item, @args);
 
                 return ref($rt) ? $$rt : $rt ? 'all' : undef;
             }
