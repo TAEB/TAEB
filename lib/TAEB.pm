@@ -14,15 +14,14 @@ use Try::Tiny;
 our %debug_commands;
 
 sub register_debug_commands {
-    my $self     = shift;
-    my %commands = @_;
+    my $self = shift;
 
-    for my $key (keys %commands) {
+    while (my ($key, $command) = splice @_, 0, 2) {
         if (exists $debug_commands{$key}) {
             confess "$key is already a registered debug command";
         }
 
-        $debug_commands{$key} = $commands{$key};
+        $debug_commands{$key} = $command;
     }
 }
 
