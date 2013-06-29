@@ -334,8 +334,10 @@ sub radiate {
             }
         }
 
-        $self->_beam_fly(\@tile_set, $bouncy, $dx, $dy, $x, $y, $max)
-            if $max != $stopper_max || !@tile_set;
+        if ($max != $stopper_max || !@tile_set) {
+            @tile_set = ();
+            $self->_beam_fly(\@tile_set, $bouncy, $dx, $dy, $x, $y, $max);
+        }
 
         # next, does this direction actually have a target?
         for (@tile_set) {
