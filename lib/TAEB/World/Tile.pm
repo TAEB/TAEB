@@ -897,6 +897,19 @@ sub distance {
     return sqrt(($self->x - $other->x) ** 2 + ($self->y - $other->y) ** 2);
 }
 
+sub find_item_maybe {
+    my $self       = shift;
+    my $predicate  = shift;
+
+    if (!ref($predicate)) {
+        my $item = TAEB->new_item($predicate);
+        $predicate = sub { $_->maybe_is($item) };
+    }
+
+    # The & ignores first's prototype. $predicate is a function so it'll work
+    return &first($predicate, $self->items);
+}
+
 sub find_item {
     my $self = shift;
 

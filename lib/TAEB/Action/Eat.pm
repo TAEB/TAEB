@@ -20,7 +20,7 @@ sub respond_eat_ground {
     my $self = shift;
     my $floor = shift;
 
-    my $floor_item = $self->starting_tile->find_item($floor);
+    my $floor_item = $self->starting_tile->find_item_maybe($floor);
 
     # no, we want to eat something in our inventory
     return 'n' unless $self->food == $floor_item;

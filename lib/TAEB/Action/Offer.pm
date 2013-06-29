@@ -13,7 +13,7 @@ has '+item' => (
 sub respond_sacrifice_ground {
     my $self = shift;
     my $floor = shift;
-    my $floor_item = TAEB->current_tile->find_item($floor);
+    my $floor_item = TAEB->current_tile->find_item_maybe($floor);
 
     if ($self->item == $floor_item) {
         $self->item->tried_to_sacrifice(1);
