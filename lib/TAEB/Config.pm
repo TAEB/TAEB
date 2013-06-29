@@ -216,6 +216,7 @@ OPTIONS=!prayconfirm
 OPTIONS=pettype:none
 OPTIONS=!cmdassist
 OPTIONS=disclose:yi +avgc
+OPTIONS=menustyle:partial
 
 # miscellaneous
 OPTIONS=!mail

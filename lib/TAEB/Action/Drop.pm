@@ -4,7 +4,7 @@ use TAEB::OO;
 extends 'TAEB::Action';
 with 'TAEB::Action::Role::Item';
 
-use constant command => "Da\n";
+use constant command => "D";
 
 has items => (
     is  => 'ro',

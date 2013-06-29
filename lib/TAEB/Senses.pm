@@ -894,7 +894,7 @@ sub msg_check {
 
 my %check_command = (
     discoveries => "\\",
-    inventory   => "Da\n",
+    inventory   => "D",
     spells      => "Z",
     crga        => "\cx",
     floor       => ":",
