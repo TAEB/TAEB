@@ -17,7 +17,8 @@ subscribe got_item => sub {
     my $event = shift;
 
     # what about stacks?
-    TAEB->send_message(remove_floor_item => $event->item, $self->starting_tile);
+    # XXX make into announcement
+    TAEB->current_tile->container->remove_item($event->item);
 };
 
 # better place for these?
