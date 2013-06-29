@@ -20,7 +20,14 @@ has '+direction' => (
 sub respond_apply_what { shift->implement->slot }
 
 sub respond_lock {
-    shift->target_tile('closeddoor')->state('unlocked');
+    my $self = shift;
+
+    if ($self->direction eq '.') {
+        $self->target_tile->container->locked(0);
+    }
+    else {
+        $self->target_tile('closeddoor')->state('unlocked');
+    }
     'n';
 }
 
