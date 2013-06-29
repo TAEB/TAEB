@@ -517,7 +517,22 @@ subscribe turn => sub {
     my $self = shift;
     my $event = shift;
 
-    $self->nutrition($self->nutrition - 1);
+    my $turn = $event->turn_number;
+
+    # http://nethackwiki.com/wiki/Dual_ring_of_slow_digestion_bug
+
+    if (TAEB->equipment->has_left_sd) {
+        $self->nutrition($self->nutrition - 1)
+            if $turn % 20 == 4;
+    }
+    elsif (TAEB->equipment->has_right_sd) {
+        $self->nutrition($self->nutrition - 1)
+            if $turn % 20 == 12;
+    }
+    else {
+        # XXX other rings, etc
+        $self->nutrition($self->nutrition - 1);
+    }
 
     my $luck = $self->baseluck;
     # TODO AoY affects this too
