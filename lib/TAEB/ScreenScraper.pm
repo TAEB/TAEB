@@ -932,6 +932,18 @@ has saw_floor_list_this_step => (
     default   => 0,
 );
 
+has previous_row_22 => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => '',
+);
+
+has previous_row_23 => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => '',
+);
+
 sub _recurse {
     local $SIG{__DIE__};
     die "Recursing screenscraper.\n";
@@ -966,6 +978,9 @@ sub scrape {
 
         # handle cursor still updating the botl
         $self->handle_botl_update;
+
+        # handle botl
+        $self->parse_botl;
 
         # handle location requests
         $self->handle_location_request;
@@ -1584,6 +1599,116 @@ sub farlook {
     return $description =~ /^(.)\s*(.*?)\s*\((.*)\)\s*(?:\[(.*)\])?\s*$/
         if wantarray;
     return $description;
+}
+
+sub parse_botl {
+    my $self = shift;
+    $self->parse_row_22;
+    $self->parse_row_23;
+}
+
+sub parse_row_22 {
+    my $self = shift;
+    my $line = TAEB->vt->row_plaintext(22);
+
+    my $senses = TAEB->senses;
+
+    if ($line =~ /^(\w+)?.*?St:(\d+(?:\/(?:\*\*|\d+))?) Dx:(\d+) Co:(\d+) In:(\d+) Wi:(\d+) Ch:(\d+)\s*(\w+)\s*(.*)$/) {
+        # $1 name
+        $senses->str($2);
+        $senses->dex($3);
+        $senses->con($4);
+        $senses->int($5);
+        $senses->wis($6);
+        $senses->cha($7);
+        # $8 align
+
+        # we can't assume that TAEB will always have showscore. for example,
+        # slackwell.com (where he's playing as of this writing) doesn't have
+        # that compiled in
+        if ($9 =~ /S:(\d+)\s*/) {
+            $senses->score($1);
+        }
+    }
+    else {
+        TAEB->log->scraper("Unable to parse the status line '$line'", level => 'error');
+    }
+
+    if ($line =~ /^\S+ the Were/) {
+        $senses->is_lycanthropic(1);
+    }
+}
+
+sub parse_row_23 {
+    my $self = shift;
+    my $line = TAEB->vt->row_plaintext(23);
+
+    my $senses = TAEB->senses;
+
+    if ($line =~ /^(Dlvl:\d+|Home \d+|Fort Ludios|End Game|Astral Plane)\s+(?:\$|\*):(\d+)\s+HP:(\d+)\((\d+)\)\s+Pw:(\d+)\((\d+)\)\s+AC:([0-9-]+)\s+(?:Exp|Xp|HD):(\d+)(?:\/(\d+))?\s+T:(\d+)\s+(.*?)\s*$/) {
+        # $1 dlvl (cartographer does this)
+        $senses->gold($2);
+        $senses->hp($3);
+        $senses->maxhp($4);
+        $senses->power($5);
+        $senses->maxpower($6);
+        $senses->ac($7);
+        $senses->level($8);
+        # $9 experience
+        $senses->turn($10);
+        # $self->status(join(' ', split(/\s+/, $11)));
+    }
+    else {
+        TAEB->log->scraper("Unable to parse the botl line '$line'", level => 'error');
+    }
+
+    # we can definitely know some things about our nutrition
+    if ($line =~ /\bSat/) {
+        $senses->nutrition(1000) if $senses->nutrition < 1000;
+    }
+    elsif ($line =~ /\bHun/) {
+        $senses->nutrition(149)  if $senses->nutrition > 149;
+    }
+    elsif ($line =~ /\bWea/) {
+        $senses->nutrition(49)   if $senses->nutrition > 49;
+    }
+    elsif ($line =~ /\bFai/) {
+        $senses->nutrition(-1)   if $senses->nutrition > -1;
+    }
+    else {
+        $senses->nutrition(999) if $senses->nutrition > 999;
+        $senses->nutrition(150) if $senses->nutrition < 150;
+    }
+
+    if ($line =~ /\bOverl/) {
+        $senses->burden('Overloaded');
+    }
+    elsif ($line =~ /\bOvert/) {
+        $senses->burden('Overtaxed');
+    }
+    elsif ($line =~ /\bStra/) {
+        $senses->burden('Strained');
+    }
+    elsif ($line =~ /\bStre/) {
+        $senses->burden('Stressed');
+    }
+    elsif ($line =~ /\bBur/) {
+        $senses->burden('Burdened');
+    }
+    else {
+        $senses->burden('Unencumbered');
+    }
+
+    $senses->is_blind($line =~ /\bBli/ ? 1 : 0);
+    if (!$senses->is_blind) {
+        $senses->is_pie_blind(0);
+    }
+
+    $senses->is_stunned($line =~ /\bStun/ ? 1 : 0);
+    $senses->is_confused($line =~ /\bConf/ ? 1 : 0);
+    $senses->is_hallucinating($line =~ /\bHal/ ? 1 : 0);
+    $senses->is_food_poisoned($line =~ /\bFoo/ ? 1 : 0);
+    $senses->is_ill($line =~ /\bIll/ ? 1 : 0);
 }
 
 __PACKAGE__->meta->make_immutable;
