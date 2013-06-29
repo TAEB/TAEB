@@ -842,6 +842,26 @@ TAEB->register_debug_commands(
             );
         },
     },
+    'a' => {
+        help     => "Display actions (excluding Move)",
+        command  => sub {
+            my @menu_items;
+            for my $action (reverse TAEB->_old_actions) {
+                # we don't use isa here because we want to capture subclasses etc
+                next if $action->name eq 'Move';
+
+                push @menu_items, TAEB::Display::Menu::Item->new(
+                    user_data => $action,
+                    title     => $action->debug_line,
+                );
+            }
+
+            item_menu(
+                "Previous actions (excluding Move)",
+                \@menu_items,
+            );
+        },
+    },
     "\cP" => {
         help     => "Display old messages",
         selector => '^P',
