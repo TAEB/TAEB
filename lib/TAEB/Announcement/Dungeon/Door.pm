@@ -33,7 +33,7 @@ sub BUILD {
     if (my $tile = $action->target_tile) {
         $self->_set_tile($tile);
     }
-);
+}
 
 __PACKAGE__->parse_messages(
     "This door is locked." => {
