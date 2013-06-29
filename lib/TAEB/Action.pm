@@ -2,6 +2,8 @@ package TAEB::Action;
 use Moose;
 use TAEB::OO;
 
+with 'TAEB::Role::Overload';
+
 has aborted => (
     is      => 'rw',
     isa     => 'Bool',
@@ -64,6 +66,35 @@ sub action_names {
 
     return map { (my $class = $_) =~ s/^TAEB::Action:://; $class }
            @actions;
+}
+
+sub provided_attributes {
+    my $self = shift;
+
+    return grep { $_->provided }
+           grep { $_->does('TAEB::Meta::Trait::Provided') }
+           $self->meta->get_all_attributes;
+}
+
+sub debug_line {
+    my $self = shift;
+    my @attrs = $self->provided_attributes;
+    my %values;
+
+    for my $attr (@attrs) {
+        my $value = $attr->get_read_method_ref->($self);
+        next if !defined($value);
+
+        $value = "[".blessed($value)."]"
+            if blessed($value)
+            && !$value->does('TAEB::Role::Overload');
+
+        $values{$attr->name} = $value;
+    }
+
+    return sprintf '[%s %s]',
+            $self->name,
+            join ', ', map { "$_:$values{$_}" } sort keys %values;
 }
 
 __PACKAGE__->meta->make_immutable;

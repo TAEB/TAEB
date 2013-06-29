@@ -828,9 +828,17 @@ TAEB->register_debug_commands(
     'a' => {
         help     => "Display actions",
         command  => sub {
+            my @menu_items;
+            for my $action (reverse TAEB->_old_actions) {
+                push @menu_items, TAEB::Display::Menu::Item->new(
+                    user_data => $action,
+                    title     => $action->debug_line,
+                );
+            }
+
             item_menu(
                 "Previous actions",
-                [ reverse TAEB->_old_actions ],
+                \@menu_items,
             );
         },
     },
