@@ -767,7 +767,7 @@ our @msg_regex = (
             [corpse_rot => sub { $1 }],
     ],
     [
-        qr/^This .* has no oil\./ =>
+        qr/^This .* has no oil\.|Your .* has run out of power\./ =>
             ['no_oil'],
     ],
     [
