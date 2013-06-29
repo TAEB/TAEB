@@ -13,13 +13,13 @@ has direction => (
 
 has target_tile => (
     is       => 'ro',
-    isa      => 'TAEB::World::Tile',
+    isa      => 'Maybe[TAEB::World::Tile]',
     init_arg => undef,
     lazy     => 1,
     default  => sub {
-        my $self = shift;
-        confess "$self does not have a direction, so can't intuit a target_tile" if !$self->has_direction;
-        return TAEB->current_level->at_direction($self->direction)
+        my $direction = shift->direction;
+        return unless $direction;
+        return TAEB->current_level->at_direction($self->direction);
     },
 );
 
