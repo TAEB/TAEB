@@ -19,7 +19,7 @@ has target_tile => (
     default  => sub {
         my $direction = shift->direction;
         return unless $direction;
-        return TAEB->current_level->at_direction($self->direction);
+        return TAEB->current_level->at_direction($direction);
     },
 );
 
