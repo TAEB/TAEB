@@ -117,7 +117,10 @@ sub send_message {
         next unless $recipient;
 
         for ($method, ($announcement ? 'subscription_any' : 'msg_any')) {
-            if ($recipient->can($_)) {
+            if (ref($recipient) eq 'CODE') {
+                $recipient->($name, $_, @args);
+            }
+            elsif ($recipient->can($_)) {
                 if ($_ eq 'msg_any') {
                     $recipient->$_($name, @args);
                 }
