@@ -771,7 +771,7 @@ our @msg_regex = (
             ['no_oil'],
     ],
     [
-        qr/^Your (.*) glows blue for a (moment|while)\./ =>
+        qr/^Your (.*) glows (?:blue|silver) for a (moment|while)\./ =>
             ['enchanted' => sub { ($1, $2) }],
     ],
 );
