@@ -32,14 +32,20 @@ parameter annotate_currently => (
     default => 1,
 );
 
+parameter max_exponent => (
+    isa     => 'Int',
+    default => 8,
+);
+
 role {
     my $p = shift;
 
-    my $label                 = $p->label;
-    my $action_class          = $p->action;
-    my $blackout_when         = $p->blackout_when;
-    my $clear_when            = $p->clear_when;
-    my $filter                = $p->filter;
+    my $label         = $p->label;
+    my $action_class  = $p->action;
+    my $blackout_when = $p->blackout_when;
+    my $clear_when    = $p->clear_when;
+    my $filter        = $p->filter;
+    my $max_exponent  = $p->max_exponent;
 
     my $clear_exponent_method  = "clear_${label}_blackout_exponent";
     my $clear_forbidden_until  = "clear_${label}_forbidden_until";
@@ -90,7 +96,7 @@ role {
             my $exponent = 1 + ($self->$exponent_method || 1);
 
             # limit blackout length
-            if ($exponent < 8) {
+            if ($exponent < $max_exponent) {
                 $self->$exponent_method($exponent);
             }
 
