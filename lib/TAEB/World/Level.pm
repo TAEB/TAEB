@@ -124,6 +124,12 @@ has fully_explored => (
     default => 0,
 );
 
+has been_magic_mapped => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
+
 # Some information about the history of a Sokoban level needs to be
 # retained in order to be able to solve it correctly. There's no
 # reason we can't count the number of eliminated pit/hole traps on
@@ -785,6 +791,8 @@ sub msg_level_message {
                           && $self->known_branch
                           && $self->branch eq 'mines';
 }
+
+sub msg_magic_mapped { shift->been_magic_mapped(1) }
 
 subscribe turn => sub {
     my $self = shift;
