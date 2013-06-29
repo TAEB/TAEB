@@ -841,7 +841,7 @@ TAEB->register_debug_commands(
             );
         },
     },
-    'a' => {
+    'A' => {
         help     => "Display actions (excluding Move)",
         command  => sub {
             my @menu_items;
