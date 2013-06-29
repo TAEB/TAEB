@@ -1,9 +1,6 @@
 package TAEB::Action;
 use Moose;
 use TAEB::OO;
-use MooseX::ABC;
-
-requires 'command';
 
 has aborted => (
     is      => 'rw',
@@ -16,6 +13,8 @@ has starting_tile => (
     isa     => 'TAEB::World::Tile',
     default => sub { TAEB->current_tile },
 );
+
+sub command { confess shift . " must implement ->command" }
 
 sub run { shift->command }
 

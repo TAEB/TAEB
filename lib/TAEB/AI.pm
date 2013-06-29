@@ -1,11 +1,10 @@
 package TAEB::AI;
 use Moose;
 use TAEB::OO;
-use MooseX::ABC;
-
-requires 'next_action';
 
 use constant is_human_controlled => 0;
+
+sub next_action { confess shift . " must implement ->next_action" }
 
 sub institute {
     TAEB->publisher->subscribe(shift);

@@ -3,9 +3,8 @@ use Moose;
 use TAEB::OO;
 use TAEB::Display::Color;
 use TAEB::Display::Menu;
-use MooseX::ABC;
 
-requires 'get_key';
+sub get_key { confess shift . " must implement get_key" }
 
 # whether or not this output writes to the terminal: if it does, we don't want
 # to also be sending warnings/errors there, for example.
