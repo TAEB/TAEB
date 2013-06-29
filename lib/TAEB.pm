@@ -541,6 +541,9 @@ sub keypress {
     my $self = shift;
     my $c = shift;
 
+    # don't accept debug commands before TAEB is ready
+    return if $self->state eq 'logging_in';
+
     if ($debug_commands{$c}) {
         my $command = $debug_commands{$c};
         $command = $command->{command} if ref($command) eq 'HASH';
