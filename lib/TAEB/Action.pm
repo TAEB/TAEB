@@ -16,9 +16,20 @@ has starting_tile => (
     default => sub { TAEB->current_tile },
 );
 
+has currently => (
+    is      => 'ro',
+    isa     => 'Str',
+    lazy    => 1,
+    default => sub { TAEB->currently },
+);
+
 sub command { confess shift . " must implement ->command" }
 
-sub run { shift->command }
+sub run {
+    my $self = shift;
+    $self->currently; # force evaluation
+    $self->command;
+}
 
 sub done { }
 
