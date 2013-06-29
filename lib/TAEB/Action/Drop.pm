@@ -17,8 +17,11 @@ has items => (
 sub msg_ring {
     my $self     = shift;
     my $identity = shift;
-    TAEB->log->action("Identified ".$self->item->appearance." as $identity");
-    $self->item->identify_as($identity);
+
+    return unless @{ $self->items } == 1;
+    my $item = $self->items->[0];
+    TAEB->log->action("Identified ".$item->appearance." as $identity");
+    $self->identify_as($identity);
 }
 
 __PACKAGE__->meta->make_immutable;
