@@ -965,6 +965,16 @@ sub from_direction {
     return $self->at_direction($from_direction);
 }
 
+# XXX handle multiple containers, and nested containers
+sub container {
+    my $self = shift;
+
+    my ($container) = grep { $_->isa('NetHack::Item::Tool::Container') }
+                           $self->items;
+
+    return $container;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
