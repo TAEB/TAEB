@@ -16,6 +16,10 @@ parameter clear_when => (
     required => 1,
 );
 
+parameter filter => (
+    isa => 'CodeRef',
+);
+
 parameter label => (
     isa     => 'Str',
     lazy    => 1,
@@ -34,6 +38,7 @@ role {
     my $action_class          = $p->action;
     my $blackout_when         = $p->blackout_when;
     my $clear_when            = $p->clear_when;
+    my $filter                = $p->filter;
 
     my $clear_exponent_method  = "clear_${label}_blackout_exponent";
     my $clear_forbidden_until  = "clear_${label}_forbidden_until";
@@ -69,6 +74,7 @@ role {
         my $prev = TAEB->previous_action;
 
         return unless $prev && $prev->isa($action_class);
+        return unless $self->$filter($prev);
 
         if ($self->$blackout_when($prev)) {
             my $turn = TAEB->turn;
@@ -99,7 +105,7 @@ role {
 
         my $action = $self->$orig(@_);
 
-        if ($action->isa($action_class)) {
+        if ($action->isa($action_class) && $self->$filter($action)) {
 
             if ($self->$is_blacked_out_method) {
                 my $forbidden_until = $self->$forbidden_until_method;
