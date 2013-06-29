@@ -76,7 +76,7 @@ role {
         return unless $prev && $prev->isa($action_class);
         return unless $self->$filter($prev);
 
-        if ($self->$clear_when($prev)) {
+        if ($self->$is_blacked_out_method && $self->$clear_when($prev)) {
             $self->$clear_exponent_method;
 
             $self->$clear_forbidden_until;
