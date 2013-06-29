@@ -240,6 +240,7 @@ class_has action => (
     trigger   => sub {
         my ($self, $new_value) = @_;
         $self->previous_action($new_value) if $new_value;
+        $self->_add_old_action($new_value);
     },
 );
 
@@ -248,6 +249,18 @@ class_has previous_action => (
     isa       => 'TAEB::Action',
     predicate => 'has_previous_action',
 );
+
+class_has old_actions => (
+    traits  => ['Array'],
+    isa     => 'ArrayRef[TAEB::Action]',
+    default => sub { [] },
+    handles => {
+        _old_actions => 'elements',
+        _add_old_action => 'push',
+    },
+    documentation => "Not meant for general consumption, just debugging (command: a)",
+);
+
 
 class_has new_game => (
     is  => 'rw',
@@ -809,6 +822,15 @@ TAEB->register_debug_commands(
             item_menu(
                 "TAEB's spells",
                 \@menu_items,
+            );
+        },
+    },
+    'a' => {
+        help     => "Display actions",
+        command  => sub {
+            item_menu(
+                "Previous actions",
+                [ reverse TAEB->_old_actions ],
             );
         },
     },
