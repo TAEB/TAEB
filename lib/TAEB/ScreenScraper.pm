@@ -774,6 +774,10 @@ our @msg_regex = (
         qr/^Your (.*) glows (?:blue|silver) for a (moment|while)\./ =>
             ['enchanted' => sub { ($1, $2) }],
     ],
+    [
+        qr/You carefully open the bag\.\.\.  It develops a huge set of teeth and bites you!/ =>
+            ['bag_of_tricks'],
+    ],
 );
 
 our @god_anger = (
@@ -841,6 +845,9 @@ our @prompts = (
     qr/^Beware, there will be no return! Still climb\?/ => 'really_escape',
     qr/^What monster do you want to genocide\?/ => 'genocide_species',
     qr/^What class of monsters do you wish to genocide\?/ => 'genocide_class',
+    qr/^There is a (.*) here, loot it\?/ => 'loot_it',
+    qr/^Do you want to take something out of the (.*)\?/ => 'take_something_out',
+    qr/^Do you wish to put something in\?/ => 'put_something_in',
 );
 
 our @exceptions = (
@@ -1233,7 +1240,7 @@ sub handle_menus {
     my $selector;
     my $committer = sub { $menu->commit };
 
-    if (TAEB->topline =~ /Pick up what\?/) {
+    if (TAEB->topline =~ /Pick up what\?|Take out what\?/) {
         $selector = TAEB->menu_select('pickup');
     }
     elsif (TAEB->topline =~ /Pick a skill to advance/) {
@@ -1261,7 +1268,7 @@ sub handle_menus {
             return;
         };
     }
-    elsif (TAEB->topline =~ /What would you like to drop\?/) {
+    elsif (TAEB->topline =~ /What would you like to drop\?|Put in what\?/) {
         # this one is special: it'll handle updating the inventory
         my %dont_have = map { ($_, 1) } 'a' .. 'z', 'A' .. 'Z';
 
