@@ -314,12 +314,15 @@ sub radiate {
     my $stopper      = $args{stopper};
     my $allowself    = $args{allowself};
     my $bouncy       = $args{bouncy};
+    my $new_dir      = $args{started_new_direction};
     my $current_tile = TAEB->current_tile;
     my ($x, $y)      = (TAEB->x, TAEB->y);
 
     # check each direction
     DIRECTION: for (deltas) {
         my ($dx, $dy) = @$_;
+
+        $new_dir->($dx, $dy) if $new_dir;
 
         my @tile_set;
 
@@ -903,6 +906,12 @@ Like stopper, but for our own tile.
 
 You might set this if you're zapping sleep which will bounce back
 at you, but you have reflection or sleep resistance.
+
+=item started_new_direction
+
+A callback that is invoked every time a new direction is started
+(including the first). Used so you can clear up any intermediate
+state if needed.
 
 =back
 
