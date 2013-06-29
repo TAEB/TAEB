@@ -55,6 +55,13 @@ sub right_ring_is {
     return $identity eq $desired;
 }
 
+sub is_wearing_ring {
+    my $self = shift;
+    my $desired = shift;
+
+    return $self->left_ring_is($desired) || $self->right_ring_is($desired);
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
