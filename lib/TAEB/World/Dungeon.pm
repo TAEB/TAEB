@@ -4,9 +4,13 @@ use TAEB::OO;
 use TAEB::Util 'refaddr';
 
 has levels => (
+    traits  => ['Array'],
     is      => 'ro',
     isa     => 'ArrayRef[ArrayRef[TAEB::World::Level]]',
     default => sub { [] },
+    handles => {
+        max_dlvl => 'count',
+    },
 );
 
 has current_level => (
