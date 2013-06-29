@@ -18,14 +18,21 @@ has state => (
 );
 
 has tile => (
-    is       => 'ro',
-    isa      => 'TAEB::World::Tile::Door',
-    default  => sub {
-        my $action = TAEB->action;
-        confess "Unable to figure out the door tile from action $action"
-            unless $action->does('TAEB::Action::Role::Direction');
-        return $action->target_tile;
-    },
+    is        => 'ro',
+    writer    => '_set_tile',
+    isa       => 'TAEB::World::Tile',
+    predicate => 'has_tile',
+);
+
+sub BUILD {
+    my $self = shift;
+
+    my $action = TAEB->action;
+    return unless $action->does('TAEB::Action::Role::Direction');
+
+    if (my $tile = $action->target_tile) {
+        $self->_set_tile($tile);
+    }
 );
 
 __PACKAGE__->parse_messages(
