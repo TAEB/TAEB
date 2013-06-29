@@ -43,7 +43,7 @@ sub left_ring_is {
 
     my $ring = $self->left_ring or return;
     my $identity = $ring->identity or return;
-    return $identity eq $desired;
+    return $identity eq $desired ? $ring : 0;
 }
 
 sub right_ring_is {
@@ -52,7 +52,7 @@ sub right_ring_is {
 
     my $ring = $self->right_ring or return;
     my $identity = $ring->identity or return;
-    return $identity eq $desired;
+    return $identity eq $desired ? $ring : 0;
 }
 
 sub is_wearing_ring {
