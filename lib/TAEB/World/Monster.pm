@@ -264,21 +264,27 @@ sub will_chase {
         && !$self->probably_sleeping;
 }
 
+sub has_possibility {
+    my $self = shift;
+    my $name = shift;
+    return any { $_->name eq $name } $self->possibilities;
+}
+
 # XXX: should be ai?
 sub is_meleeable {
     my $self = shift;
 
     return 0 unless $self->is_enemy;
 
-    return 0 if (any { $_->name eq 'floating eye'    } $self->possibilities)
+    return 0 if $self->has_possibility('floating eye')
              && !TAEB->is_blind;
 
-    return 0 if (any { $_->name eq 'blue jelly'      } $self->possibilities)
+    return 0 if $self->has_possibility('blue jelly')
              && !TAEB->cold_resistant;
 
-    return 0 if (any { $_->name eq 'spotted jelly'   } $self->possibilities);
+    return 0 if $self->has_possibility('spotted jelly');
 
-    return 0 if (any { $_->name eq 'gelatinous cube' } $self->possibilities)
+    return 0 if $self->has_possibility('gelatinous cube')
              && $self->level->has_enemies > 1;
 
     return 1;
