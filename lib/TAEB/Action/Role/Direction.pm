@@ -5,9 +5,10 @@ use TAEB::Util 'none';
 use TAEB::Util::World 'vi2delta';
 
 has direction => (
-    is       => 'ro',
-    isa      => 'Str',
-    provided => 1,
+    is        => 'ro',
+    isa       => 'Str',
+    predicate => 'has_direction',
+    provided  => 1,
 );
 
 has target_tile => (
@@ -15,7 +16,11 @@ has target_tile => (
     isa      => 'TAEB::World::Tile',
     init_arg => undef,
     lazy     => 1,
-    default  => sub { TAEB->current_level->at_direction(shift->direction) },
+    default  => sub {
+        my $self = shift;
+        confess "$self does not have a direction, so can't intuit a target_tile" if !$self->has_direction;
+        return TAEB->current_level->at_direction($self->direction)
+    },
 );
 
 has victim_tile => (
