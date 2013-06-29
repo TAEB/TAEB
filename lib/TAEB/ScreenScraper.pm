@@ -1292,6 +1292,8 @@ sub handle_menus {
                 }
             }
 
+            TAEB->clear_checking if TAEB->is_checking('inventory');
+
             return 0;
         };
 

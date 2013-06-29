@@ -908,6 +908,20 @@ my %post_check = (
         my $self = shift;
         $self->debt(0) if !$self->known_debt;
     },
+    inventory => sub {
+        my $self = shift;
+        # the screenscraper will clear this once it is done updating the
+        # inventory. if the screenscraper never updates the inventory, that's
+        # because the drop command gives no output when the inventory is empty,
+        # so we should indicate that
+        if (TAEB->is_checking('inventory')) {
+            TAEB->log->scraper(
+                'Our entire inventory seems to have disappeared!',
+                level => 'warning'
+            );
+            TAEB->inventory->remove($_) for TAEB->inventory->slots;
+        }
+    },
 );
 
 for my $aspect (keys %check_command) {
