@@ -1,7 +1,7 @@
 package TAEB::World::Spells;
 use Moose;
 use TAEB::OO;
-use TAEB::Util 'first', 'uniq';
+use TAEB::Util 'first', 'uniq', 'sum';
 use TAEB::World::Spell;
 
 with 'TAEB::Role::Overload';
@@ -118,6 +118,11 @@ sub spells_for_skill {
     my $skill = shift;
 
     return grep { $_->skill eq $skill } $self->spells;
+}
+
+sub casts_for_skill {
+    my $self = shift;
+    return sum map { $_->casted_count } $self->spells_for_skill(shift);
 }
 
 __PACKAGE__->meta->make_immutable;
