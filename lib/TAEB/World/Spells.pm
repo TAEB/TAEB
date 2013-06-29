@@ -108,7 +108,7 @@ sub knows_spell {
 
 sub msg_experience_level_change {
     my $self = shift;
-    TAEB->send_message(check => "spells");
+    TAEB->send_message(check => "spells") if $self->has_spells;
 }
 
 __PACKAGE__->meta->make_immutable;
