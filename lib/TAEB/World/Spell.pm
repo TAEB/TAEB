@@ -44,7 +44,7 @@ has casted_count => (
     isa => 'Int',
 );
 
-for my $attribute (qw/level read marker role emergency/) {
+for my $attribute (qw/level read marker role emergency skill/) {
     __PACKAGE__->meta->add_method($attribute => sub {
         my $self = shift;
         $self->spoiler->{$attribute};
