@@ -385,6 +385,8 @@ sub each_tile {
         if (!$cb->($next, $current, $dir)) {
             last;
         }
+
+        $current = $next;
     }
 
     return $current;
