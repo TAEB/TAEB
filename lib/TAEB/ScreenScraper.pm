@@ -775,6 +775,10 @@ our @msg_regex = (
             ['enchanted' => sub { ($1, $2) }],
     ],
     [
+        qr/^Your (.*) softly glows with a light blue aura\./ =>
+            ['blessed' => sub { $1 }],
+    ],
+    [
         qr/You carefully open the bag\.\.\.  It develops a huge set of teeth and bites you!/ =>
             ['bag_of_tricks'],
     ],

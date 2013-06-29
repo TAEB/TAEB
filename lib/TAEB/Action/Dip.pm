@@ -89,6 +89,11 @@ subscribe got_item => sub {
     }
 };
 
+sub msg_blessed {
+    my $self = shift;
+    $self->item->is_blessed(1);
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
