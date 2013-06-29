@@ -12,6 +12,49 @@ sub respond_loot_it { "y" }
 sub respond_take_something_out { "y" }
 sub respond_put_something_in { "n" }
 
+subscribe got_item => sub {
+    my $self  = shift;
+    my $event = shift;
+
+    # what about stacks?
+    TAEB->send_message(remove_floor_item => $event->item, $self->starting_tile);
+};
+
+# better place for these?
+subscribe container_noitems => sub {
+    my $self = shift;
+    my ($event) = @_;
+
+    $event->item->contents([]);
+    $event->item->contents_known(1);
+};
+
+sub msg_container_item {
+    my $self = shift;
+    my ($item, $container) = @_;
+
+    $container->add_item($item) if $item;
+}
+
+sub begin_select_pickup {
+    my $self = shift;
+    my ($container) = @_;
+    TAEB->announce('container_noitems', item => $container);
+}
+
+sub select_pickup {
+    my $self = shift;
+    my ($slot, $item, $container) = @_;
+    $item = TAEB->new_item($item)
+        or return;
+    TAEB->send_message('container_item', $item, $container);
+    TAEB->want_item($item);
+}
+
+sub is_impossible {
+    return TAEB->is_levitating;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
