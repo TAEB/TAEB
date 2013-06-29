@@ -1,7 +1,7 @@
 package TAEB::World::Spells;
 use Moose;
 use TAEB::OO;
-use TAEB::Util 'first';
+use TAEB::Util 'first', 'uniq';
 use TAEB::World::Spell;
 
 with 'TAEB::Role::Overload';
@@ -109,6 +109,15 @@ sub knows_spell {
 sub msg_experience_level_change {
     my $self = shift;
     TAEB->send_message(check => "spells") if $self->has_spells;
+}
+
+sub known_skills { uniq map { $_->skill } $self->spells }
+
+sub spells_for_skill {
+    my $self = shift;
+    my $skill = shift;
+
+    return grep { $_->skill eq $skill } $self->spells;
 }
 
 __PACKAGE__->meta->make_immutable;
