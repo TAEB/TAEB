@@ -321,8 +321,8 @@ sub radiate {
     my $allowself    = $args{allowself};
     my $bouncy       = $args{bouncy};
     my $new_dir      = $args{started_new_direction};
-    my $current_tile = TAEB->current_tile;
-    my ($x, $y)      = (TAEB->x, TAEB->y);
+    my $start_tile   = $args{from} || TAEB->current_tile;
+    my ($x, $y)      = ($start_tile->x, $start_tile->y);
 
     # check each direction
     DIRECTION: for (deltas) {
@@ -339,7 +339,7 @@ sub radiate {
             for (@tile_set) {
                 my ($distance, $tile) = @$_;
                 next DIRECTION if $stopper->($tile);
-                next DIRECTION if !$allowself && $tile == $current_tile;
+                next DIRECTION if !$allowself && $tile == $start_tile;
             }
         }
 
@@ -904,9 +904,14 @@ bolt when it could potentially hit a shopkeeper).
 This may be used to vary how far down the path you want to consider
 stoppers, as separate from the regular target matching.
 
+=item from (default: TAEB->current_tile)
+
+Where to radiate from. Useful to check if you're within range of
+that second wand of death.
+
 =item allowself (default: 0)
 
-Like stopper, but for our own tile.
+Like stopper, but for the "from" tile.
 
 You might set this if you're zapping sleep which will bounce back
 at you, but you have reflection or sleep resistance.
