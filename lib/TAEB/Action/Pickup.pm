@@ -21,17 +21,6 @@ subscribe got_item => sub {
     TAEB->send_message(remove_floor_item => $event->item, $self->starting_tile);
 };
 
-sub begin_select_pickup {
-    TAEB->announce('tile_noitems');
-}
-
-sub select_pickup {
-    my $item = TAEB->new_item($_)
-        or return;
-    TAEB->send_message('floor_item' => $item);
-    TAEB->want_item($item);
-}
-
 sub is_impossible {
     return TAEB->is_levitating;
 }
