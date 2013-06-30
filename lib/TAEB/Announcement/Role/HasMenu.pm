@@ -8,10 +8,15 @@ has menu => (
     isa      => 'NetHack::Menu',
     required => 1,
     handles  => {
-        all_menu_items  => 'all_items',
         _set_menu_style => 'select_count',
     },
 );
+
+# can't use handles for required role methods
+sub all_menu_items {
+    my $self = shift;
+    $self->menu->all_items(@_);
+}
 
 after finished_sending => sub {
     my $self = shift;

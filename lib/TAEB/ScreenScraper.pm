@@ -1341,6 +1341,7 @@ sub parse_enhance_from {
 
 sub parse_pickup_from {
     my $self = shift;
+    my $menu = shift;
 
     TAEB->announce('tile_noitems');
 

@@ -303,7 +303,7 @@ has statuses => (
 
 has skill_levels => (
     traits  => ['Hash'],
-    isa     => 'ArrayRef[Str]',
+    isa     => 'HashRef[Str]',
     default => sub { {} },
     handles => {
         _set_skill_level => 'set',

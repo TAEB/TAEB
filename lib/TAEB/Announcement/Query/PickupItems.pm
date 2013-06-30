@@ -8,6 +8,7 @@ with (
 );
 
 sub items_from { TAEB->current_tile->items }
+sub missing_ok { 1 }
 
 __PACKAGE__->meta->make_immutable;
 
