@@ -14,15 +14,6 @@ sub deinstitute {
     TAEB->publisher->unsubscribe(shift);
 }
 
-sub msg_powerup {
-    my $self = shift;
-    my $type = shift;
-
-    if ($type eq 'enhance') {
-        return "#enhance\n";
-    }
-}
-
 sub enhance {
     my $self  = shift;
     my $skill = shift;
@@ -128,10 +119,6 @@ This is the method called when TAEB finishes using this AI.
 
 This will not be called when TAEB is ending, but only when the AI is
 replaced by a different one.
-
-=head2 msg_powerup Str, *
-
-Received when we've got a powerup-like message. Currently handles C<enhance>.
 
 =head2 enhance Str, Str -> Bool
 
