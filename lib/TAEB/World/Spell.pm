@@ -234,6 +234,42 @@ sub did_cast {
 sub minimum_range { 6 }
 sub maximum_range { 13 }
 
+sub damage_range {
+    my $self = shift;
+    return unless $self->skill eq 'attack';
+
+    my $name = shift;
+
+    my ($base_min, $base_max);
+
+    if ($name eq 'force bolt') {
+        ($base_min, $base_max) = (2, 24);
+    }
+    elsif ($name eq 'drain life') {
+        ($base_min, $base_max) = (1, 8);
+    }
+    elsif ($name eq 'fireball') {
+        # no modifiers
+        return (12, 72);
+    }
+    else { # magic missile, cone of cold
+        my $spell_damage = int(TAEB->current_level / 2) + 1;
+        $base_min = $spell_damage;
+        $base_max = $spell_damage * 6;
+    }
+
+    my $mod = 0;
+    my $int = TAEB->int;
+    $mod = -3 if $int < 10;
+
+    if (TAEB->current_level > 4) {
+        $mod++ if $int >= 14;
+        $mod++ if $int > 18;
+    }
+
+    return ($base_min + $mod, $base_max + $mod);
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
