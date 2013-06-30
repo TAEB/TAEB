@@ -1,6 +1,5 @@
 package TAEB::Announcement::Role::HasMenu;
 use Moose::Role;
-with 'TAEB::Announcement::Role::HasItems';
 
 has menu => (
     is       => 'ro',
@@ -8,7 +7,39 @@ has menu => (
     required => 1,
 );
 
-# XXX populate items with menu information
+has items => (
+    traits     => ['Array'],
+    isa        => 'ArrayRef',
+    builder    => '_build_items',
+    handles    => {
+        items      => 'elements',
+        item_count => 'count',
+        item       => 'get',
+    },
+);
+
+sub _build_items {
+    my $self = shift;
+
+    my @items;
+    my $index = 0;
+
+    $self->menu->select(sub {
+        my $selector = shift;
+        my $item = $_;
+
+        push @{ $params->{items} }, {
+            selector => $selector,
+            item     => $item,
+            index    => $index,
+        };
+
+        $index++;
+        return 0;
+    });
+
+    return \@items;
+}
 
 no Moose::Role;
 

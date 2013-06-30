@@ -1,6 +1,9 @@
 package TAEB::Announcement::Role::SelectSubset;
 use Moose::Role;
-with 'TAEB::Announcement::Role::HasItems';
+with (
+    'TAEB::Announcement::Role::HasItems',
+    'TAEB::Announcement::Role::HasMenu',
+);
 
 has _is_selected => (
     is      => 'ro',

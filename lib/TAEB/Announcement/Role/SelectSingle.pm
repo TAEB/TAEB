@@ -1,6 +1,9 @@
 package TAEB::Announcement::Role::SelectSingle;
 use Moose::Role;
-with 'TAEB::Announcement::Role::HasItems';
+with (
+    'TAEB::Announcement::Role::HasItems',
+    'TAEB::Announcement::Role::HasMenu',
+);
 
 has selection => (
     is        => 'rw',
