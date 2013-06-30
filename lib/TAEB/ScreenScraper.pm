@@ -866,7 +866,7 @@ our @prompts = (
     qr/^What monster do you want to genocide\?/ => 'genocide_species',
     qr/^What class of monsters do you wish to genocide\?/ => 'genocide_class',
     qr/^There is an? (.*) here, loot it\?/ => 'loot_it',
-    qr/^Do you want to take something out of the (.*)\?/ => 'take_something_out',
+    qr/^Do you want to take something out of (?:the|.*'s) (.*)\?/ => 'take_something_out',
     qr/^Do you wish to put something in\?/ => 'put_something_in',
 );
 
