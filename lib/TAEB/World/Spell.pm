@@ -252,6 +252,10 @@ sub damage_range {
         # no modifiers
         return (12, 72);
     }
+    elsif ($name eq 'finger of death') {
+        # no damage
+        return;
+    }
     else { # magic missile, cone of cold
         my $spell_damage = int(TAEB->level / 2) + 1;
         $base_min = $spell_damage;
