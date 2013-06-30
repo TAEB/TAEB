@@ -392,6 +392,24 @@ sub each_tile {
     return $current;
 }
 
+sub any_tile {
+    my $self = shift;
+    my $cb = shift;
+
+    my $current = $self->from;
+
+    for my $dir (split '', $self->path) {
+        my $next = $current->level->at_direction($current->x, $current->y, $dir);
+        last if !$next;
+
+        return 1 if $cb->($next, $current, $dir);
+
+        $current = $next;
+    }
+
+    return 0;
+}
+
 sub subpath_where {
     my $self = shift;
     my $predicate = shift;
