@@ -792,6 +792,14 @@ our @msg_regex = (
         qr/Hmmm, it seems to be locked\./ =>
             ['container_locked'],
     ],
+    [
+        qr/You feel (?:controlled!|in control of yourself\.|centered in your personal space\.)/ =>
+            [status_change => teleport_control => 1],
+    ],
+    [
+        qr/You feel uncontrolled!/ =>
+            [status_change => teleport_control => 0],
+    ],
 );
 
 our @god_anger = (

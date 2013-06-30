@@ -68,7 +68,7 @@ has [qw/is_blind is_stunned is_confused is_hallucinating is_lycanthropic is_engu
     },
 );
 
-has [qw/is_fast is_very_fast is_stealthy is_teleporting/] => (
+has [qw/is_fast is_very_fast is_stealthy is_teleporting has_teleport_control/] => (
     is      => 'rw',
     isa     => 'Bool',
     default => 0,
@@ -430,15 +430,16 @@ subscribe turn => sub {
 };
 
 my %method_of = (
-    lycanthropy   => 'is_lycanthropic',
-    blindness     => 'is_blind',
-    confusion     => 'is_confused',
-    stunning      => 'is_stunned',
-    hallucination => 'is_hallucinating',
-    pit           => 'in_pit',
-    web           => 'in_web',
-    stoning       => 'is_petrifying',
-    levitation    => 'is_levitating',
+    lycanthropy      => 'is_lycanthropic',
+    blindness        => 'is_blind',
+    confusion        => 'is_confused',
+    stunning         => 'is_stunned',
+    hallucination    => 'is_hallucinating',
+    pit              => 'in_pit',
+    web              => 'in_web',
+    stoning          => 'is_petrifying',
+    levitation       => 'is_levitating',
+    teleport_control => 'has_teleport_control',
 );
 
 sub msg_status_change {
