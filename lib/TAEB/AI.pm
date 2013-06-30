@@ -14,16 +14,6 @@ sub deinstitute {
     TAEB->publisher->unsubscribe(shift);
 }
 
-sub want_item {
-    my $self = shift;
-
-    $self->pickup(@_);
-}
-
-sub pickup { 0 }
-
-sub drop { 0 }
-
 sub msg_powerup {
     my $self = shift;
     my $type = shift;
@@ -138,18 +128,6 @@ This is the method called when TAEB finishes using this AI.
 
 This will not be called when TAEB is ending, but only when the AI is
 replaced by a different one.
-
-=head2 want_item Item -> Bool or Ref[Int]
-
-Does TAEB want this item?
-
-=head2 pickup Item -> Bool or Ref[Int]
-
-Will TAEB pick up this item? Not by default, no.
-
-=head2 drop Item -> Bool
-
-Will TAEB drop this item? Not by default, no.
 
 =head2 msg_powerup Str, *
 
