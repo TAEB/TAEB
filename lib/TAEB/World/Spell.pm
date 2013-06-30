@@ -209,11 +209,12 @@ sub forgotten {
 sub debug_line_noslot {
     my $self = shift;
 
-    return sprintf '%s %d%% (cast %dx) (learned T%d)',
-           $self->name,
-           $self->fail,
-           ($self->casted_count || 0),
-           $self->learned_at;
+    return join ' ',
+            $self->name,
+            $self->fail . '%',
+            ($self->damage_range ? ("[" . (join "-", $self->damage_range) . "]") : ()),
+            "cast " . ($self->casted_count || 0) . "x",
+            "(learned T" . $self->learned_at;
 }
 
 sub debug_line {
