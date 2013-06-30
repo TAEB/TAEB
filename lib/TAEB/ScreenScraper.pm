@@ -1275,14 +1275,8 @@ sub handle_menus {
     my $selector;
     my $committer = sub { $menu->commit };
 
-    if (TAEB->topline =~ /Pick up what\?/) {
+    if (TAEB->topline =~ /Pick up what\?|Take out what\?/) {
         $selector = TAEB->menu_select('pickup');
-    }
-    elsif (TAEB->topline =~ /Take out what\?/) {
-        # XXX not sure how to actually associate the container that we looted
-        # with the menu that appears - this won't work for taking things out
-        # of bags in your inventory, for instance
-        $selector = TAEB->menu_select('pickup', TAEB->current_tile->container);
     }
     elsif (TAEB->topline =~ /Pick a skill to advance/) {
         $selector = TAEB->menu_select('enhance');
@@ -1309,10 +1303,7 @@ sub handle_menus {
             return;
         };
     }
-    elsif (TAEB->topline =~ /Put in what\?/) {
-        # XXX not sure how to handle this yet, the drop logic is complicated
-    }
-    elsif (TAEB->topline =~ /What would you like to drop\?/) {
+    elsif (TAEB->topline =~ /What would you like to drop\?|Put in what\?/) {
         # this one is special: it'll handle updating the inventory
         my %dont_have = map { ($_, 1) } 'a' .. 'z', 'A' .. 'Z';
 
