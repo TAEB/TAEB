@@ -270,6 +270,24 @@ sub damage_range {
     return ($base_min + $mod, $base_max + $mod);
 }
 
+sub direction {
+    my $self = shift;
+
+    my $direction = $self->spoiler->{direction}
+        or return;
+
+    # most spells have a single, constant direction
+    if (!ref($direction)) {
+        return $direction;
+    }
+
+    # some spells (cone of cold, fireball) vary based on skill in the spell
+    my $skill = $self->skill;
+    my $ability = "unskilled"; # XXX
+
+    return $direction->{$ability};
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
