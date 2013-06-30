@@ -332,19 +332,21 @@ sub radiate {
 
         my @tile_set;
 
+        # first, is there any stopper anywhere in range? if so, bail
         if ($stopper) {
             $self->_beam_fly(\@tile_set, $bouncy, $dx, $dy, $x, $y, $stopper_max);
 
-            # first, is there any stopper anywhere in range? if so, bail
             for (@tile_set) {
                 my ($distance, $tile) = @$_;
                 next DIRECTION if $stopper->($tile);
                 next DIRECTION if !$allowself && $tile == $start_tile;
             }
+
+            # force recalculation
+            @tile_set = () if $stopper_max != $max;
         }
 
-        if ($max != $stopper_max || !@tile_set) {
-            @tile_set = ();
+        if (!@tile_set) {
             $self->_beam_fly(\@tile_set, $bouncy, $dx, $dy, $x, $y, $max);
         }
 
