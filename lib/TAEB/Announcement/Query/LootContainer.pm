@@ -1,4 +1,4 @@
-package TAEB::Announcement::Query::IdentifyItems;
+package TAEB::Announcement::Query::LootContainer;
 use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Query';

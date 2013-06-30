@@ -1,10 +1,10 @@
-package TAEB::Announcement::Query::IdentifyItems;
+package TAEB::Announcement::Query::CastSpell;
 use Moose;
 use TAEB::OO;
 extends 'TAEB::Announcement::Query';
 with (
     'TAEB::Announcement::Role::HasMenu',
-    'TAEB::Announcement::Role::SelectSubset',
+    'TAEB::Announcement::Role::SelectSingle',
 );
 
 __PACKAGE__->meta->make_immutable;
