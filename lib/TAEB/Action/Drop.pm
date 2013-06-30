@@ -26,7 +26,7 @@ subscribe query_dropitems => sub {
         my $item = $menu_item->user_data;
         if ($drop{refaddr $item}) {
             $menu_item->selected(1);
-            $menu_item->selected_quantity('all');
+            $menu_item->quantity('all');
             delete $drop{refaddr $item};
         }
     }
