@@ -1307,6 +1307,7 @@ sub handle_menus {
         ));
     }
     elsif (TAEB->topline =~ /What would you like to drop\?/) {
+        $self->parse_inventory_from($menu);
         TAEB->announce(query_dropitems => (
             menu => $menu,
         ));
@@ -1319,6 +1320,20 @@ sub handle_menus {
 
     TAEB->write($menu->commit);
     _recurse;
+}
+
+sub parse_inventory_from {
+    my $self = shift;
+    my $menu = shift;
+
+    for my $menu_item ($menu->all_items) {
+        my $slot = $menu_item->selector;
+        my $new_item = TAEB->new_item($menu_item->description);
+
+        TAEB->inventory->update($slot => $new_item);
+    }
+
+    TAEB->clear_checking if TAEB->is_checking('inventory');
 }
 
 sub handle_fallback {
