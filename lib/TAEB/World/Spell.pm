@@ -253,7 +253,7 @@ sub damage_range {
         return (12, 72);
     }
     else { # magic missile, cone of cold
-        my $spell_damage = int(TAEB->current_level / 2) + 1;
+        my $spell_damage = int(TAEB->level / 2) + 1;
         $base_min = $spell_damage;
         $base_max = $spell_damage * 6;
     }
@@ -262,7 +262,7 @@ sub damage_range {
     my $int = TAEB->int;
     $mod = -3 if $int < 10;
 
-    if (TAEB->current_level > 4) {
+    if (TAEB->level > 4) {
         $mod++ if $int >= 14;
         $mod++ if $int > 18;
     }
