@@ -423,9 +423,7 @@ sub average_actions_to_kill {
 
 sub currently_seen {
     my $self = shift;
-    # XXX: we update senses after the dungeon, so there's off by one here...
-    # leaving this here until that's looked into
-    return $self->last_seen == TAEB->turn - 1;
+    return $self->last_seen == TAEB->turn;
 }
 
 sub persistence_time {
