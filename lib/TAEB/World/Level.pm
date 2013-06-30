@@ -361,6 +361,8 @@ sub radiate {
             return (delta2vi($dx, $dy), $tile);
         }
     }
+
+    return;
 }
 
 sub remove_monster {
