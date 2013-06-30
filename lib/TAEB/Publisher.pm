@@ -92,7 +92,7 @@ sub send_message {
 
     if ($self->is_paused) {
         # Some announcements (like queries) cannot be delayed
-        unless (@args == 1 && blessed($args[0]) && $args[0]->isa('TAEB::Announcement') && $args[0]->is_immediate) {
+        unless (@args == 1 && blessed($args[0]) && $args[0]->isa('TAEB::Announcement') && $args[0]->immediate) {
             return $self->_enqueue_message($name, @args);
         }
     }
