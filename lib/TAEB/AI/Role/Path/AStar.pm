@@ -62,9 +62,8 @@ sub astar {
 
             next if $closed[$xdx][$ydy];
 
-            # can't move diagonally if we have lots in our inventory
-            # XXX: this should be 600, but we aren't going to be able to get
-            # the weight exact
+            # If can't squeeze, then cannot do diagonal movement without
+            # another walkable tile to offer extra space.
             if ($cant_squeeze && $dx && $dy) {
                 next unless $tile->level->at($xdx, $y)->is_walkable
                          || $tile->level->at($x, $ydy)->is_walkable;
