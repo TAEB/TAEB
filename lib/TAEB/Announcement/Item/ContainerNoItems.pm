@@ -4,7 +4,8 @@ use TAEB::OO;
 extends 'TAEB::Announcement::Item';
 
 has '+item' => (
-    isa => 'NetHack::Item::Tool::Container',
+    isa     => 'NetHack::Item::Tool::Container',
+    default => sub { TAEB->current_tile->container }, # XXX
 );
 
 use constant name => 'container_noitems';
