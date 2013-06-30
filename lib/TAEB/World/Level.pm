@@ -358,11 +358,7 @@ sub radiate {
             return delta2vi($dx, $dy) if !wantarray;
 
             # if they ask for a list, give them more detail
-            return (
-                delta2vi($dx, $dy),
-                $max - $distance,
-                $tile,
-            );
+            return (delta2vi($dx, $dy), $tile);
         }
     }
 }
@@ -878,7 +874,7 @@ argument. Once the coderef returns a true value, then the radiating stops and
 something will be returned:
 
 If called in scalar context, the vi-key direction will be returned. If called
-in list context, the vi-key direction and distance will be returned.
+in list context, the vi-key direction and matching tile will be returned.
 
 The optional arguments are:
 
