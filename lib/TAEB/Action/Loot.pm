@@ -5,6 +5,12 @@ extends 'TAEB::Action';
 
 use constant command => "#loot\n";
 
+has container => (
+    is       => 'ro',
+    isa      => 'NetHack::Item::Tool::Container',
+    required => 1,
+);
+
 sub respond_loot_it { "y" }
 
 # XXX is there ever a case where we'd want to put something in? our own bag
@@ -18,7 +24,7 @@ subscribe got_item => sub {
 
     # what about stacks?
     # XXX make into announcement
-    TAEB->current_tile->container->remove_item($event->item);
+    $self->container->remove_item($event->item);
 };
 
 # better place for these?
@@ -39,27 +45,20 @@ sub msg_container_item {
 
 sub msg_container_locked {
     my $self = shift;
-
-    if (my $container = TAEB->current_tile->container) {
-        $container->locked(1);
-    }
-    else {
-        TAEB->log->action("Got a locked message, but no container here!");
-    }
+    $self->container->locked(1);
 }
 
 sub begin_select_pickup {
     my $self = shift;
-    my ($container) = @_;
-    TAEB->announce('container_noitems', item => $container);
+    TAEB->announce('container_noitems', item => $self->container);
 }
 
 sub select_pickup {
     my $self = shift;
-    my ($slot, $item, $container) = @_;
+    my ($slot, $item) = @_;
     $item = TAEB->new_item($item)
         or return;
-    TAEB->send_message('container_item', $item, $container);
+    TAEB->send_message('container_item', $item, $self->container);
     TAEB->want_item($item);
 }
 
