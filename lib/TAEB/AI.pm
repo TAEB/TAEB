@@ -14,16 +14,6 @@ sub deinstitute {
     TAEB->publisher->unsubscribe(shift);
 }
 
-sub enhance {
-    my $self  = shift;
-    my $skill = shift;
-    my $level = shift;
-
-    TAEB->log->ai("Enhancing $skill up from $level");
-
-    return 1;
-}
-
 has currently => (
     is      => 'rw',
     isa     => 'Str',
@@ -66,13 +56,6 @@ sub respond_wish {
 
     # When in doubt, ask for more shit to throw at people.
     return "3 blessed fixed +3 silver daggers";
-}
-
-sub select_enhance {
-    my $self = shift;
-    my ($skill, $level) = /^\s*(.*?)\s*\[(.*)\]/
-        or warn "Unable to parse $_ as an #enhance item.";
-    $self->enhance($skill, $level);
 }
 
 sub select_identify {

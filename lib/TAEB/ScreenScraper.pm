@@ -1292,6 +1292,8 @@ sub handle_menus {
         ));
     }
     elsif (TAEB->topline =~ /Pick a skill to advance/) {
+        $self->parse_enhance_from($menu);
+
         TAEB->announce(query_enhance => (
             menu => $menu,
         ));
@@ -1320,6 +1322,18 @@ sub handle_menus {
 
     TAEB->write($menu->commit);
     _recurse;
+}
+
+sub parse_enhance_from {
+    my $self = shift;
+    my $menu = shift;
+
+    for my $row ($menu->extra_rows) {
+        my ($skill, $level) = $row =~ /^\s*(.*?)\s*\[(.*)\]/
+            or next;
+
+        TAEB->send_message(skill_level => ($skill, $level));
+    }
 }
 
 sub parse_inventory_from {
