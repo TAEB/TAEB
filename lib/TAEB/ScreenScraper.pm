@@ -432,10 +432,6 @@ our @msg_regex = (
             [check => 'inventory'],
     ],
     [
-        qr/^You cannot escape from (?:the )?(.*)!/,
-            ['cannot_escape', sub { $1 || '' }],
-    ],
-    [
         qr/^You throw (\d+) /,
             ['throw_count', sub { $1 }],
     ],
