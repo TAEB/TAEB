@@ -35,6 +35,23 @@ subscribe query_dropitems => sub {
         for values %drop;
 };
 
+sub done {
+    my $self = shift;
+
+    for my $item (@{ $self->items }) {
+        # dropping a part of the stack
+        #if (ref($drop) && $$drop < $item->quantity) {
+        #    my $new_item = $item->fork_quantity($$drop);
+        #    TAEB->send_message('floor_item' => $new_item);
+        #}
+        ## dropping the whole stack
+        #elsif ($drop) {
+            TAEB->inventory->remove($item->slot);
+            TAEB->send_message('floor_item' => $item);
+        # }
+    }
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
