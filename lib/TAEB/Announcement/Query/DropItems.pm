@@ -8,6 +8,7 @@ with (
 );
 
 sub items_from { TAEB->inventory_items }
+sub missing_ok { 0 }
 
 __PACKAGE__->meta->make_immutable;
 

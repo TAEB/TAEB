@@ -1,7 +1,7 @@
 package TAEB::Announcement::Role::ItemMenu;
 use Moose::Role;
 
-requires 'items_from', 'all_menu_items';
+requires 'items_from', 'all_menu_items', 'missing_ok';
 
 sub BUILD {}
 after BUILD => sub {
@@ -19,7 +19,11 @@ after BUILD => sub {
         }
     }
 
-    TAEB->log->scraper("Out of sync: expected item $_ is not in the menu") for values %expected;
+    # for Identify, not all inventory items are going to show up
+    unless ($self->missing_ok) {
+        TAEB->log->scraper("Out of sync: expected item $_ is not in the menu") for values %expected;
+    }
+
     TAEB->log->scraper("Out of sync: menu item $_ is missing") for values %menu_items;
 };
 
