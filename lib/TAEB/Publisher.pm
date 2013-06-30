@@ -87,16 +87,15 @@ sub announce {
 
 sub send_message {
     my $self = shift;
+    my $name = shift;
+    my @args = @_;
 
     if ($self->is_paused) {
         # Some announcements (like queries) cannot be delayed
-        unless (@_ == 1 && blessed($_[0]) && $_[0]->isa('TAEB::Announcement') && $_[0]->is_immediate) {
-            return $self->_enqueue_message(@_);
+        unless (@args == 1 && blessed($args[0]) && $args[0]->isa('TAEB::Announcement') && $args[0]->is_immediate) {
+            return $self->_enqueue_message($name, @args);
         }
     }
-
-    my $name = shift;
-    my @args = @_;
 
     if (@args) {
         TAEB->log->publisher("Announcing $name with arguments @args.");
