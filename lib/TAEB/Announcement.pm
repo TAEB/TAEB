@@ -21,6 +21,7 @@ sub name {
 }
 
 sub immediate { 0 }
+sub finished_sending { }
 
 use Module::Pluggable (
     require          => 1,

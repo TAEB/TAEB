@@ -107,9 +107,9 @@ sub send_message {
 
     my $method = "msg_$name";
 
-    my $announcement = 0;
+    my $announcement;
     if (@args == 1 && blessed($args[0]) && $args[0]->isa('TAEB::Announcement')) {
-        $announcement = 1;
+        $announcement = $args[0];
         $method = "subscription_" . $args[0]->name;
     }
 
@@ -131,6 +131,10 @@ sub send_message {
                 last;
             }
         }
+    }
+
+    if ($announcement) {
+        $announcement->finished_sending;
     }
 }
 
