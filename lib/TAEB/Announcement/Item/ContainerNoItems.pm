@@ -9,6 +9,10 @@ has '+item' => (
 
 use constant name => 'container_noitems';
 
+__PACKAGE__->parse_messages(
+    qr/The (.*) is empty\./ => {},
+);
+
 __PACKAGE__->meta->make_immutable;
 no Moose;
 
