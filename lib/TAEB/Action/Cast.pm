@@ -13,7 +13,21 @@ has spell => (
     provided => 1,
 );
 
-sub single_cast { shift->spell->slot }
+subscribe query_castspell => sub {
+    my $self = shift;
+    my $event = shift;
+
+    my $spell_name = $self->spell->name;
+
+    for my $item ($event->all_menu_items) {
+        if ($item->description eq $spell_name) {
+            $item->selected(1);
+            last;
+        }
+    }
+
+    TAEB->log->spells("Spell $spell_name did not appear in menu!", level => "error");
+};
 
 sub exception_hunger_cast {
     my $self = shift;
