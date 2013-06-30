@@ -414,7 +414,7 @@ augment display_menu => sub {
                 $menu->search('');
                 $pager->current_page(1);
             }
-            else {
+            elsif ($pager->entries_on_this_page) {
                 my @visible_items = map { $menu->item($_ - 1) }
                                     $pager->first .. $pager->last;
 
