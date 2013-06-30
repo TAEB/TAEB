@@ -1,28 +1,39 @@
 package TAEB::Action::Drop;
 use Moose;
 use TAEB::OO;
+use TAEB::Util 'refaddr';
 extends 'TAEB::Action';
 with 'TAEB::Action::Role::Item';
 
 use constant command => "D";
 
 has items => (
-    is  => 'ro',
-    isa => 'ArrayRef',
+    is       => 'ro',
+    isa      => 'ArrayRef[NetHack::Item]',
     provided => 1,
 );
 
-# logic is elsewhere sadly
+subscribe query_dropitems => sub {
+    my $self = shift;
+    my $event = shift;
 
-sub msg_ring {
-    my $self     = shift;
-    my $identity = shift;
+    my %drop;
+    for my $item (@{ $self->items }) {
+        $drop{refaddr $item} = $item;
+    }
 
-    return unless @{ $self->items } == 1;
-    my $item = $self->items->[0];
-    TAEB->log->action("Identified ".$item->appearance." as $identity");
-    $self->identify_as($identity);
-}
+    for my $menu_item ($event->all_menu_items) {
+        my $item = $menu_item->user_data;
+        if ($drop{refaddr $item}) {
+            $menu_item->selected(1);
+            $menu_item->selected_quantity('all');
+            delete $drop{refaddr $item};
+        }
+    }
+
+    TAEB->log->inventory("Tried to drop item I don't have: $_")
+        for values %drop;
+};
 
 __PACKAGE__->meta->make_immutable;
 
