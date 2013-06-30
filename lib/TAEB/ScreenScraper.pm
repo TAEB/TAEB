@@ -1282,6 +1282,7 @@ sub handle_menus {
     # now, what kind of menu is this?
 
     if (TAEB->topline =~ /Pick up what\?/) {
+        $self->parse_pickup_from($menu);
         TAEB->announce(query_pickupitems => (
             menu => $menu,
         ));
@@ -1335,6 +1336,21 @@ sub parse_enhance_from {
             or next;
 
         TAEB->send_message(skill_level => ($skill, $level));
+    }
+}
+
+sub parse_pickup_from {
+    my $self = shift;
+
+    TAEB->announce('tile_noitems');
+
+    for my $menu_item ($menu->all_items) {
+        if (my $item = TAEB->new_item($menu_item->description)) {
+            TAEB->send_message('floor_item' => $item);
+        }
+        else {
+            TAEB->log->scraper("Can't initialize item from description " . $menu_item->description);
+        }
     }
 }
 
