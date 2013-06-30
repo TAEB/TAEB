@@ -4,12 +4,6 @@ use TAEB::OO;
 extends 'TAEB::Announcement::Query';
 with 'TAEB::Announcement::Role::SelectSubset';
 
-has desired_items => (
-    is       => 'ro',
-    isa      => 'ArrayRef[NetHack::Item]',
-    required => 1,
-);
-
 sub BUILD {
     my $self = shift;
     my %inventory = map { $_->slot => $_ } TAEB->inventory_items;

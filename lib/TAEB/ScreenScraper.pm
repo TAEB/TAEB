@@ -1282,37 +1282,37 @@ sub handle_menus {
     # now, what kind of menu is this?
 
     if (TAEB->topline =~ /Pick up what\?/) {
-        TAEB->announce('Query::PickupItems' => (
+        TAEB->announce(query_pickupitems => (
             menu => $menu,
         ));
     }
     elsif (TAEB->topline =~ /Take out what\?/) {
-        TAEB->announce('Query::LootContainer' => (
+        TAEB->announce(query_lootcontainer => (
             menu => $menu,
         ));
     }
     elsif (TAEB->topline =~ /Pick a skill to advance/) {
-        TAEB->announce('Query::Enhance' => (
+        TAEB->announce(query_enhance => (
             menu => $menu,
         ));
     }
     elsif (TAEB->topline =~ /What would you like to identify first\?/) {
-        TAEB->announce('Query::IdentifyItems' => (
+        TAEB->announce(query_identifyitems => (
             menu => $menu,
         ));
     }
     elsif (TAEB->topline =~ /Choose which spell to cast/) {
-        TAEB->announce('Query::CastSpell' => (
+        TAEB->announce(query_castspell => (
             menu => $menu,
         ));
     }
     elsif (TAEB->topline =~ /What would you like to drop\?/) {
-        TAEB->announce('Query::DropItems' => (
+        TAEB->announce(query_dropitems => (
             menu => $menu,
         ));
     }
     elsif (TAEB->topline =~ /Put in what\?/) {
-        TAEB->announce('Query::StuffContainer' => (
+        TAEB->announce(query_stuffcontainer => (
             menu => $menu,
         ));
     }
