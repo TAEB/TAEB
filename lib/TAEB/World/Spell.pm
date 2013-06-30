@@ -238,7 +238,7 @@ sub damage_range {
     my $self = shift;
     return unless $self->skill eq 'attack';
 
-    my $name = shift;
+    my $name = $self->name;
 
     my ($base_min, $base_max);
 
