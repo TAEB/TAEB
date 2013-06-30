@@ -1,18 +1,10 @@
 package TAEB::Announcement::Role::SelectSingle;
 use Moose::Role;
-with (
-    'TAEB::Announcement::Role::HasItems',
-    'TAEB::Announcement::Role::HasMenu',
-);
+with 'TAEB::Announcement::Role::HasMenu';
 
-has selection => (
-    is        => 'rw',
-    isa       => 'Any',
-    predicate => 'has_selection',
-);
+sub menu_style { 'single' }
 
 no Moose::Role;
 
 1;
-
 
