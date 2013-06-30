@@ -229,7 +229,7 @@ class_has publisher => (
     isa     => 'TAEB::Publisher',
     lazy    => 1,
     default => sub { TAEB::Publisher->new },
-    handles => [qw/announce send_message get_exceptional_response get_response get_location_request remove_messages menu_select single_select/],
+    handles => [qw/announce send_message get_exceptional_response get_response get_location_request remove_messages/],
 );
 
 class_has action => (

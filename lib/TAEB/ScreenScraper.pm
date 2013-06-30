@@ -1272,86 +1272,6 @@ sub handle_menus {
     my $self = shift;
     my $menu = NetHack::Menu->new(vt => TAEB->vt);
 
-    my $selector;
-    my $committer = sub { $menu->commit };
-
-    if (TAEB->topline =~ /Pick up what\?|Take out what\?/) {
-        $selector = TAEB->menu_select('pickup');
-    }
-    elsif (TAEB->topline =~ /Pick a skill to advance/) {
-        $selector = TAEB->menu_select('enhance');
-    }
-    elsif (TAEB->topline =~ /What would you like to identify first\?/) {
-        $selector = TAEB->menu_select('identify');
-    }
-    elsif (TAEB->topline =~ /Choose which spell to cast/) {
-        my $which_spell = TAEB->is_checking('spells') ? "\e"
-                        : TAEB->single_select('cast') || "\e";
-        $committer = sub { $which_spell };
-
-        $selector = sub {
-            my $slot = shift;
-
-            # force bolt             1    attack         0%
-            my ($name, $forgotten, $fail) =
-                /^(.*?)\s+\d([ *])\s+\w+\s+(\d+)%\s*$/
-                    or return;
-
-            TAEB->send_message('know_spell',
-                $slot, $name, $forgotten eq '*', $fail);
-
-            return;
-        };
-    }
-    elsif (TAEB->topline =~ /What would you like to drop\?|Put in what\?/) {
-        # this one is special: it'll handle updating the inventory
-        my %dont_have = map { ($_, 1) } 'a' .. 'z', 'A' .. 'Z';
-
-        $selector = sub {
-            my $slot = shift;
-            my $new_item = TAEB->new_item($_);
-
-            TAEB->inventory->update($slot => $new_item);
-            my $item = TAEB->inventory->get($slot);
-            delete $dont_have{$slot} if $item;
-
-            # if we can drop the item, drop it!
-            if (!TAEB->is_checking('inventory')) {
-                # $item will be undef for non-inventory items like gold
-                my $drop = TAEB->ai->drop($item || $new_item);
-
-                # dropping a part of the stack
-                if (ref($drop) && $$drop < $item->quantity) {
-                    my $new_item = $item->fork_quantity($$drop);
-                    TAEB->send_message('floor_item' => $new_item);
-                    return $$drop;
-                }
-                # dropping the whole stack
-                elsif ($drop) {
-                    TAEB->inventory->remove($slot) if $item;
-                    TAEB->send_message('floor_item' => $item);
-                    return 'all';
-                }
-            }
-
-            TAEB->clear_checking if TAEB->is_checking('inventory');
-
-            return 0;
-        };
-
-        $committer = sub {
-            for my $slot (keys %dont_have) {
-                my $item = TAEB->inventory->get($slot);
-                if ($item) {
-                    TAEB->log->scraper("$item seems to have disappeared!",
-                                       level => 'warning');
-                    TAEB->inventory->remove($slot);
-                }
-            }
-            $menu->commit;
-        };
-    }
-
     return unless $menu->has_menu;
 
     until ($menu->at_end) {
@@ -1359,9 +1279,20 @@ sub handle_menus {
         TAEB->process_input(0);
     }
 
-    $menu->select_quantity($selector) if $selector;
+    # now, what kind of menu is this?
 
-    TAEB->write($committer->());
+    if (TAEB->topline =~ /Pick up what\?|Take out what\?/) {
+    }
+    elsif (TAEB->topline =~ /Pick a skill to advance/) {
+    }
+    elsif (TAEB->topline =~ /What would you like to identify first\?/) {
+    }
+    elsif (TAEB->topline =~ /Choose which spell to cast/) {
+    }
+    elsif (TAEB->topline =~ /What would you like to drop\?|Put in what\?/) {
+    }
+
+    TAEB->write($menu->commit);
     _recurse;
 }
 

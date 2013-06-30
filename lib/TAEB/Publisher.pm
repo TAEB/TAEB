@@ -225,48 +225,6 @@ sub get_location_request {
     );
 }
 
-sub menu_select {
-    my $self = shift;
-    my $name = shift;
-    my $num  = 0;
-
-    return sub {
-        my $slot = shift;
-        my $item = $_;
-
-        if ($num++ == 0) {
-            for my $responder ($self->responders) {
-                if (my $method = $responder->can("begin_select_$name")) {
-                    $method->($responder);
-                }
-            }
-        }
-
-        for my $responder ($self->responders) {
-            if (my $method = $responder->can("select_$name")) {
-                my $rt = $method->($responder, $slot, $item);
-
-                return ref($rt) ? $$rt : $rt ? 'all' : undef;
-            }
-        }
-
-        return;
-    };
-}
-
-sub single_select {
-    my $self = shift;
-    my $name = shift;
-
-    for my $responder ($self->responders) {
-        if (my $method = $responder->can("single_$name")) {
-            return $method->($responder, $name);
-        }
-    }
-
-    return;
-}
-
 sub responders { grep { defined } TAEB->ai, TAEB->action }
 
 __PACKAGE__->meta->make_immutable;
