@@ -111,7 +111,7 @@ sub msg_experience_level_change {
     TAEB->send_message(check => "spells") if $self->has_spells;
 }
 
-sub known_skills { uniq map { $_->skill } $self->spells }
+sub known_skills { uniq map { $_->skill } shift->spells }
 
 sub spells_for_skill {
     my $self = shift;
