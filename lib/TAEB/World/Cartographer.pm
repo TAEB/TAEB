@@ -243,9 +243,11 @@ sub check_dlvl {
             elsif ($descriptor eq 'Fort Ludios') {
                 $newlevel->branch('ludios');
             }
+            TAEB->log->cartographer("Created level: $newlevel");
         }
-
-        TAEB->log->cartographer("Created level: $newlevel");
+        else {
+            TAEB->log->cartographer("We're returning to level: $newlevel");
+        }
 
         $self->dungeon->current_level($newlevel);
         TAEB->send_message('level_change' => old_level => $level, new_level => $newlevel);
