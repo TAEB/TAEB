@@ -1,16 +1,6 @@
 package TAEB::Announcement::Role::SelectSubset;
 use Moose::Role;
-
-has items => (
-    traits     => ['Array'],
-    isa        => 'ArrayRef',
-    required   => 1,
-    handles    => {
-        items      => 'elements',
-        item_count => 'count',
-        item       => 'get',
-    },
-);
+with 'TAEB::Announcement::Role::HasItems';
 
 has _is_selected => (
     is      => 'ro',
