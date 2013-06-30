@@ -55,7 +55,7 @@ do {
         }
 
         return $name_to_class{$name} if exists $name_to_class{$name};
-        confess "No announcement class with the name '$name' exists";
+        confess "No announcement class with the name '$name' exists. Valid announcements: " . join ' ', keys %name_to_class;
     }
 
     sub _build_name_to_class_mapping {
