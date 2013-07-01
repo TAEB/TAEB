@@ -13,6 +13,12 @@ has items => (
     provided => 1,
 );
 
+has sell => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 'False',
+);
+
 subscribe query_dropitems => sub {
     my $self = shift;
     my $event = shift;
