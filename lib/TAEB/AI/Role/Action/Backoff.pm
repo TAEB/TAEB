@@ -83,12 +83,7 @@ role {
         return unless $prev && $prev->isa($action_class);
         return unless $self->$filter($prev);
 
-        if ($self->$clear_when($prev)) {
-            $self->$clear_exponent_method;
-
-            $self->$clear_forbidden_until;
-        }
-        elsif ($self->$blackout_when($prev)) {
+        if ($self->$blackout_when($prev)) {
             my $turn = TAEB->turn;
 
             $self->$failed_at_method($turn);
@@ -101,6 +96,11 @@ role {
             }
 
             $self->$forbidden_until_method($turn + 2 ** $exponent);
+        }
+        elsif ($self->$clear_when($prev)) {
+            $self->$clear_exponent_method;
+
+            $self->$clear_forbidden_until;
         }
     };
 
