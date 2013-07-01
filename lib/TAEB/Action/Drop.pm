@@ -16,7 +16,7 @@ has items => (
 has sell => (
     is      => 'ro',
     isa     => 'Bool',
-    default => 'False',
+    default => 0,
 );
 
 subscribe query_dropitems => sub {
