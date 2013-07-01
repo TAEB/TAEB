@@ -70,7 +70,7 @@ class_has ai => (
     traits    => [qw/TAEB::Persistent/],
     is        => 'rw',
     isa       => 'TAEB::AI',
-    handles   => [qw(want_item currently)],
+    handles   => [qw(currently)],
     predicate => 'has_ai',
     writer    => 'set_ai', # for efficiency when TAEB->ai is in the inner loop
     lazy      => 1,
@@ -229,7 +229,7 @@ class_has publisher => (
     isa     => 'TAEB::Publisher',
     lazy    => 1,
     default => sub { TAEB::Publisher->new },
-    handles => [qw/announce send_message get_exceptional_response get_response get_location_request remove_messages menu_select single_select/],
+    handles => [qw/announce send_message get_exceptional_response get_response get_location_request remove_messages/],
 );
 
 class_has action => (

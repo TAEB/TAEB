@@ -87,16 +87,15 @@ sub announce {
 
 sub send_message {
     my $self = shift;
+    my $name = shift;
+    my @args = @_;
 
     if ($self->is_paused) {
         # Some announcements (like queries) cannot be delayed
-        unless (@_ == 1 && blessed($_[0]) && $_[0]->isa('TAEB::Announcement') && $_[0]->is_immediate) {
-            return $self->_enqueue_message(@_);
+        unless (@args == 1 && blessed($args[0]) && $args[0]->isa('TAEB::Announcement') && $args[0]->immediate) {
+            return $self->_enqueue_message($name, @args);
         }
     }
-
-    my $name = shift;
-    my @args = @_;
 
     if (@args) {
         TAEB->log->publisher("Announcing $name with arguments @args.");
@@ -107,9 +106,9 @@ sub send_message {
 
     my $method = "msg_$name";
 
-    my $announcement = 0;
+    my $announcement;
     if (@args == 1 && blessed($args[0]) && $args[0]->isa('TAEB::Announcement')) {
-        $announcement = 1;
+        $announcement = $args[0];
         $method = "subscription_" . $args[0]->name;
     }
 
@@ -131,6 +130,10 @@ sub send_message {
                 last;
             }
         }
+    }
+
+    if ($announcement) {
+        $announcement->finished_sending;
     }
 }
 
@@ -223,48 +226,6 @@ sub get_location_request {
         sets   => \@TAEB::ScreenScraper::location_requests,
         method => "location",
     );
-}
-
-sub menu_select {
-    my $self = shift;
-    my $name = shift;
-    my $num  = 0;
-
-    return sub {
-        my $slot = shift;
-        my $item = $_;
-
-        if ($num++ == 0) {
-            for my $responder ($self->responders) {
-                if (my $method = $responder->can("begin_select_$name")) {
-                    $method->($responder);
-                }
-            }
-        }
-
-        for my $responder ($self->responders) {
-            if (my $method = $responder->can("select_$name")) {
-                my $rt = $method->($responder, $slot, $item);
-
-                return ref($rt) ? $$rt : $rt ? 'all' : undef;
-            }
-        }
-
-        return;
-    };
-}
-
-sub single_select {
-    my $self = shift;
-    my $name = shift;
-
-    for my $responder ($self->responders) {
-        if (my $method = $responder->can("single_$name")) {
-            return $method->($responder, $name);
-        }
-    }
-
-    return;
 }
 
 sub responders { grep { defined } TAEB->ai, TAEB->action }

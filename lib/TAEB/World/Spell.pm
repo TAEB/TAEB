@@ -288,9 +288,9 @@ sub direction {
 
     # some spells (cone of cold, fireball) vary based on skill in the spell
     my $skill = $self->skill;
-    my $ability = "unskilled"; # XXX
+    my $level = lc TAEB->senses->level_for_skill($skill);
 
-    return $direction->{$ability};
+    return $direction->{$level};
 }
 
 __PACKAGE__->meta->make_immutable;

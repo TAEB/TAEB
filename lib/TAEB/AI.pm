@@ -14,35 +14,6 @@ sub deinstitute {
     TAEB->publisher->unsubscribe(shift);
 }
 
-sub want_item {
-    my $self = shift;
-
-    $self->pickup(@_);
-}
-
-sub pickup { 0 }
-
-sub drop { 0 }
-
-sub msg_powerup {
-    my $self = shift;
-    my $type = shift;
-
-    if ($type eq 'enhance') {
-        return "#enhance\n";
-    }
-}
-
-sub enhance {
-    my $self  = shift;
-    my $skill = shift;
-    my $level = shift;
-
-    TAEB->log->ai("Enhancing $skill up from $level");
-
-    return 1;
-}
-
 has currently => (
     is      => 'rw',
     isa     => 'Str',
@@ -85,13 +56,6 @@ sub respond_wish {
 
     # When in doubt, ask for more shit to throw at people.
     return "3 blessed fixed +3 silver daggers";
-}
-
-sub select_enhance {
-    my $self = shift;
-    my ($skill, $level) = /^\s*(.*?)\s*\[(.*)\]/
-        or warn "Unable to parse $_ as an #enhance item.";
-    $self->enhance($skill, $level);
 }
 
 sub select_identify {
@@ -138,22 +102,6 @@ This is the method called when TAEB finishes using this AI.
 
 This will not be called when TAEB is ending, but only when the AI is
 replaced by a different one.
-
-=head2 want_item Item -> Bool or Ref[Int]
-
-Does TAEB want this item?
-
-=head2 pickup Item -> Bool or Ref[Int]
-
-Will TAEB pick up this item? Not by default, no.
-
-=head2 drop Item -> Bool
-
-Will TAEB drop this item? Not by default, no.
-
-=head2 msg_powerup Str, *
-
-Received when we've got a powerup-like message. Currently handles C<enhance>.
 
 =head2 enhance Str, Str -> Bool
 

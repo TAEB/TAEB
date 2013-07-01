@@ -4,7 +4,7 @@ use TAEB::OO;
 use TAEB::Util 'natatime';
 use TAEB::Util::World 'crow_flies';
 use TAEB::Announcement;
-use NetHack::Menu 0.06;
+use NetHack::Menu 0.07;
 use Try::Tiny;
 
 our %msg_string = (
@@ -1272,98 +1272,124 @@ sub handle_menus {
     my $self = shift;
     my $menu = NetHack::Menu->new(vt => TAEB->vt);
 
-    my $selector;
-    my $committer = sub { $menu->commit };
+    return unless $menu->has_menu;
 
-    if (TAEB->topline =~ /Pick up what\?|Take out what\?/) {
-        $selector = TAEB->menu_select('pickup');
-    }
-    elsif (TAEB->topline =~ /Pick a skill to advance/) {
-        $selector = TAEB->menu_select('enhance');
-    }
-    elsif (TAEB->topline =~ /What would you like to identify first\?/) {
-        $selector = TAEB->menu_select('identify');
-    }
-    elsif (TAEB->topline =~ /Choose which spell to cast/) {
-        my $which_spell = TAEB->is_checking('spells') ? "\e"
-                        : TAEB->single_select('cast') || "\e";
-        $committer = sub { $which_spell };
+    my $topline = TAEB->topline;
 
-        $selector = sub {
-            my $slot = shift;
-
-            # force bolt             1    attack         0%
-            my ($name, $forgotten, $fail) =
-                /^(.*?)\s+\d([ *])\s+\w+\s+(\d+)%\s*$/
-                    or return;
-
-            TAEB->send_message('know_spell',
-                $slot, $name, $forgotten eq '*', $fail);
-
-            return;
-        };
-    }
-    elsif (TAEB->topline =~ /What would you like to drop\?|Put in what\?/) {
-        # this one is special: it'll handle updating the inventory
-        my %dont_have = map { ($_, 1) } 'a' .. 'z', 'A' .. 'Z';
-
-        $selector = sub {
-            my $slot = shift;
-            my $new_item = TAEB->new_item($_);
-
-            TAEB->inventory->update($slot => $new_item);
-            my $item = TAEB->inventory->get($slot);
-            delete $dont_have{$slot} if $item;
-
-            # if we can drop the item, drop it!
-            if (!TAEB->is_checking('inventory')) {
-                # $item will be undef for non-inventory items like gold
-                my $drop = TAEB->ai->drop($item || $new_item);
-
-                # dropping a part of the stack
-                if (ref($drop) && $$drop < $item->quantity) {
-                    my $new_item = $item->fork_quantity($$drop);
-                    TAEB->send_message('floor_item' => $new_item);
-                    return $$drop;
-                }
-                # dropping the whole stack
-                elsif ($drop) {
-                    TAEB->inventory->remove($slot) if $item;
-                    TAEB->send_message('floor_item' => $item);
-                    return 'all';
-                }
-            }
-
-            TAEB->clear_checking if TAEB->is_checking('inventory');
-
-            return 0;
-        };
-
-        $committer = sub {
-            for my $slot (keys %dont_have) {
-                my $item = TAEB->inventory->get($slot);
-                if ($item) {
-                    TAEB->log->scraper("$item seems to have disappeared!",
-                                       level => 'warning');
-                    TAEB->inventory->remove($slot);
-                }
-            }
-            $menu->commit;
-        };
-    }
-
-    return unless try { $menu->has_menu };
-
-    my $n = 0;
-    until ($menu->at_end or ++$n > 50) {
+    until ($menu->at_end) {
         TAEB->write($menu->next);
         TAEB->process_input(0);
     }
 
-    $menu->select_quantity($selector) if $selector;
+    # now, what kind of menu is this?
 
-    TAEB->write($committer->());
+    if ($topline =~ /Pick up what\?/) {
+        $self->parse_pickup_from($menu);
+        TAEB->announce(query_pickupitems => (
+            menu => $menu,
+        ));
+    }
+    elsif ($topline =~ /Take out what\?/) {
+        TAEB->announce(query_lootcontainer => (
+            menu => $menu,
+        ));
+    }
+    elsif ($topline =~ /Pick a skill to advance/) {
+        $self->parse_enhance_from($menu);
+
+        TAEB->announce(query_enhance => (
+            menu => $menu,
+        ));
+    }
+    elsif ($topline =~ /What would you like to identify first\?/) {
+        TAEB->announce(query_identifyitems => (
+            menu => $menu,
+        ));
+    }
+    elsif ($topline =~ /Choose which spell to cast/) {
+        $self->parse_spells_from($menu);
+
+        TAEB->announce(query_castspell => (
+            menu => $menu,
+        ));
+    }
+    elsif ($topline =~ /What would you like to drop\?/) {
+        $self->parse_inventory_from($menu);
+        TAEB->announce(query_dropitems => (
+            menu => $menu,
+        ));
+    }
+    elsif ($topline =~ /Put in what\?/) {
+        TAEB->announce(query_stuffcontainer => (
+            menu => $menu,
+        ));
+    }
+
+    TAEB->write($menu->commit);
     _recurse;
+}
+
+sub parse_enhance_from {
+    my $self = shift;
+    my $menu = shift;
+
+    for my $row ($menu->extra_rows) {
+        my ($skill, $level) = $row =~ /^\s*(.*?)\s*\[(.*)\]/
+            or next;
+
+        TAEB->send_message(skill_level => ($skill, $level));
+    }
+}
+
+sub parse_pickup_from {
+    my $self = shift;
+    my $menu = shift;
+
+    TAEB->announce('tile_noitems');
+
+    for my $menu_item ($menu->all_items) {
+        if (my $item = TAEB->new_item($menu_item->description)) {
+            TAEB->send_message('floor_item' => $item);
+        }
+        else {
+            TAEB->log->scraper("Can't initialize item from description " . $menu_item->description);
+        }
+    }
+}
+
+sub parse_inventory_from {
+    my $self = shift;
+    my $menu = shift;
+
+    for my $menu_item ($menu->all_items) {
+        my $slot = $menu_item->selector;
+        my $new_item = TAEB->new_item($menu_item->description);
+
+        TAEB->inventory->update($slot => $new_item);
+    }
+
+    TAEB->clear_checking if TAEB->is_checking('inventory');
+}
+
+sub parse_spells_from {
+    my $self = shift;
+    my $menu = shift;
+
+    for my $item ($menu->all_items) {
+        my $line = $item->description;
+        my $slot = $item->selector;
+
+            # force bolt             1    attack         0%
+            my ($name, $forgotten, $fail) = $line =~ /^(.*?)\s+\d([ *])\s+\w+\s+(\d+)%\s*$/
+                or do {
+                    TAEB->log->scraper("Unparsed spell format: $line");
+                    return;
+                };
+
+            TAEB->send_message('know_spell',
+                ($slot, $name, $forgotten eq '*', $fail)
+            );
+    }
 }
 
 sub handle_fallback {

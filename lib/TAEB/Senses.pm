@@ -301,6 +301,16 @@ has statuses => (
     },
 );
 
+has skill_levels => (
+    traits  => ['Hash'],
+    isa     => 'HashRef[Str]',
+    default => sub { {} },
+    handles => {
+        _set_skill_level => 'set',
+        level_for_skill  => 'get',
+    },
+);
+
 sub _build_statuses {
     my $self = shift;
     my @statuses;
@@ -772,6 +782,14 @@ sub msg_check {
         TAEB->log->senses("I don't know how to check $thing.",
                           level => 'warning');
     }
+}
+
+sub msg_skill_level {
+    my $self = shift;
+    my $skill = shift;
+    my $level = shift;
+
+    $self->_set_skill_level($skill, $level);
 }
 
 my %check_command = (
