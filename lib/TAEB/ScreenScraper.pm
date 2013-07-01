@@ -1274,6 +1274,8 @@ sub handle_menus {
 
     return unless $menu->has_menu;
 
+    my $topline = TAEB->topline;
+
     until ($menu->at_end) {
         TAEB->write($menu->next);
         TAEB->process_input(0);
@@ -1281,43 +1283,43 @@ sub handle_menus {
 
     # now, what kind of menu is this?
 
-    if (TAEB->topline =~ /Pick up what\?/) {
+    if ($topline =~ /Pick up what\?/) {
         $self->parse_pickup_from($menu);
         TAEB->announce(query_pickupitems => (
             menu => $menu,
         ));
     }
-    elsif (TAEB->topline =~ /Take out what\?/) {
+    elsif ($topline =~ /Take out what\?/) {
         TAEB->announce(query_lootcontainer => (
             menu => $menu,
         ));
     }
-    elsif (TAEB->topline =~ /Pick a skill to advance/) {
+    elsif ($topline =~ /Pick a skill to advance/) {
         $self->parse_enhance_from($menu);
 
         TAEB->announce(query_enhance => (
             menu => $menu,
         ));
     }
-    elsif (TAEB->topline =~ /What would you like to identify first\?/) {
+    elsif ($topline =~ /What would you like to identify first\?/) {
         TAEB->announce(query_identifyitems => (
             menu => $menu,
         ));
     }
-    elsif (TAEB->topline =~ /Choose which spell to cast/) {
+    elsif ($topline =~ /Choose which spell to cast/) {
         $self->parse_spells_from($menu);
 
         TAEB->announce(query_castspell => (
             menu => $menu,
         ));
     }
-    elsif (TAEB->topline =~ /What would you like to drop\?/) {
+    elsif ($topline =~ /What would you like to drop\?/) {
         $self->parse_inventory_from($menu);
         TAEB->announce(query_dropitems => (
             menu => $menu,
         ));
     }
-    elsif (TAEB->topline =~ /Put in what\?/) {
+    elsif ($topline =~ /Put in what\?/) {
         TAEB->announce(query_stuffcontainer => (
             menu => $menu,
         ));
