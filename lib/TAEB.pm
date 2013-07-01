@@ -907,6 +907,12 @@ TAEB->register_debug_commands(
             item_menu("Equipment", \@menu_items);
         },
     },
+    "E" => {
+        help    => "Display TAEB's skills (#enhance)",
+        command => sub {
+            item_menu("Skill levels", TAEB->senses->skill_levels);
+        },
+    },
     "I" => {
         help    => "Display item spoilers",
         command => sub {
