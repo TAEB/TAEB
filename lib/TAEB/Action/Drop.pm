@@ -46,7 +46,7 @@ sub respond_sell_item {
     my ($seller, $shk_short_funds, $cost, $item) = @_;
 
     # Sell it all.
-    if ($this->sell) {
+    if ($self->sell) {
         return 'a';
     }
 
