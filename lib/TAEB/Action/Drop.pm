@@ -41,6 +41,18 @@ subscribe query_dropitems => sub {
         for values %drop;
 };
 
+sub respond_sell_item {
+    my $self = shift;
+    my ($seller, $shk_short_funds, $cost, $item) = @_;
+
+    # Sell it all.
+    if ($this->sell) {
+        return 'a';
+    }
+
+    return 'n';
+}
+
 sub done {
     my $self = shift;
 
