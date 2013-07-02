@@ -214,7 +214,7 @@ sub debug_line_noslot {
             $self->fail . '%',
             ($self->damage_range ? ("[" . (join "-", $self->damage_range) . "]") : ()),
             "cast " . ($self->casted_count || 0) . "x",
-            "(learned T" . $self->learned_at;
+            "(learned T" . $self->learned_at . ")";
 }
 
 sub debug_line {
