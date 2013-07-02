@@ -20,7 +20,7 @@ subscribe query_castspell => sub {
     my $spell_name = $self->spell->name;
 
     for my $item ($event->all_menu_items) {
-        if ($item->description eq $spell_name) {
+        if ($item->user_data->name eq $spell_name) {
             $item->selected(1);
             last;
         }
