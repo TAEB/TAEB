@@ -868,7 +868,7 @@ our @prompts = (
     qr/^There is an? (.*) here, loot it\?/ => 'loot_it',
     qr/^Do you want to take something out of (?:the|.*'s) (.*)\?/ => 'take_something_out',
     qr/^Do you wish to put something in\?/ => 'put_something_in',
-    qr/^(.*?) offers (\d+) gold pieces? for (.*)\.  Sell it\?/ => 'sell_item',
+    qr/^(.*?) offers( only)? (\d+) gold pieces? for(?: your items in|the contents of)? (?:the|your) (.*)\.  Sell (?:it|them)\?/ => 'sell_item',
 );
 
 our @exceptions = (
