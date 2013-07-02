@@ -13,7 +13,7 @@ after BUILD => sub {
         my $item = $expected{$slot};
 
         if (exists($menu_items{$slot})) {
-            $menu_items{$slot}->user_data($expected{$slot});
+            $menu_items{$slot}->user_data($item);
             delete $expected{$slot};
             delete $menu_items{$slot};
         }
