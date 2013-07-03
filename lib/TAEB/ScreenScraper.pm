@@ -943,12 +943,6 @@ has calls_this_turn => (
     default => 0,
 );
 
-has saw_floor_list_this_step => (
-    is        => 'rw',
-    isa       => 'Bool',
-    default   => 0,
-);
-
 has previous_row_22 => (
     is      => 'rw',
     isa     => 'Str',
@@ -1032,12 +1026,6 @@ subscribe turn => sub {
     my $self = shift;
 
     $self->reset_calls_this_turn;
-};
-
-subscribe step => sub {
-    my $self = shift;
-
-    $self->saw_floor_list_this_step(0);
 };
 
 sub clear {
@@ -1144,7 +1132,6 @@ sub handle_more_menus {
         my @olditemlist = TAEB->current_tile->items;
         my @newitemlist = ();
         TAEB->announce('tile_noitems');
-        $self->saw_floor_list_this_step(1);
         my $skip = 1;
         $each = sub {
             # skip the items until we get "Things that are here" which
