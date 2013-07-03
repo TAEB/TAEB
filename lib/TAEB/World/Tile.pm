@@ -814,6 +814,18 @@ before clear_items => sub {
     }
 };
 
+sub remove_item {
+    my $self = shift;
+    my $item = shift;
+
+    my @items = $self->items;
+    for my $i (0 .. $#items) {
+        if ($item == $items[$i]) {
+            return $self->remove_item_idx($i);
+        }
+    }
+}
+
 before remove_item_idx => sub {
     my $self = shift;
     my $idx = shift;
