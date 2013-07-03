@@ -1230,6 +1230,7 @@ sub handle_menus {
     # now, what kind of menu is this?
 
     if ($topline =~ /Pick up what\?/) {
+        $self->reconcile_floor_items_with($menu);
         TAEB->announce(query_pickupitems => (
             menu => $menu,
         ));
