@@ -1113,9 +1113,7 @@ sub handle_more_menus {
         || ($line_3 = TAEB->vt->row_plaintext(2) =~ /Things that (?:are|you feel) here:/)
     ) {
         $self->messages($self->messages . '  ' . TAEB->topline) if $line_3;
-        my @olditemlist = TAEB->current_tile->items;
-        my @newitemlist = ();
-        TAEB->announce('tile_noitems');
+        my @items;
         my $skip = 1;
         $each = sub {
             # skip the items until we get "Things that are here" which
@@ -1124,35 +1122,11 @@ sub handle_more_menus {
             return if $skip;
 
             my $item = TAEB->new_item($_);
-            push @newitemlist, $item;
+            push @items, $item;
         };
         $afterloop = sub {
-            # Let's see if any items were already there; this avoids
-            # overwriting things like price and charge info. We assume
-            # the items stay in the same order on the floor; if they
-            # don't, they're probably different items. NetHack puts
-            # newly-dropped items on the /start/ of the list of items
-            # on the floor; TAEB puts newly seen items on the /end/ of
-            # its list. In other words, a newly dropped item will be
-            # at the start of the list, so we want to match the last
-            # item on the ground to the last item in the array.
-            my $newiter = $#newitemlist;
-            my $olditer = $#olditemlist;
-            # It's important to get the order right. This loop must
-            # go backwards...
-            while ($newiter >= 0 && $olditer >= 0) {
-                if ($newitemlist[$newiter]->maybe_is(
-                        $olditemlist[$olditer])) {
-                    $newitemlist[$newiter] = $olditemlist[$olditer];
-                }
-                $newiter--;
-                $olditer--;
-            }
-            # but this loop must go forwards.
-            for my $item (@newitemlist) {
-                TAEB->log->scraper("(Re)adding $item to the current tile.");
-                TAEB->send_message('floor_item' => $item);
-            }
+            my $self = shift;
+            $self->reconcile_floor_items_with(\@items);
             return 0;
         };
     }
@@ -1218,14 +1192,14 @@ sub handle_more_menus {
             # now for each menu line, invoke the coderef
             for my $row (0 .. $endrow - 1) {
                 local $_ = TAEB->vt->row_plaintext($row, $begincol, 80);
-                $each->($_);
+                $self->$each();
             }
 
             # get to the next page of the menu
             TAEB->write(' ');
             TAEB->process_input(0);
         }
-        $afterloop->() if $afterloop;
+        $self->$afterloop() if $afterloop;
         _recurse;
     }
 }
