@@ -445,23 +445,7 @@ our @msg_regex = (
     ],
     [
         qr/^You (?:see|feel) here (.*?)\./,
-            ['floor_item', sub {
-                if (defined TAEB->current_tile &&
-                    TAEB->current_tile->item_count == 1) {
-                    my $item = TAEB->new_item($1);
-                    if (TAEB->current_tile->item_idx(0)->maybe_is($item)) {
-                        TAEB->log->scraper("Not updating the $item here ".
-                                           "because it's consistent with ".
-                                           "what we thought was there.");
-                        return;
-                    } else {
-                        TAEB->announce('tile_noitems');
-                        return $item;
-                    }
-                } else {
-                    TAEB->announce('tile_noitems');
-                    return TAEB->new_item($1);
-                }}],
+            ['tile_single_item', sub { TAEB->new_item($1) }],
     ],
     [
         qr/^You read: \"(.*)\"\./,
@@ -1313,6 +1297,61 @@ sub handle_menus {
 
     TAEB->write($menu->commit);
     _recurse;
+}
+
+sub tile_single_item {
+    my $self = shift;
+    my $item = shift;
+
+    $self->reconcile_floor_items_with($item);
+}
+
+sub reconcile_floor_items_with {
+    my $self = shift;
+    my $list = shift;
+
+    if (ref($list) eq 'ARRAY') {
+    }
+    elsif (blessed($list) && $list->isa('NetHack::Menu')) {
+    }
+    elsif (blessed($list) && $list->isa('NetHack::Item')) {
+        $self->reconcile_single_floor_item($list);
+    }
+}
+
+sub reconcile_single_floor_item {
+    my $self = shift;
+    my $new_item = shift;
+    my $tile = TAEB->current_tile;
+
+    my @tile_items = $tile->items;
+
+    # no items on the tile, easy, just add what we've got
+    if (@tile_items == 0) {
+        $tile->add_item($new_item);
+    }
+    else {
+        # there's one or more items on the tile. first, try to reconcile
+        # one of the items with what we've got
+        my $keep;
+        for my $tile_item (@tile_items) {
+            if ($tile_item->evolve_from($new_item)) {
+                $keep = $tile_item;
+            }
+        }
+
+        # then, since we know there's only one item, clear them all...
+
+        $tile->clear_items;
+
+        # then add our single known item back in
+        if ($keep) {
+            $tile->add_item($keep);
+        }
+        else {
+            $tile->add_item($new_item);
+        }
+    }
 }
 
 sub parse_enhance_from {
