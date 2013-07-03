@@ -1300,7 +1300,7 @@ sub reconcile_floor_items_with {
     }
     elsif (blessed($list) && $list->isa('NetHack::Menu')) {
         # fill NetHack::Menu::Item's user_data with a NetHack::Item instance
-        $list          = [ $list->all_menu_items ];
+        $list          = [ $list->all_items ];
         $item_from     = sub { TAEB->new_item(shift->description) };
         $did_reconcile = sub {
             my ($menu_item, $tile_item) = @_;
