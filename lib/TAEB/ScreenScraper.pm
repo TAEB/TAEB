@@ -1315,7 +1315,6 @@ sub handle_menus {
         ));
     }
     elsif ($topline =~ /What would you like to drop\?/) {
-        $self->parse_inventory_from($menu);
         TAEB->announce(query_dropitems => (
             menu => $menu,
         ));
@@ -1356,20 +1355,6 @@ sub parse_pickup_from {
             TAEB->log->scraper("Can't initialize item from description " . $menu_item->description);
         }
     }
-}
-
-sub parse_inventory_from {
-    my $self = shift;
-    my $menu = shift;
-
-    for my $menu_item ($menu->all_items) {
-        my $slot = $menu_item->selector;
-        my $new_item = TAEB->new_item($menu_item->description);
-
-        TAEB->inventory->update($slot => $new_item);
-    }
-
-    TAEB->clear_checking if TAEB->is_checking('inventory');
 }
 
 sub parse_spells_from {
