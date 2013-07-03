@@ -1,7 +1,7 @@
 package TAEB::ScreenScraper;
 use Moose;
 use TAEB::OO;
-use TAEB::Util 'natatime';
+use TAEB::Util 'natatime', 'refaddr';
 use TAEB::Util::World 'crow_flies';
 use TAEB::Announcement;
 use NetHack::Menu 0.07;
@@ -1281,51 +1281,57 @@ sub tile_single_item {
     $self->reconcile_floor_items_with($item);
 }
 
+sub reconcile_floor_items_cb {
+}
+
 sub reconcile_floor_items_with {
     my $self = shift;
     my $list = shift;
 
+    my $item_from;
+    my $did_reconcile;
+
     if (ref($list) eq 'ARRAY') {
-    }
-    elsif (blessed($list) && $list->isa('NetHack::Menu')) {
+        # no action needed
     }
     elsif (blessed($list) && $list->isa('NetHack::Item')) {
-        $self->reconcile_single_floor_item($list);
+        # wrap our one item as an array
+        $list = [ $list ];
     }
-}
-
-sub reconcile_single_floor_item {
-    my $self = shift;
-    my $new_item = shift;
-    my $tile = TAEB->current_tile;
-
-    my @tile_items = $tile->items;
-
-    # no items on the tile, easy, just add what we've got
-    if (@tile_items == 0) {
-        $tile->add_item($new_item);
+    elsif (blessed($list) && $list->isa('NetHack::Menu')) {
+        # fill NetHack::Menu::Item's user_data with a NetHack::Item instance
+        $list          = [ $list->all_menu_items ];
+        $item_from     = sub { TAEB->new_item(shift->description) };
+        $did_reconcile = sub {
+            my ($menu_item, $tile_item) = @_;
+            $menu_item->user_data($tile_item);
+        };
     }
-    else {
-        # there's one or more items on the tile. first, try to reconcile
-        # one of the items with what we've got
-        my $keep;
-        for my $tile_item (@tile_items) {
+
+    my @tile_items = TAEB->current_tile->items;
+    my %reconciled;
+
+    NEW: for my $wrapper (@$list) {
+        my $new_item = $item_from ? $item_from->($wrapper) : $wrapper;
+
+        for my $tile_item (grep { !$reconciled{refaddr $_} } @tile_items) {
             if ($tile_item->evolve_from($new_item)) {
-                $keep = $tile_item;
+                $reconciled{refaddr $tile_item} = 1;
+                $did_reconcile->($wrapper, $tile_item)
+                    if $did_reconcile;
+                next NEW;
             }
         }
 
-        # then, since we know there's only one item, clear them all...
+        # no matches, add what we've got as a new item
+        TAEB->current_tile->add_item($new_item);
+        $did_reconcile->($wrapper, $new_item)
+            if $did_reconcile;
+    }
 
-        $tile->clear_items;
-
-        # then add our single known item back in
-        if ($keep) {
-            $tile->add_item($keep);
-        }
-        else {
-            $tile->add_item($new_item);
-        }
+    # these are leftovers that were not matched by new items. remove them
+    for my $tile_item (grep { !$reconciled{refaddr $_} } @tile_items) {
+        TAEB->current_tile->remove_item($tile_item);
     }
 }
 
