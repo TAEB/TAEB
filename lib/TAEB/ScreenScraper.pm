@@ -1231,6 +1231,7 @@ sub handle_menus {
 
     if ($topline =~ /Pick up what\?/) {
         $self->reconcile_floor_items_with($menu);
+
         TAEB->announce(query_pickupitems => (
             menu => $menu,
         ));
@@ -1260,6 +1261,8 @@ sub handle_menus {
         ));
     }
     elsif ($topline =~ /What would you like to drop\?/) {
+        $self->reconcile_inventory_with($menu);
+
         TAEB->announce(query_dropitems => (
             menu => $menu,
         ));
@@ -1281,7 +1284,27 @@ sub tile_single_item {
     $self->reconcile_floor_items_with($item);
 }
 
-sub reconcile_floor_items_cb {
+sub reconcile_inventory_with {
+    my $self = shift;
+    my $menu = shift;
+
+    my %missing_slots = map { $_->slot => $_ } TAEB->inventory_items;
+
+    for my $menu_item ($menu->all_items) {
+        my $slot = $menu_item->selector;
+        my $new_item = TAEB->new_item($menu_item->description);
+
+        TAEB->inventory->update($slot => $new_item);
+        $menu_item->user_data(TAEB->inventory->get($slot));
+        delete $missing_slots{$slot};
+    }
+
+    for my $slot (keys %missing_slots) {
+        my $item = $missing_slots{$slot};
+        TAEB->log->scraper("Expected inventory item in slot $slot missing! Was $item");
+    }
+
+    TAEB->clear_checking if TAEB->is_checking('inventory');
 }
 
 sub reconcile_floor_items_with {
