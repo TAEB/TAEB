@@ -9,7 +9,7 @@ after BUILD => sub {
     my $self = shift;
     my %missing_slots = map { $_->slot => $_ } TAEB->inventory_items;
 
-    for my $item ($self->all_menu_items) {
+    for my $menu_item ($self->all_menu_items) {
         my $slot = $menu_item->selector;
         my $new_item = TAEB->new_item($menu_item->description);
 
