@@ -880,6 +880,7 @@ our @exceptions = (
     qr/^You can(?:no|')t reach the (?!bottom)/  => 'impeded_by_levitation',
     qr/^Not wearing any armor/                  => 'not_wearing',
     qr/^You are not wearing that/               => 'not_wearing',
+    qr/^You cannot drop something you are wearing/ => 'drop_wearing',
 );
 
 our @location_requests = (
