@@ -821,14 +821,12 @@ our @prompts = (
     qr/^What do you want to read\?/         => 'read_what',
     qr/^What do you want to rub\?/          => 'rub_what',
     qr/^What do you want to rub on .*?\?/   => 'rub_on_what',
-    qr/^For what do you wish\?/             => 'wish',
     qr/^Really attack (.*?)\?/              => 'really_attack',
     qr/^This spellbook is difficult to comprehend/ => 'difficult_spell',
     qr/^Dip (.*?) into the (fountain|pool of water|water|moat)\?/ => 'dip_into_water',
     qr/^There (?:is|are) (.*?) here; eat (?:it|one)\?/ => 'eat_ground',
     qr/^There (?:is|are) (.*?) here; sacrifice (?:it|one)\?/ => 'sacrifice_ground',
     qr/^What do you want to (?:write|engrave|burn|scribble|scrawl|melt) (?:in|into|on) the (.*?) here\?/ => 'write_what',
-    qr/^What do you want to add to the (?:writing|engraving|grafitti|scrawl|text) (?:in|on|melted into) the (.*?) here\?/ => 'write_what',
     qr/^Do you want to add to the current engraving\?/ => 'add_engraving',
     qr/^Name an individual object\?/        => 'name_specific',
     qr/^What do you want to (?:call|name)\?/ => 'name_what',
@@ -840,19 +838,24 @@ our @prompts = (
     qr/^Which ring-finger, Right or Left\?/   => 'which_finger',
     qr/^(.*?) for (\d+) zorkmids?\.  Pay\?/ => 'buy_item',
     qr/You did (\d+) zorkmids worth of damage!/ => 'buy_door',
-    qr/^"Hello stranger, who are you\?"/ => 'vault_guard',
-    qr/^How much will you offer\?/      => 'donate',
     qr/^Do you want to keep the save file\?/ => 'save_file',
     qr/^Advance skills without practice\?/ => 'advance_without_practice',
     qr/^Stop eating\?/ => 'stop_eating',
     qr/^You have (?:a little|much) trouble lifting .*\. Continue\?/ => 'continue_lifting',
     qr/^Beware, there will be no return! Still climb\?/ => 'really_escape',
-    qr/^What monster do you want to genocide\?/ => 'genocide_species',
-    qr/^What class of monsters do you wish to genocide\?/ => 'genocide_class',
     qr/^There is an? (.*) here, loot it\?/ => 'loot_it',
     qr/^Do you want to take something out of (?:the|.*'s) (.*)\?/ => 'take_something_out',
     qr/^Do you wish to put something in\?/ => 'put_something_in',
     qr/^(.*?) offers( only)? (\d+) gold pieces? for(?: your items in|the contents of)? (?:the|your) (.*)\.  Sell (?:it|them)\?/ => 'sell_item',
+);
+
+our @message_prompts = (
+    qr/^For what do you wish\?/         => 'wish',
+    qr/^What do you want to add to the (?:writing|engraving|grafitti|scrawl|text) (?:in|on|melted into) the (.*?) here\?/ => 'write_what',
+    qr/^"Hello stranger, who are you\?"/ => 'vault_guard',
+    qr/^How much will you offer\?/      => 'donate',
+    qr/^What monster do you want to genocide\?/ => 'genocide_species',
+    qr/^What class of monsters do you wish to genocide\?/ => 'genocide_class',
 );
 
 our @exceptions = (

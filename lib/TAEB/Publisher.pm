@@ -212,7 +212,10 @@ sub get_response {
 
     return $self->_get_generic_response(
         msg    => $line,
-        sets   => \@TAEB::ScreenScraper::prompts,
+        sets   => [
+            @TAEB::ScreenScraper::prompts,
+            @TAEB::ScreenScraper::message_prompts,
+        ],
         method => "respond",
     );
 }
