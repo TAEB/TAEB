@@ -47,7 +47,7 @@ sub forgotten_spells {
     return grep { $_->forgotten } $self->spells;
 }
 
-sub msg_know_spell {
+sub update {
     my $self = shift;
     my ($slot, $name, $forgotten, $fail) = @_;
 
@@ -81,6 +81,8 @@ sub msg_know_spell {
             $spell->learned_at(TAEB->turn);
         }
     }
+
+    return $spell;
 }
 
 sub debug_line {

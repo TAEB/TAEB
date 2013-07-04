@@ -1378,16 +1378,17 @@ sub parse_spells_from {
         my $line = $item->description;
         my $slot = $item->selector;
 
-            # force bolt             1    attack         0%
-            my ($name, $forgotten, $fail) = $line =~ /^(.*?)\s+\d([ *])\s+\w+\s+(\d+)%\s*$/
-                or do {
-                    TAEB->log->scraper("Unparsed spell format: $line");
-                    return;
-                };
+        # force bolt             1    attack         0%
+        my ($name, $forgotten, $fail) = $line =~ /^(.*?)\s+\d([ *])\s+\w+\s+(\d+)%\s*$/
+            or do {
+                TAEB->log->scraper("Unparsed spell format: $line");
+                return;
+            };
 
-            TAEB->send_message('know_spell',
-                ($slot, $name, $forgotten eq '*', $fail)
-            );
+        $forgotten = $forgotten eq '*' ? 1 : 0;
+
+        my $spell = TAEB->spells->update($slot, $name, $forgotten, $fail);
+        $item->user_data($spell);
     }
 }
 
