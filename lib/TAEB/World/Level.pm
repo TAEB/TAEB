@@ -338,7 +338,7 @@ sub radiate {
 
             for (@tile_set) {
                 my ($distance, $tile) = @$_;
-                next DIRECTION if $stopper->($tile);
+                next DIRECTION if $stopper->($tile, $distance);
                 next DIRECTION if !$allowself && $tile == $start_tile;
             }
 
@@ -354,7 +354,7 @@ sub radiate {
         for (@tile_set) {
             my ($distance, $tile) = @$_;
 
-            next unless $code->($tile);
+            next unless $code->($tile, $distance);
 
             # if they ask for a scalar, give them the direction
             return delta2vi($dx, $dy) if !wantarray;
