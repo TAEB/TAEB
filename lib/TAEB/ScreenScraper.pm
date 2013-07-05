@@ -1270,9 +1270,14 @@ sub handle_menus {
     elsif ($topline =~ /What would you like to drop\?/) {
         $self->reconcile_inventory_with($menu);
 
-        TAEB->announce(query_dropitems => (
-            menu => $menu,
-        ));
+        if (TAEB->is_checking('inventory')) {
+            TAEB->clear_checking;
+        }
+        else {
+            TAEB->announce(query_dropitems => (
+                menu => $menu,
+            ));
+        }
     }
     elsif ($topline =~ /Put in what\?/) {
         TAEB->announce(query_stuffcontainer => (
@@ -1318,8 +1323,6 @@ sub reconcile_inventory_with {
         TAEB->inventory->remove($slot);
         TAEB->log->scraper("Expected inventory item in slot $slot missing! Was $item");
     }
-
-    TAEB->clear_checking if TAEB->is_checking('inventory');
 }
 
 sub reconcile_floor_items_with {
