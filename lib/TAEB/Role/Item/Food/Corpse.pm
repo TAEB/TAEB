@@ -15,11 +15,18 @@ has estimated_date => (
     default => sub { TAEB->turn },
 );
 
-sub failed_to_sacrifice {
-    my $self = shift;
-    $self->estimated_date(TAEB->turn - 50)
-        if $self->estimated_date > TAEB->turn - 50;
-}
+has failed_to_sacrifice => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+    trigger => sub {
+        my ($self, $new_value) = @_;
+        if ($new_value) {
+            $self->estimated_date(TAEB->turn - 50)
+                if $self->estimated_date > TAEB->turn - 50;
+        }
+    },
+);
 
 sub estimate_age {
     my $self = shift;
