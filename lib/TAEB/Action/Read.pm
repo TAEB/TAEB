@@ -16,9 +16,17 @@ has charge => (
     provided => 1,
 );
 
+has did_charge => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
+
 sub respond_read_what { shift->item->slot }
 
 sub respond_charge_what { shift->charge->slot }
+
+sub msg_charging_scroll { shift->did_charge(1) }
 
 sub msg_will_respond_difficult_spell {
     my $item = shift->item;

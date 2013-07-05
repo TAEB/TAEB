@@ -378,6 +378,8 @@ our %msg_string = (
         ['hear_door'],
     "You feel like someone is helping you." =>
         ['remove_curse'],
+    "This is a charging scroll." =>
+        ['charging_scroll'],
 );
 
 our @msg_regex = (
