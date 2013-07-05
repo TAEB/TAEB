@@ -25,6 +25,26 @@ sub standard_index {
     return $self->index + 8 * $self->bold;
 }
 
+use overload (
+    q{==} => sub {
+        my ($self, $other) = @_;
+        return $self->index == $other->index
+            && $self->bold == $other->bold
+            && $self->reverse == $other->reverse;
+    },
+    q{!=} => sub {
+        my ($self, $other) = @_;
+        return $self->index != $other->index
+            || $self->bold != $other->bold
+            || $self->reverse != $other->reverse;
+    },
+    q{""} => sub {
+        my ($self) = @_;
+        return "[Color: index=".$self->index." bold=".$self->bold." reverse=".$self->reverse."]";
+    },
+    fallback => 1,
+);
+
 __PACKAGE__->meta->make_immutable;
 
 1;
