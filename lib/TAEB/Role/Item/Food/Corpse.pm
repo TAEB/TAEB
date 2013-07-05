@@ -74,7 +74,7 @@ sub same_race {
     return $self->match(cannibal => TAEB->race);
 }
 
-sub should_sac {
+sub should_sacrifice {
     my ($self) = @_;
 
     return 0 if $self->monster->touch_petrifies &&
