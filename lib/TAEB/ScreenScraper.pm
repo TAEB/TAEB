@@ -1129,8 +1129,7 @@ sub handle_more_menus {
             push @items, $item;
         };
         $afterloop = sub {
-            my $self = shift;
-            $self->reconcile_floor_items_with(\@items);
+            TAEB->send_message('reconcile_floor_items' => \@items);
             return 0;
         };
     }
@@ -1286,6 +1285,13 @@ sub msg_tile_single_item {
     my $item = shift;
 
     $self->reconcile_floor_items_with($item);
+}
+
+sub msg_reconcile_floor_items {
+    my $self = shift;
+    my $list = shift;
+
+    $self->reconcile_floor_items_with($list);
 }
 
 sub reconcile_inventory_with {
