@@ -91,6 +91,9 @@ sub done {
     my $nutrition = $spell->nutrition;
     TAEB->nutrition(TAEB->nutrition - $nutrition);
 
+    # force bolt might bust some items up
+    if ($spell->name eq 'force bolt' && $self->direction eq '>') {
+        TAEB->send_message(check => 'floor');
     }
 }
 
