@@ -762,7 +762,7 @@ our @msg_regex = (
     ],
     [
         qr/^Your (.*) glows (?:blue|silver) for a (moment|while)\./ =>
-            ['enchanted' => sub { ($1, $2) }],
+            ['enchanted_or_charged' => sub { ($1, $2) }],
     ],
     [
         qr/^Your (.*) softly glows with a light blue aura\./ =>

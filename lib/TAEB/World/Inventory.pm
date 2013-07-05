@@ -87,7 +87,7 @@ subscribe got_item => sub {
     $self->add($slot => $item);
 };
 
-sub msg_enchanted {
+sub msg_enchanted_or_charged {
     my $self        = shift;
     my $description = shift;
     my $modifier    = shift;
