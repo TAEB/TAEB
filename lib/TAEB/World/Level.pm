@@ -82,6 +82,10 @@ before add_monster => sub {
     my ($monster) = @_;
     assert((!any { $_->tile == $monster->tile } $self->monsters),
            "not adding two monsters to the same tile");
+
+    if ($monster->is_oracle) {
+        $self->is_oracle(1);
+    }
 };
 
 has turns_spent_on => (
