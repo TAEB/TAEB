@@ -86,6 +86,11 @@ Either way, be sure to cross your fingers.
 If `perl` doesn't find the installed modules you may need to set
 the `$PERL5LIB` environment variable to where you placed them.
 
+## Debug commands
+
+TAEB ships with a number of debug commands. Typing `?` will list
+them for you.
+
 # Hacking on TAEB
 
 If you're sufficiently inspired by TAEB, we'd love to have you onboard! The
