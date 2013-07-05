@@ -1281,7 +1281,7 @@ sub handle_menus {
     _recurse;
 }
 
-sub tile_single_item {
+sub msg_tile_single_item {
     my $self = shift;
     my $item = shift;
 
