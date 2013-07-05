@@ -791,6 +791,27 @@ sub msg_level_message {
                           && $self->branch eq 'mines';
 }
 
+sub msg_hear_door {
+    my $self = shift;
+
+    return unless $self->known_branch
+               && $self->branch eq 'mines';
+
+    # door in the mines could be Minetown..
+    if ($self->z >= 5 && $self->z <= 8) {
+        TAEB->log->level("Got a door message in the Mines, this must be Minetown!");
+        $self->is_minetown(1);
+        return;
+    }
+
+    # or MinesEnd...
+    if ($self->z >= 10 && $self->z <= 13) {
+        TAEB->log->level("Got a door message deep in the Mines, this must be MinesEnd!");
+        $self->is_minesend(1);
+        return;
+    }
+}
+
 sub msg_magic_mapped { shift->been_magic_mapped(1) }
 
 subscribe turn => sub {
