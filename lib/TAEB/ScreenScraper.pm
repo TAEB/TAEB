@@ -1314,7 +1314,15 @@ sub reconcile_inventory_with {
         my $new_item = TAEB->new_item($menu_item->description);
 
         TAEB->inventory->update($slot => $new_item);
-        $menu_item->user_data(TAEB->inventory->get($slot));
+
+        # inventory doesn't really store gold. ugh...
+        if ($new_item->type eq 'gold') {
+            $menu_item->user_data($new_item);
+        }
+        else {
+            $menu_item->user_data(TAEB->inventory->get($slot));
+        }
+
         delete $missing_slots{$slot};
     }
 
