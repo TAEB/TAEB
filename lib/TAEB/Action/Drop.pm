@@ -3,7 +3,6 @@ use Moose;
 use TAEB::OO;
 use TAEB::Util 'refaddr';
 extends 'TAEB::Action';
-with 'TAEB::Action::Role::Item';
 
 use constant command => "D";
 
