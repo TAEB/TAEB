@@ -370,7 +370,7 @@ our %msg_string = (
         ['lamp_on'],
     "Your lamp is now off." =>
         ['lamp_off'],
-    "A map coalesces in your mind" =>
+    "A map coalesces in your mind!" =>
         ['magic_mapped'],
 );
 
