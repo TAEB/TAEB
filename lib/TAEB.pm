@@ -442,7 +442,7 @@ sub handle_playing {
 
 sub handle_human_override {
     my $self = shift;
-    $self->currently('Performing an action due to manual override');
+    $self->currently('Performing an action due to human override');
     $self->run_action;
     # The override only lasts one turn, although that turn may end
     # the game (quit and save are common overrides).
