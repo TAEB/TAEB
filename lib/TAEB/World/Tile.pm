@@ -129,11 +129,11 @@ has engraving_type => (
     documentation => "Store the writing type",
 );
 
-has is_interesting => (
+has has_unknown_items => (
     is      => 'ro',
     isa     => 'Bool',
     default => 0,
-    writer  => 'set_interesting',
+    writer  => 'set_has_unknown_items',
 );
 
 has monster => (
@@ -421,13 +421,13 @@ sub step_on {
     $self->explored(1);
     $self->last_turn(TAEB->turn);
     $self->last_step(TAEB->step);
-    $self->set_interesting(0);
+    $self->set_has_unknown_items(0);
 }
 
 sub step_off {
     my $self = shift;
 
-    $self->set_interesting(0);
+    $self->set_has_unknown_items(0);
 
     if ($self->level == TAEB->current_level) {
         # When we step off a tile, anything that's nearby and still . is lit
@@ -571,7 +571,7 @@ sub change_itemview {
     $self->itemly_glyph($newglyph);
     $self->itemly_color($newcolor);
 
-    $self->set_interesting($self->glyph_is_item($newglyph) ? 1 : 0);
+    $self->set_has_unknown_items($self->glyph_is_item($newglyph) ? 1 : 0);
 }
 
 sub debug_line {
@@ -590,7 +590,7 @@ sub debug_line {
 
     push @bits, sprintf 'i=%d%s',
                     $self->item_count,
-                    $self->is_interesting ? '*' : '';
+                    $self->has_unknown_items ? '*' : '';
 
     if ($self->engraving) {
         push @bits, sprintf 'E=%d/%d',
@@ -691,7 +691,7 @@ sub debug_color {
 
     my $color = $self->in_shop || $self->in_temple ? COLOR_BRIGHT_GREEN
               : $self->has_enemy                   ? COLOR_ORANGE
-              : $self->is_interesting              ? COLOR_RED
+              : $self->has_unknown_items           ? COLOR_RED
               : $self->searched > 5                ? COLOR_CYAN
               : $self->stepped_on                  ? COLOR_BROWN
               : $self->explored                    ? COLOR_GREEN
@@ -847,23 +847,23 @@ sub _remove_level_item {
 }
 # }}}
 
-# keep track of which tiles are interesting on the level object
-# also announce if it became interesting
-before set_interesting => sub {
+# keep track of which tiles has_unknown_items on the level object
+# also announce if it started having unknown items
+before set_has_unknown_items => sub {
     my $self = shift;
     my $set = shift(@_) ? 1 : 0;
 
-    my $is_interesting = $self->is_interesting ? 1 : 0;
+    my $has_unknown_items = $self->has_unknown_items ? 1 : 0;
 
     # no change? don't care
-    return if $set == $is_interesting;
+    return if $set == $has_unknown_items;
 
     if ($set) {
-        $self->level->register_tile($self => 'interesting');
-        TAEB->publisher->announce(tile_became_interesting => tile => $self);
+        $self->level->register_tile($self => 'unknown_items');
+        TAEB->publisher->announce(tile_has_unknown_items => tile => $self);
     }
     else {
-        $self->level->unregister_tile($self => 'interesting');
+        $self->level->unregister_tile($self => 'unknown_items');
     }
 };
 

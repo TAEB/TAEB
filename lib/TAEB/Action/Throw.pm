@@ -60,7 +60,7 @@ sub done {
         # these tiles would show the projectile we threw
         next if $tile->shows_items;
 
-        $tile->set_interesting(1);
+        $tile->set_has_unknown_items(1);
 
         # if we're throwing at a monster, then the projectile will always stop
         # at the monster's tile (unless we threw multiple and it killed the
