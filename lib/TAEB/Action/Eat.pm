@@ -65,8 +65,8 @@ sub done {
         TAEB->inventory->decrease_quantity($item->slot)
     }
     elsif (!$self->interrupted) {
-        #This doesn't work well with a stack of corpses on the floor
-        #because maybe_is used my remove_floor_item tries to match quantity
+        # This doesn't work well with a stack of corpses on the floor
+        # because maybe_is used by remove_floor_item tries to match quantity
         TAEB->send_message(remove_floor_item => $item, $self->starting_tile);
     }
 
