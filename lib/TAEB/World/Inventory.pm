@@ -92,6 +92,19 @@ sub msg_enchanted_or_charged {
     my $description = shift;
     my $modifier    = shift;
 
+    my $action = TAEB->action;
+    if ($action->isa('TAEB::Action::Read') && $action->did_charge) {
+        my $item = $action->charge;
+        # we successfully recharged this item!
+        if ($item) {
+            $item->recharge;
+            return;
+        }
+    }
+    else {
+        # enchantment's a little bit trickier, so...
+    }
+
     # punt on figuring it out
     TAEB->send_message(check => "inventory");
 }
