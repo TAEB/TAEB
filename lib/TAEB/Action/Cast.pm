@@ -84,7 +84,9 @@ sub msg_remove_curse {
 }
 
 sub done {
-    my $spell = shift->spell;
+    my $self = shift;
+
+    my $spell = $self->spell;
 
     $spell->did_cast;
 
