@@ -360,6 +360,8 @@ our %msg_string = (
         ['sacrifice_gone'],
     'The blood covers the altar!' =>
         ['sacrifice_gone'],
+    'Your sacrifice is consumed in a burst of flame!' =>
+        ['sacrifice_gone'],
     'You have no secondary weapon readied.' =>
         ['slot_empty', 'offhand'],
     "You've been creamed." =>
