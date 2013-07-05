@@ -1277,6 +1277,8 @@ sub handle_menus {
             TAEB->announce(query_dropitems => (
                 menu => $menu,
             ));
+
+            $self->update_expected_dropped_items($menu);
         }
     }
     elsif ($topline =~ /Put in what\?/) {
@@ -1330,6 +1332,17 @@ sub reconcile_inventory_with {
         my $item = $missing_slots{$slot};
         TAEB->inventory->remove($slot);
         TAEB->log->scraper("Expected inventory item in slot $slot missing! Was $item");
+    }
+}
+
+sub update_expected_dropped_items {
+    my $self = shift;
+    my $menu = shift;
+
+    for my $menu_item ($menu->selected_items) {
+        my $item = $menu_item->user_data;
+        TAEB->inventory->remove($item->slot);
+        TAEB->send_message('floor_item' => $item);
     }
 }
 
