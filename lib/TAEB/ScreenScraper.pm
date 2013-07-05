@@ -853,6 +853,7 @@ our @prompts = (
     qr/^Do you want to take something out of (?:the|.*'s) (.*)\?/ => 'take_something_out',
     qr/^Do you wish to put something in\?/ => 'put_something_in',
     qr/^(.*?) offers( only)? (\d+) gold pieces? for(?: your items in|the contents of)? (?:the|your) (.*)\.  Sell (?:it|them)\?/ => 'sell_item',
+    qr/^What do you want to charge\?/ => 'charge_what',
 );
 
 our @message_prompts = (

@@ -10,7 +10,15 @@ has '+item' => (
     required => 1,
 );
 
+has charge => (
+    is       => 'ro',
+    isa      => 'NetHack::Item',
+    provided => 1,
+);
+
 sub respond_read_what { shift->item->slot }
+
+sub respond_charge_what { shift->charge->slot }
 
 sub msg_will_respond_difficult_spell {
     my $item = shift->item;
