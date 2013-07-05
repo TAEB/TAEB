@@ -63,6 +63,12 @@ sub debug_line {
         }
     }
 
+    if ($self->type eq 'wand') {
+        if (!$self->has_identity && $self->tracker->is_nomessage) {
+            push @fields, 'nomessage';
+        }
+    }
+
     if ($self->can('is_worn') && $self->is_worn) {
         push @fields, '(worn)';
     }
