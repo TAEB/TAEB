@@ -73,15 +73,10 @@ sub done {
 sub exception_drop_wearing {
     my $self = shift;
 
-    if (@{ $self->items } == 1) {
-        $self->items->[0]->is_worn(1);
-    }
-    else {
-        # who knows what item it was
-        TAEB->send_message(check => "inventory");
-        TAEB->send_message(check => "floor");
-        TAEB->log->action("We are wearing an item we tried to drop");
-    }
+    # who knows what item it was
+    TAEB->send_message(check => "inventory");
+    TAEB->send_message(check => "floor");
+    TAEB->log->action("We are wearing an item we tried to drop");
 
     $self->aborted(1);
 
