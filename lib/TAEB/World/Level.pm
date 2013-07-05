@@ -666,6 +666,32 @@ around is_minetown => sub {
     return;
 };
 
+around is_minesend => sub {
+    my $orig = shift;
+    my $self = shift;
+
+    return $self->$orig(@_) if @_;
+
+    my $is_minesend = $self->$orig;
+    return $is_minesend if defined $is_minesend;
+
+    return unless $self->known_branch;
+    unless ($self->branch eq 'mines' && $self->z >= 10 && $self->z <= 13) {
+        $self->is_minesend(0);
+        return 0;
+    }
+
+    for my $type (qw/closeddoor opendoor fountain/) {
+        my @tiles = $self->has_type($type)
+            or next;;
+        TAEB->log->level("$self is MinesEnd; I saw a tile of type $type! e.g. $tiles[0]");
+        $self->is_minesend(1);
+        return 1;
+    }
+
+    return;
+};
+
 around is_oracle => sub {
     my $orig = shift;
     my $self = shift;
