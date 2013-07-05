@@ -49,9 +49,18 @@ sub debug_line {
     push @fields, $self->name;
 
     if ($self->does('NetHack::Item::Role::Chargeable')) {
-        push @fields, ('(' .
-                      (defined($self->recharges) ? $self->recharges : '?') .
-                      ':' . $self->charges . ')') if defined($self->charges);
+        if (defined($self->charges)) {
+            push @fields, (
+                '(' .
+                    (defined($self->recharges) ? $self->recharges : '?') .
+                    ':' . $self->charges .
+                ')'
+            );
+        }
+        else {
+            push @fields, '-' . $self->charges_spent_this_recharge
+                if $self->charges_spent_this_recharge;
+        }
     }
 
     if ($self->can('is_worn') && $self->is_worn) {
