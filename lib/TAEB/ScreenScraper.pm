@@ -1315,6 +1315,7 @@ sub reconcile_inventory_with {
 
     for my $slot (keys %missing_slots) {
         my $item = $missing_slots{$slot};
+        TAEB->inventory->remove($slot);
         TAEB->log->scraper("Expected inventory item in slot $slot missing! Was $item");
     }
 
