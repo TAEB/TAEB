@@ -656,11 +656,11 @@ around is_minetown => sub {
     }
 
     for my $type (qw/closeddoor opendoor altar sink fountain tree/) {
-        if ($self->has_type($type)) {
-            TAEB->log->level("$self is Minetown; I saw a tile of type $type!");
-            $self->is_minetown(1);
-            return 1;
-        }
+        my @tiles = $self->has_type($type)
+            or next;;
+        TAEB->log->level("$self is Minetown; I saw a tile of type $type! e.g. $tiles[0]");
+        $self->is_minetown(1);
+        return 1;
     }
 
     return;
