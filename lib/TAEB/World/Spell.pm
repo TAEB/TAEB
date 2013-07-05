@@ -294,6 +294,32 @@ sub direction {
     return $direction->{$level};
 }
 
+sub nutrition {
+    my $self = shift;
+
+    # detect food doesn't make us hungry
+    return 0 if $self->name eq 'detect food';
+
+    my $nutrition = TAEB->nutrition;
+
+    # in the future, let's check to see how much we actually spent (Amulet of
+    # Yendor)
+    my $energy = 5 * $self->power;
+    my $hunger = 2 * $energy;
+
+    if (TAEB->role eq 'Wiz') {
+           if (TAEB->int >= 17) { $hunger = 0 }
+        elsif (TAEB->int == 16) { $hunger = int($hunger / 4) }
+        elsif (TAEB->int == 15) { $hunger = int($hunger / 2) }
+    }
+
+    if ($hunger > $nutrition - 3) {
+        $hunger = $nutrition - 3;
+    }
+
+    return $hunger;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
