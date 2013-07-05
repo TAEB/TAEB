@@ -44,6 +44,45 @@ sub exception_hunger_cast {
     return "\e\e\e";
 }
 
+sub msg_remove_curse {
+    my $self = shift;
+    return unless $self->spell->name eq 'remove curse';
+
+    my @items;
+
+    my $level = TAEB->senses->level_for_skill('clerical');
+    if ($level eq 'Skilled' || $level eq 'Expert') {
+        @items = TAEB->inventory_items;
+    }
+    else {
+        my $eq = TAEB->equipment;
+        @items = grep { defined } (
+            $eq->weapon,
+            $eq->offhand,
+            $eq->helmet,
+            $eq->gloves,
+            $eq->boots,
+            $eq->bodyarmor,
+            $eq->cloak,
+            $eq->shirt,
+            $eq->shield,
+            $eq->left_ring,
+            $eq->right_ring,
+            $eq->amulet,
+            $eq->blindfold,
+        );
+    }
+
+    for my $item (@items) {
+        if ($item->is_cursed) {
+            $item->is_uncursed(1);
+        }
+        elsif (!defined($item->buc)) {
+            $item->is_cursed(0);
+        }
+    }
+}
+
 sub done {
     my $spell = shift->spell;
 

@@ -374,6 +374,8 @@ our %msg_string = (
         ['magic_mapped'],
     "You hear a door open." =>
         ['hear_door'],
+    "You feel like someone is helping you." =>
+        ['remove_curse'],
 );
 
 our @msg_regex = (
