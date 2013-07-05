@@ -655,16 +655,15 @@ around is_minetown => sub {
         return 0;
     }
 
-    return unless $self->has_type('closeddoor')
-               || $self->has_type('opendoor')
-               || $self->has_type('altar')
-               || $self->has_type('sink')
-               || $self->has_type('fountain')
-               || $self->has_type('tree');
+    for my $type (qw/closeddoor opendoor altar sink fountain tree/) {
+        if ($self->has_type($type)) {
+            TAEB->log->level("$self is Minetown; I saw a tile of type $type!");
+            $self->is_minetown(1);
+            return 1;
+        }
+    }
 
-    TAEB->log->level("$self is Minetown!");
-    $self->is_minetown(1);
-    return 1;
+    return;
 };
 
 around is_oracle => sub {
