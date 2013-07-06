@@ -171,6 +171,7 @@ sub _format {
     return sprintf "<T%s> %04d-%02d-%02d %02d:%02d:%02d %s\n",
                    (TAEB->loaded_persistent_data
                 && defined TAEB->senses # i.e. not yet cleaned up
+                && defined TAEB->senses->turn
                  ? TAEB->turn
                  : '-'),
                    $year + 1900,

@@ -89,7 +89,6 @@ has level => (
 has turn => (
     is      => 'rw',
     isa     => 'Int',
-    default => 0,
     trigger => sub {
         my ($self, $new, $old) = @_;
         if (defined($old) && defined($new) && $new != $old) {
