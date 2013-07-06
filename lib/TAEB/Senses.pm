@@ -792,6 +792,23 @@ sub msg_skill_level {
     $self->_set_skill_level($skill, $level);
 }
 
+sub msg_enhanced {
+    my $self = shift;
+    my $skill = shift;
+
+    my $prev_level = $self->level_for_skill($skill);
+    my $next_level;
+
+       if ($prev_level eq 'Unskilled') { $next_level = 'Basic' }
+    elsif ($prev_level eq 'Basic')     { $next_level = 'Skilled' }
+    elsif ($prev_level eq 'Skilled')   { $next_level = 'Expert' }
+    elsif ($prev_level eq 'Expert')    { $next_level = 'Master' }
+    elsif ($prev_level eq 'Master')    { $next_level = 'Grand Master' }
+    else { die "Unable to guess next skill level after '$prev_level' for $skill" }
+
+    TAEB->send_message(skill_level => $skill => $next_level);
+}
+
 my %check_command = (
     discoveries => "\\",
     inventory   => "D",

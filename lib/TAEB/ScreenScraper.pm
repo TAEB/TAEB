@@ -790,6 +790,10 @@ our @msg_regex = (
         qr/You feel uncontrolled!/ =>
             [status_change => teleport_control => 0],
     ],
+    [
+        qr/^You are now (?:more|most) skilled in (.*?)\./ =>
+            [enhanced => sub { $1 }],
+    ],
 );
 
 our @god_anger = (
