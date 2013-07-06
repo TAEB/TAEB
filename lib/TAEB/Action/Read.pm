@@ -47,7 +47,8 @@ sub msg_learned_spell {
     my $self = shift;
     my $name = shift;
 
-    $self->item->identify_as("spellbook of $name");
+    $self->item->tracker->identify_as("spellbook of $name")
+        if $self->item->has_tracker;
 }
 
 sub can_read {
