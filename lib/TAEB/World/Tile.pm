@@ -123,7 +123,7 @@ has engraving => (
 );
 
 has player_engraving => (
-    is  => 'ro',
+    is  => 'rw',
     isa => 'Bool',
 );
 
