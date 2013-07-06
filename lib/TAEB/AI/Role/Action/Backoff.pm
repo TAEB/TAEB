@@ -112,6 +112,8 @@ role {
 
         my $action = $self->$orig(@_);
 
+        return $action if !$action;
+
         if ($action->isa($action_class) && $self->$filter($action)) {
 
             if ($self->$is_blacked_out_method) {
