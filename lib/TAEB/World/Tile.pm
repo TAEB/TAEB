@@ -122,6 +122,11 @@ has engraving => (
     },
 );
 
+has player_engraving => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+
 has engraving_type => (
     is      => 'rw',
     isa     => 'Str',

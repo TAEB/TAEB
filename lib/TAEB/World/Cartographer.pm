@@ -1,7 +1,7 @@
 package TAEB::World::Cartographer;
 use Moose;
 use TAEB::OO;
-use NetHack::Engravings 'is_degradation';
+use NetHack::Engravings 0.02 'is_degradation', 'is_maybe_preengraved';
 use NetHack::FOV 0.01 'calculate_fov';
 use TAEB::Util 'assert';
 use TAEB::Util::World 'tile_type_to_glyph';
@@ -432,14 +432,22 @@ sub msg_floor_message {
     my $self = shift;
     my $message = shift;
 
-    TAEB->log->cartographer(TAEB->current_tile . " is now engraved with \'$message\'");
-    TAEB->current_tile->engraving($message);
+    my $tile = TAEB->current_tile;
 
-    my @doors = TAEB->current_tile->grep_adjacent(sub { $_->type eq 'closeddoor' });
+    TAEB->log->cartographer("$tile is now engraved with \'$message\'");
+    $tile->engraving($message);
+
+    my @doors = $tile->grep_adjacent(sub { $_->type eq 'closeddoor' });
     if (@doors) {
         if (is_degradation("Closed for inventory" => $message)) {
             $_->is_shop(1) for @doors;
         }
+    }
+
+    if (!$tile->player_engraving && !is_maybe_preengraved($message)) {
+        my $level = TAEB->current_level;
+        TAEB->log->cartographer("Identifying $level as a bones level, because $message couldn't have been preengraved and we didn't write on this tile");
+        $level->is_bones(1);
     }
 }
 

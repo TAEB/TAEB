@@ -61,6 +61,7 @@ sub msg_wand {
 sub done {
     my $self = shift;
     TAEB->current_tile->engraving(TAEB->current_tile->engraving . $self->text);
+    TAEB->current_tile->player_engraving(1);
     return unless blessed $self->engraver;
 
     if ($self->engraver->match(type => 'wand')) {

@@ -172,6 +172,24 @@ has _astar_cache => (
     },
 );
 
+has is_bones => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+
+around is_bones => sub {
+    my $orig = shift;
+    my $self = shift;
+
+    return $self->$orig if !@_;
+
+    if ($_[0] && !$self->can_be_bones) {
+        TAEB->log->warning("Tried to identify $self as a bones level, but it's not a valid bones level!");
+    }
+    else {
+        $self->$orig(@_);
+    }
+};
 
 # So, for these is_<speciallevel>,
 #    true  => definitely that level
@@ -886,6 +904,32 @@ sub glyph_is_monster {
 sub glyph_is_item {
     my $self = shift;
     return shift =~ /[`?!%*()+=\["\$\/]/;
+}
+
+sub can_be_bones {
+    my $self = shift;
+
+    return if $self->z <= 3;
+    return if $self->is_minesend;
+    return if $self->branch eq 'sokoban';
+    # return if quest home
+    # return if quest goal
+    # return if ludios
+    # return if medusa
+    # return if castle
+    # return if vlad's tower top
+    # return if vlad's tower bottom
+    # return if wiz tower top
+    # return if wiz tower bottom
+    # return if fake wiz tower with portal
+    # return if vibrating square
+    # return if sanctum
+    # return if planes
+    # return if quest portal level
+    # return if ludios portal level
+    # return if branch level
+
+    return 1;
 }
 
 
