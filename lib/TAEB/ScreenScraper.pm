@@ -580,15 +580,15 @@ our @msg_regex = (
             ['stopped_eating' => sub { $1 } ],
     ],
     [
-        qr/You add the .* spell to your repertoire/ =>
+        qr/You add the "(.*)" spell to your repertoire/ =>
             [check => 'spells'],
     ],
     [
-        qr/You add the (.*) spell to your repertoire/ =>
+        qr/You add the "(.*)" spell to your repertoire/ =>
             ['check' => 'discoveries'],
     ],
     [
-        qr/You add the (.*) spell to your repertoire/ =>
+        qr/You add the "(.*)" spell to your repertoire/ =>
             ['learned_spell' => sub { $1 }],
     ],
     [
