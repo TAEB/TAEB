@@ -31,6 +31,7 @@ sub msg_charging_scroll { shift->did_charge(1) }
 sub msg_will_respond_difficult_spell {
     my $item = shift->item;
     $item->difficult_for_level(TAEB->level);
+    $item->difficult_for_int(TAEB->senses->int);
     $item->is_uncursed(1);
 }
 
