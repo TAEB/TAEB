@@ -48,20 +48,6 @@ sub msg_container_locked {
     $self->container->locked(1);
 }
 
-sub begin_select_pickup {
-    my $self = shift;
-    TAEB->announce('container_noitems', item => $self->container);
-}
-
-sub select_pickup {
-    my $self = shift;
-    my ($slot, $item) = @_;
-    $item = TAEB->new_item($item)
-        or return;
-    TAEB->send_message('container_item', $item, $self->container);
-    TAEB->want_item($item);
-}
-
 sub is_impossible {
     return TAEB->is_levitating;
 }
