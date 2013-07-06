@@ -173,7 +173,7 @@ has _astar_cache => (
 );
 
 has is_bones => (
-    is  => 'ro',
+    is  => 'rw',
     isa => 'Bool',
 );
 
