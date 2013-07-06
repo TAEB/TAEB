@@ -118,19 +118,33 @@ sub debug_line {
     push @fields, $self->name;
 
     if ($self->does('NetHack::Item::Role::Chargeable')) {
-        if (defined($self->charges)) {
-            push @fields, (
-                '(' .
-                    ($self->times_recharged ? $self->times_recharged . '+' : '') .
-                    (defined($self->recharges) ? $self->recharges : '?') .
-                    ':' . $self->charges .
-                ')'
-            );
+        my $charges = '';
+
+        # recharges
+        if (defined($self->recharges)) {
+            $charges .= $self->recharges;
         }
         else {
-            push @fields, '-' . $self->charges_spent_this_recharge
-                if $self->charges_spent_this_recharge;
+            if ($self->times_recharged) {
+                $charges .= $self->times_recharged . '+';
+            }
+            $charges .= '?';
         }
+
+        $charges .= ':';
+
+        # charges
+        if ($self->charges_known) {
+            $charges .= $self->charges;
+        }
+        else {
+            $charges .= '?';
+            if ($self->charges_spent_this_recharge) {
+                $charges .= '-' . $self->charges_spent_this_recharge;
+            }
+        }
+
+        push @fields, "($charges)";
     }
 
     if ($self->type eq 'wand') {
