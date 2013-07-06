@@ -52,6 +52,7 @@ sub debug_line {
         if (defined($self->charges)) {
             push @fields, (
                 '(' .
+                    ($self->times_recharged ? $self->times_recharged . '+' : '') .
                     (defined($self->recharges) ? $self->recharges : '?') .
                     ':' . $self->charges .
                 ')'
