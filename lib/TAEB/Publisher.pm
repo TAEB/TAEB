@@ -154,29 +154,25 @@ sub _get_generic_response {
 
     my $it = natatime(2, @{ $args{sets} });
     while (my ($re, $name) = $it->()) {
-        my $matched = 0;
-        my @captures;
-        my $sent_will = 0;
+        my @captures = $args{msg} =~ $re
+            or next;
+
+        TAEB->send_message("will_$args{method}_$name", @captures);
 
         for my $responder (@{ $args{responders} }) {
             if (my $code = $responder->can("$args{method}_$name")) {
-                if ($matched ||= @captures = $args{msg} =~ $re) {
-                    TAEB->send_message("will_$args{method}_$name")
-                        unless $sent_will++;
+                my $response = $responder->$code(
+                    @captures,
+                    $args{msg},
+                );
 
-                    my $response = $responder->$code(
-                        @captures,
-                        $args{msg},
-                    );
-
-                    if (!defined $response) {
-                        TAEB->log->publisher(blessed($responder) . " explicitly refrained from responding to $name.");
-                    }
-                    else {
-                        TAEB->log->publisher(blessed($responder) . " is responding to $name with $response.");
-                        TAEB->send_message("did_$args{method}_$name" => $response);
-                        return $response;
-                    }
+                if (!defined $response) {
+                    TAEB->log->publisher(blessed($responder) . " explicitly refrained from responding to $name.");
+                }
+                else {
+                    TAEB->log->publisher(blessed($responder) . " is responding to $name with $response.");
+                    TAEB->send_message("did_$args{method}_$name" => $response);
+                    return $response;
                 }
             }
         }
