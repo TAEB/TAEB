@@ -1249,6 +1249,8 @@ sub handle_menus {
         ));
     }
     elsif ($topline =~ /Take out what\?/) {
+        $self->reconcile_container_items_with($menu);
+
         TAEB->announce(query_lootcontainer => (
             menu => $menu,
         ));
@@ -1355,6 +1357,32 @@ sub reconcile_floor_items_with {
     my $self = shift;
     my $list = shift;
 
+    return $self->reconcile_item_list_with(
+        $list,
+        [ TAEB->current_tile->items ],
+        sub { TAEB->current_tile->add_item($_[0]) },
+        sub { TAEB->current_tile->remove_item($_[0]) },
+    );
+}
+
+sub reconcile_container_items_with {
+    my $self = shift;
+    my ($list) = @_;
+
+    TAEB->current_tile->container->contents_known(1);
+
+    return $self->reconcile_item_list_with(
+        $list,
+        [ TAEB->current_tile->container->items ],
+        sub { TAEB->current_tile->container->add_item($_[0]) },
+        sub { TAEB->current_tile->container->remove_item($_[0]) },
+    );
+}
+
+sub reconcile_item_list_with {
+    my $self = shift;
+    my ($list, $with, $add, $remove) = @_;
+
     my $item_from;
     my $did_reconcile;
 
@@ -1370,35 +1398,34 @@ sub reconcile_floor_items_with {
         $list          = [ $list->all_items ];
         $item_from     = sub { TAEB->new_item(shift->description) };
         $did_reconcile = sub {
-            my ($menu_item, $tile_item) = @_;
-            $menu_item->user_data($tile_item);
+            my ($menu_item, $item) = @_;
+            $menu_item->user_data($item);
         };
     }
 
-    my @tile_items = TAEB->current_tile->items;
     my %reconciled;
 
     NEW: for my $wrapper (@$list) {
         my $new_item = $item_from ? $item_from->($wrapper) : $wrapper;
 
-        for my $tile_item (grep { !$reconciled{refaddr $_} } @tile_items) {
-            if ($tile_item->evolve_from($new_item)) {
-                $reconciled{refaddr $tile_item} = 1;
-                $did_reconcile->($wrapper, $tile_item)
+        for my $item (grep { !$reconciled{refaddr $_} } @$with) {
+            if ($item->evolve_from($new_item)) {
+                $reconciled{refaddr $item} = 1;
+                $did_reconcile->($wrapper, $item)
                     if $did_reconcile;
                 next NEW;
             }
         }
 
         # no matches, add what we've got as a new item
-        TAEB->current_tile->add_item($new_item);
+        $add->($new_item);
         $did_reconcile->($wrapper, $new_item)
             if $did_reconcile;
     }
 
     # these are leftovers that were not matched by new items. remove them
-    for my $tile_item (grep { !$reconciled{refaddr $_} } @tile_items) {
-        TAEB->current_tile->remove_item($tile_item);
+    for my $item (grep { !$reconciled{refaddr $_} } @$with) {
+        $remove->($item);
     }
 }
 
