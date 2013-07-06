@@ -184,7 +184,7 @@ around is_bones => sub {
     return $self->$orig if !@_;
 
     if ($_[0] && !$self->can_be_bones) {
-        TAEB->log->warning("Tried to identify $self as a bones level, but it's not a valid bones level!");
+        TAEB->log->cartographer("Tried to identify $self as a bones level, but it's not a valid bones level!", level => 'warning');
     }
     else {
         $self->$orig(@_);
