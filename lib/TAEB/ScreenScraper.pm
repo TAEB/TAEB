@@ -380,6 +380,8 @@ our %msg_string = (
         ['remove_curse'],
     "This is a charging scroll." =>
         ['charging_scroll'],
+    "You_feel you could be more dangerous!" =>
+        [check => 'enhance'],
 );
 
 our @msg_regex = (
