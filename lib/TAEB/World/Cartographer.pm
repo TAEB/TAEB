@@ -425,7 +425,7 @@ sub msg_remove_floor_item {
 
     return if $item->is_auto_picked_up;
 
-    assert(0, "Unable to remove $item from the floor.");
+    TAEB->log->consistency("Unable to remove $item from the floor.");
 }
 
 sub msg_floor_message {
