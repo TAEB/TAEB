@@ -99,7 +99,7 @@ sub object_menu {
                 title     => "$name: $value",
             ),
         }
-        $object->meta->get_all_attributes
+        sort { $a->name cmp $b->name } $object->meta->get_all_attributes
     );
 
     my $menu = TAEB::Display::Menu->new(
