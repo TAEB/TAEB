@@ -19,6 +19,9 @@ before _process_options => sub {
         if (defined($value)) {
             # For some reason Storable doesn't load TAEB::AI::Demo
             Class::MOP::load_class(blessed($value)) if blessed($value);
+            # sigh, this is awful, but whatever, i'll be rewriting it soon
+            # anyway, hopefully
+            $value->institute if $value->isa('TAEB::AI');
             return $value;
         }
 
