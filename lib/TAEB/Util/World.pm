@@ -76,7 +76,10 @@ sub trap_colors {
     return \%trap_colors;
 }
 
-our @types = uniq 'obscured', map { ref $_ ? @$_ : $_ } values %glyphs;
+our @types = uniq(
+    'obscured', 'secretdoor',
+    map { ref $_ ? @$_ : $_ } values %glyphs
+);
 
 sub tile_types {
     return @types;

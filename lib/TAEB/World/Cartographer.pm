@@ -434,6 +434,8 @@ sub msg_floor_message {
 
     my $tile = TAEB->current_tile;
 
+    my $was_engraved = $tile->engraving ne '';
+
     TAEB->log->cartographer("$tile is now engraved with \'$message\'");
     $tile->engraving($message);
 
@@ -444,10 +446,24 @@ sub msg_floor_message {
         }
     }
 
-    if (!$tile->player_engraving && !is_maybe_preengraved($message)) {
-        my $level = TAEB->current_level;
-        TAEB->log->cartographer("Identifying $level as a bones level, because $message couldn't have been preengraved and we didn't write on this tile");
-        $level->is_bones(1);
+    if (!$was_engraved && !$tile->player_engraving) {
+        if (is_degradation("Vlad was here", $message)
+         || is_degradation("ad aerarium", $message)) {
+            my @maybe_secret = $tile->grep_orthogonal(sub {
+                $_->type eq 'wall' || $_->type eq 'secretdoor'
+            });
+            if (@maybe_secret == 1) {
+                TAEB->log->cartographer("$maybe_secret[0] is a hidden door!");
+                $maybe_secret[0]->change_type(
+                    'secretdoor', $maybe_secret[0]->glyph
+                );
+            }
+        }
+        elsif (!is_maybe_preengraved($message)) {
+            my $level = TAEB->current_level;
+            TAEB->log->cartographer("Identifying $level as a bones level, because $message couldn't have been preengraved and we didn't write on this tile");
+            $level->is_bones(1);
+        }
     }
 }
 
