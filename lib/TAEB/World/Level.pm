@@ -151,6 +151,16 @@ subscribe covered_pit => sub {
     );
 };
 
+has has_vault => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+
+has has_shop => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+
 # Note that the quest portal can be on the rogue level, so this can't
 # be just another special level.
 has has_quest_portal => (
@@ -831,6 +841,9 @@ sub msg_level_message {
     my $type = shift;
 
     TAEB->log->level("There's a $type on this level. Interesting.");
+
+    my $method = "has_$type";
+    $self->$method(1);
 
     $self->branch('dungeons') if $type eq 'vault';
 
