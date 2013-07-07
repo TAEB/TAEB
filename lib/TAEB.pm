@@ -615,7 +615,6 @@ sub new_item {
     my $class = $item->meta->name;
     (my $taeb_class = $class) =~ s/^NetHack::Item/TAEB::World::Item/;
     $taeb_class->meta->rebless_instance($item);
-    $item->BUILD; # XXX this is awful, see NHI-#5
     return $item;
 }
 

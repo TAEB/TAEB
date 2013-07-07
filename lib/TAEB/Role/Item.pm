@@ -1,80 +1,11 @@
 package TAEB::Role::Item;
 use Moose::Role;
 use TAEB::OO;
-
-use NetHack::PriceID 'priceid';
-
 with 'MooseX::Role::Matcher' => {
     -version => 0.03,
     default_match => 'name',
     allow_missing_methods => 1,
 };
-
-sub BUILD {
-    my $self = shift;
-
-    return unless $self->has_tracker;
-
-    return unless $self->cost;
-
-    my $type = $self->_priceid_type;
-    return unless $type;
-
-    my @possibilities = priceid(
-        type     => $type,
-        amount   => $self->cost,
-        in       => 'buy',
-        charisma => TAEB->cha,
-        out      => 'names',
-        tourist  => TAEB->role eq 'Tou' && TAEB->level < 15, # XXX tshirt
-        #dunce   => ..., # XXX dunce cap
-        #angry   => ...,
-        quan     => $self->quantity,
-    );
-
-    # XXX amulet of Amulet of Yendor, wand of uncharged,
-    # potion of (un)holy water
-    # these should be fixed in NetHack::PriceID probably
-    @possibilities = grep { $_ !~ /Yendor|uncharged|\(un\)/ } @possibilities;
-
-    @possibilities = map { "$type of $_" } @possibilities
-        if $type eq 'scroll' || $type eq 'ring'      || $type eq 'wand'
-        || $type eq 'amulet' || $type eq 'spellbook' || $type eq 'potion';
-
-    TAEB->log->priceid("This $self could be any of: @possibilities");
-
-    $self->tracker->rule_out_all_but(@possibilities);
-}
-
-sub _priceid_type {
-    my $self = shift;
-
-    my $type = $self->type;
-    return $type if $type eq 'scroll'
-                 || $type eq 'ring'
-                 || $type eq 'wand'
-                 || $type eq 'amulet'
-                 || $type eq 'spellbook'
-                 || $type eq 'potion';
-
-    if ($type eq 'tool') {
-        my $appearance = $self->appearance;
-        return $appearance if $appearance eq 'bag'
-                           || $appearance eq 'lamp'
-                           || $appearance eq 'flute'
-                           || $appearance eq 'horn';
-    }
-    elsif ($type eq 'armor') {
-        my $subtype = $self->subtype;
-        return $subtype if $subtype eq 'cloak'
-                        || $subtype eq 'helmet'
-                        || $subtype eq 'gloves'
-                        || $subtype eq 'boots';
-                        # XXX shirt, suit, shield nyi
-    }
-
-    return;
-}
 
 sub is_auto_picked_up {
     my $self = shift;
