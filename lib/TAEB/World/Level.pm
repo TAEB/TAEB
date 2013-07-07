@@ -152,12 +152,12 @@ subscribe covered_pit => sub {
 };
 
 has has_vault => (
-    is  => 'ro',
+    is  => 'rw',
     isa => 'Bool',
 );
 
 has has_shop => (
-    is  => 'ro',
+    is  => 'rw',
     isa => 'Bool',
 );
 
