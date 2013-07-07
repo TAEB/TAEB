@@ -1354,7 +1354,9 @@ sub update_expected_dropped_items {
 
     for my $menu_item ($menu->selected_items) {
         my $item = $menu_item->user_data;
-        TAEB->inventory->remove($item->slot);
+        TAEB->inventory->remove($item->slot)
+            # XXX inventory doesn't really store gold. ugh...
+            unless $item->type eq 'gold';
         TAEB->send_message('floor_item' => $item);
     }
 }
