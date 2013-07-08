@@ -648,7 +648,7 @@ our @msg_regex = (
             ['status_change', 'stoning', 0],
     ],
     [
-        qr/^(.*?) (misses|hits|kicks|butts|bites)[.!]$/ =>
+        qr/^(.*?) (misses|hits|kicks|butts|bites|stings)[.!]$/ =>
             ['attacked' => sub { ($1, $2 ne 'misses') } ],
     ],
     [
