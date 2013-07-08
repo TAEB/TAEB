@@ -382,6 +382,8 @@ our %msg_string = (
         ['charging_scroll'],
     "You_feel you could be more dangerous!" =>
         [check => 'enhance'],
+    "You don't find anything here to loot." =>
+        [check => 'floor'],
 );
 
 our @msg_regex = (
