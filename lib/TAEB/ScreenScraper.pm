@@ -648,8 +648,8 @@ our @msg_regex = (
             ['status_change', 'stoning', 0],
     ],
     [
-        qr/^(.*?) (hits|misses)[.!]$/ =>
-            ['attacked' => sub { ($1, $2 eq 'hits') } ],
+        qr/^(.*?) (misses|hits|kicks|butts|bites)[.!]$/ =>
+            ['attacked' => sub { ($1, $2 ne 'misses') } ],
     ],
     [
         qr/^Your .* get new energy\.$/ =>
