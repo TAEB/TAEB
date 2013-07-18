@@ -655,6 +655,11 @@ my %spell_in_bounce_maximum;
         botl        => sub { shift->taeb_botl },
         status      => sub { shift->taeb_status },
     },
+    nethack => {
+        description => 'NetHack botl',
+        botl        => sub { TAEB->scraper->previous_row_22 },
+        status      => sub { TAEB->scraper->previous_row_23 },
+    },
 );
 
 sub change_draw_mode {
