@@ -203,14 +203,7 @@ sub draw_botl {
     Curses::move(22, 0);
 
     if (!$botl) {
-        my $command = TAEB->has_action ? TAEB->action->command : '?';
-        $command =~ s/\n/\\n/g;
-        $command =~ s/\e/\\e/g;
-        $command =~ s/\cd/^D/g;
-
-        $botl = TAEB->checking ? "Checking " . TAEB->checking
-              : TAEB->state eq 'dying' ? "Viewing death " . TAEB->death_state
-              : TAEB->currently . " ($command)";
+        $botl = $self->taeb_botl;
     }
 
     Curses::addstr($botl);
@@ -219,49 +212,7 @@ sub draw_botl {
     Curses::move(23, 0);
 
     if (!$status) {
-        my @pieces;
-        push @pieces, 'D:' . TAEB->current_level->z;
-        $pieces[-1] .= uc substr(TAEB->current_level->branch, 0, 1)
-            if TAEB->current_level->known_branch;
-        $pieces[-1] .= ' ('. ucfirst(TAEB->current_level->special_level) .')'
-            if TAEB->current_level->special_level;
-
-        # Avoid undef warnings
-        my $hp    = TAEB->hp;
-        my $maxhp = TAEB->maxhp;
-        push @pieces, 'H:' . (defined $hp ? $hp : '?');
-        $pieces[-1] .= '/' . (defined $maxhp ? $maxhp : '?')
-            if !defined($hp) || !defined($maxhp) || $hp != $maxhp;
-
-        if (TAEB->spells->has_spells) {
-            push @pieces, 'P:' . TAEB->power;
-            $pieces[-1] .= '/' . TAEB->maxpower
-                if TAEB->power != TAEB->maxpower;
-        }
-
-        push @pieces, 'A:' . TAEB->ac;
-        push @pieces, 'X:' . TAEB->level;
-        push @pieces, 'N:' . TAEB->nutrition;
-        push @pieces, 'T:' . TAEB->turn . '/' . TAEB->step;
-        push @pieces, 'S:' . TAEB->score
-            if TAEB->has_score;
-        push @pieces, '$' . TAEB->gold;
-
-        my $resistances = join '', map {  /^(c|f|p|d|sl|sh)\w+/ } TAEB->resistances;
-        push @pieces, 'R:' . $resistances
-            if $resistances;
-
-        my $statuses = join '', map { ucfirst substr $_, 0, 2 } TAEB->statuses;
-        push @pieces, '[' . $statuses . ']'
-            if $statuses;
-
-        my $timebuf = $self->time_buffer;
-        if (@$timebuf > 1) {
-            my $secs = $timebuf->[0] - $timebuf->[1];
-            push @pieces, sprintf "%1.1fs", $secs;
-        }
-
-        $status = join ' ', @pieces;
+        $status = $self->taeb_status;
     }
 
     Curses::addstr($status);
@@ -274,6 +225,71 @@ sub draw_botl {
         Curses::attroff(Curses::A_BOLD);
         Curses::clrtoeol;
     }
+}
+
+sub taeb_botl {
+    my $self = shift;
+
+    return "Checking " . TAEB->checking
+        if TAEB->checking;
+
+    return "Viewing death " . TAEB->death_state
+        if TAEB->state eq 'dying';
+
+    my $command = TAEB->has_action ? TAEB->action->command : '?';
+    $command =~ s/\n/\\n/g;
+    $command =~ s/\e/\\e/g;
+    $command =~ s/\cd/^D/g;
+
+    return TAEB->currently . " ($command)";
+}
+
+sub taeb_status {
+    my $self = shift;
+
+    my @pieces;
+    push @pieces, 'D:' . TAEB->current_level->z;
+    $pieces[-1] .= uc substr(TAEB->current_level->branch, 0, 1)
+        if TAEB->current_level->known_branch;
+    $pieces[-1] .= ' ('. ucfirst(TAEB->current_level->special_level) .')'
+        if TAEB->current_level->special_level;
+
+    # Avoid undef warnings
+    my $hp    = TAEB->hp;
+    my $maxhp = TAEB->maxhp;
+    push @pieces, 'H:' . (defined $hp ? $hp : '?');
+    $pieces[-1] .= '/' . (defined $maxhp ? $maxhp : '?')
+        if !defined($hp) || !defined($maxhp) || $hp != $maxhp;
+
+    if (TAEB->spells->has_spells) {
+        push @pieces, 'P:' . TAEB->power;
+        $pieces[-1] .= '/' . TAEB->maxpower
+            if TAEB->power != TAEB->maxpower;
+    }
+
+    push @pieces, 'A:' . TAEB->ac;
+    push @pieces, 'X:' . TAEB->level;
+    push @pieces, 'N:' . TAEB->nutrition;
+    push @pieces, 'T:' . TAEB->turn . '/' . TAEB->step;
+    push @pieces, 'S:' . TAEB->score
+        if TAEB->has_score;
+    push @pieces, '$' . TAEB->gold;
+
+    my $resistances = join '', map {  /^(c|f|p|d|sl|sh)\w+/ } TAEB->resistances;
+    push @pieces, 'R:' . $resistances
+        if $resistances;
+
+    my $statuses = join '', map { ucfirst substr $_, 0, 2 } TAEB->statuses;
+    push @pieces, '[' . $statuses . ']'
+        if $statuses;
+
+    my $timebuf = $self->time_buffer;
+    if (@$timebuf > 1) {
+        my $secs = $timebuf->[0] - $timebuf->[1];
+        push @pieces, sprintf "%1.1fs", $secs;
+    }
+
+    return join ' ', @pieces;
 }
 
 sub place_cursor {
