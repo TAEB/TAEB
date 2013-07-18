@@ -660,6 +660,14 @@ my %spell_in_bounce_maximum;
         botl        => sub { TAEB->scraper->previous_row_22 },
         status      => sub { TAEB->scraper->previous_row_23 },
     },
+    reset => {
+        description => 'Reset to configured settings',
+        immediate   => sub {
+            my $self = shift;
+            $self->reset_botl_method;
+            $self->reset_status_method;
+        },
+    },
 );
 
 sub change_draw_mode {
