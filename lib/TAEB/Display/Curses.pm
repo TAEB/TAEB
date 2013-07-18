@@ -114,7 +114,7 @@ sub notify {
     $self->redraw;
 }
 
-my %standard_modes;
+my %MAP_DRAW_MODES;
 my ($drawn_cursorx, $drawn_cursory) = (0,0);
 
 # Not per-object, as there's only one screen to draw on
@@ -133,7 +133,7 @@ sub redraw {
 
     my $level  = $args{level} || TAEB->current_level;
 
-    my %modes = (%standard_modes, TAEB->ai->drawing_modes);
+    my %modes = (%MAP_DRAW_MODES, TAEB->ai->drawing_modes);
 
     my $color_mode = $modes{$self->color_method} || {};
     my $glyph_mode = $modes{$self->glyph_method} || {};
@@ -521,7 +521,7 @@ my %spell_in_maximum;
 my %spell_in_bounce_minimum;
 my %spell_in_bounce_maximum;
 
-%standard_modes = (
+%MAP_DRAW_MODES = (
     normal =>    { description => 'Normal NetHack colors',
                    color => sub { shift->normal_color },
                    bounding_box_only => 1,},
@@ -606,7 +606,7 @@ my %spell_in_bounce_maximum;
 sub change_draw_mode {
     my $self = shift;
 
-    my %modes = (%standard_modes, TAEB->ai->drawing_modes);
+    my %modes = (%MAP_DRAW_MODES, TAEB->ai->drawing_modes);
 
     my $menu = TAEB::Display::Menu->new(
         description => "Change draw mode",
