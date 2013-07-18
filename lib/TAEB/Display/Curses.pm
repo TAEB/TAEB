@@ -229,9 +229,17 @@ sub draw_botl {
     Curses::move(22, 0);
 
     if (!$botl) {
-        my $botl_mode = $botl_modes{$self->botl_method} || {};
-        my $botl_fun = $botl_mode->{botl};
-        $botl = $self->$botl_fun;
+        if (TAEB->checking) {
+            $botl = "Checking " . TAEB->checking;
+        }
+        elsif (TAEB->state eq 'dying') {
+            $botl = "Viewing death " . TAEB->death_state;
+        }
+        else {
+            my $botl_mode = $botl_modes{$self->botl_method} || {};
+            my $botl_fun = $botl_mode->{botl};
+            $botl = $self->$botl_fun;
+        }
     }
 
     Curses::addstr($botl);
@@ -259,12 +267,6 @@ sub draw_botl {
 
 sub taeb_botl {
     my $self = shift;
-
-    return "Checking " . TAEB->checking
-        if TAEB->checking;
-
-    return "Viewing death " . TAEB->death_state
-        if TAEB->state eq 'dying';
 
     my $command = TAEB->has_action ? TAEB->action->command : '?';
     $command =~ s/\n/\\n/g;
