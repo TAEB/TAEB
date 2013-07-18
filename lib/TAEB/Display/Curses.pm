@@ -31,6 +31,26 @@ has glyph_method => (
     },
 );
 
+has botl_method => (
+    is      => 'rw',
+    isa     => 'Str',
+    clearer => 'reset_botl_method',
+    lazy    => 1,
+    default => sub {
+        TAEB->config->get_display_config->{botl_method} || 'taeb';
+    },
+);
+
+has status_method => (
+    is      => 'rw',
+    isa     => 'Str',
+    clearer => 'reset_status_method',
+    lazy    => 1,
+    default => sub {
+        TAEB->config->get_display_config->{status_method} || 'taeb';
+    },
+);
+
 has time_buffer => (
     is      => 'ro',
     isa     => 'ArrayRef[Num]',
@@ -193,6 +213,7 @@ sub redraw {
     $self->requires_redraw(0);
 }
 
+my %BOTL_DRAW_MODES;
 sub draw_botl {
     my $self   = shift;
     my $botl   = shift;
@@ -200,10 +221,17 @@ sub draw_botl {
 
     return unless TAEB->state eq 'playing';
 
+    my %botl_modes = (%BOTL_DRAW_MODES, TAEB->ai->botl_modes);
+
+    my $status_mode = $botl_modes{$self->status_method} || {};
+    my $status_fun = $status_mode->{status};
+
     Curses::move(22, 0);
 
     if (!$botl) {
-        $botl = $self->taeb_botl;
+        my $botl_mode = $botl_modes{$self->botl_method} || {};
+        my $botl_fun = $botl_mode->{botl};
+        $botl = $self->$botl_fun;
     }
 
     Curses::addstr($botl);
@@ -212,7 +240,9 @@ sub draw_botl {
     Curses::move(23, 0);
 
     if (!$status) {
-        $status = $self->taeb_status;
+        my $status_mode = $botl_modes{$self->status_method} || {};
+        my $status_fun = $status_mode->{status};
+        $status = $self->$status_fun;
     }
 
     Curses::addstr($status);
@@ -619,6 +649,14 @@ my %spell_in_bounce_maximum;
     },
 );
 
+%BOTL_DRAW_MODES = (
+    taeb => {
+        description => 'TAEB botl',
+        botl        => sub { shift->taeb_botl },
+        status      => sub { shift->taeb_status },
+    },
+);
+
 sub change_draw_mode {
     my $self = shift;
 
@@ -641,6 +679,32 @@ sub change_draw_mode {
     $self->color_method($key) if $map_modes{$key}{color};
 
     $map_modes{$key}{immediate}($self) if $map_modes{$key}{immediate};
+
+    $self->requires_redraw(1);
+}
+
+sub change_botl_mode {
+    my $self = shift;
+
+    my %botl_modes = (%BOTL_DRAW_MODES, TAEB->ai->botl_modes);
+
+    my $menu = TAEB::Display::Menu->new(
+        description => "Change botl mode",
+        items       => [ sort map { $_->{description} } values %botl_modes ],
+        select_type => 'single',
+    );
+
+    defined(my $item = $self->display_menu($menu))
+        or return;
+
+    my $change = $item->title;
+
+    my ($key) = grep { $botl_modes{$_}{description} eq $change } keys %botl_modes;
+
+    $self->botl_method($key) if $botl_modes{$key}{botl};
+    $self->status_method($key) if $botl_modes{$key}{status};
+
+    $botl_modes{$key}{immediate}($self) if $botl_modes{$key}{immediate};
 
     $self->requires_redraw(1);
 }
