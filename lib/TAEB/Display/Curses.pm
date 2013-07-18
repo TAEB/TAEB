@@ -682,6 +682,35 @@ my %spell_in_bounce_maximum;
             return join ' ', @details;
         },
     },
+    actions => {
+        description => 'Recent actions',
+        botl        => sub {
+            my @actions = TAEB->_old_actions;
+            my $botl = '';
+            while (@actions) {
+                my $name = pop(@actions)->name;
+                last if length("$botl $name") > 80;
+                $botl .= $name . ' ';
+            }
+
+            return $botl;
+        },
+    },
+    actions_nomove => {
+        description => 'Recent actions (except Move)',
+        botl        => sub {
+            my @actions = TAEB->_old_actions;
+            my $botl = '';
+            while (@actions) {
+                my $name = pop(@actions)->name;
+                next if $name eq 'Move';
+                last if length("$botl $name") > 80;
+                $botl .= $name . ' ';
+            }
+
+            return $botl;
+        },
+    },
     reset => {
         description => 'Reset to configured settings',
         immediate   => sub {
