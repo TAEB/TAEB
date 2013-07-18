@@ -778,6 +778,12 @@ TAEB->register_debug_commands(
             TAEB->display->change_draw_mode;
         },
     },
+    'b' => {
+        help    => 'Change botl draw mode',
+        command => sub {
+            TAEB->display->change_botl_mode;
+        },
+    },
     'i' => {
         help    => "Display TAEB's inventory",
         command => sub {

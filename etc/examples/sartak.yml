@@ -2,7 +2,8 @@
 display: Curses
 display_options:
     Curses:
-        color_method: goals
+        botl_method: magus
+        status_method: magus
 
 kiosk_mode: 0
 

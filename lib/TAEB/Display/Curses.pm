@@ -31,6 +31,26 @@ has glyph_method => (
     },
 );
 
+has botl_method => (
+    is      => 'rw',
+    isa     => 'Str',
+    clearer => 'reset_botl_method',
+    lazy    => 1,
+    default => sub {
+        TAEB->config->get_display_config->{botl_method} || 'taeb';
+    },
+);
+
+has status_method => (
+    is      => 'rw',
+    isa     => 'Str',
+    clearer => 'reset_status_method',
+    lazy    => 1,
+    default => sub {
+        TAEB->config->get_display_config->{status_method} || 'taeb';
+    },
+);
+
 has time_buffer => (
     is      => 'ro',
     isa     => 'ArrayRef[Num]',
@@ -114,7 +134,7 @@ sub notify {
     $self->redraw;
 }
 
-my %standard_modes;
+my %MAP_DRAW_MODES;
 my ($drawn_cursorx, $drawn_cursory) = (0,0);
 
 # Not per-object, as there's only one screen to draw on
@@ -133,10 +153,10 @@ sub redraw {
 
     my $level  = $args{level} || TAEB->current_level;
 
-    my %modes = (%standard_modes, TAEB->ai->drawing_modes);
+    my %map_modes = (%MAP_DRAW_MODES, TAEB->ai->drawing_modes);
 
-    my $color_mode = $modes{$self->color_method} || {};
-    my $glyph_mode = $modes{$self->glyph_method} || {};
+    my $color_mode = $map_modes{$self->color_method} || {};
+    my $glyph_mode = $map_modes{$self->glyph_method} || {};
 
     my $glyph_fun = $glyph_mode->{glyph} || sub { $_[0]->normal_glyph };
     my $color_fun = $color_mode->{color} || sub { $_[0]->normal_color };
@@ -193,6 +213,7 @@ sub redraw {
     $self->requires_redraw(0);
 }
 
+my %BOTL_DRAW_MODES;
 sub draw_botl {
     my $self   = shift;
     my $botl   = shift;
@@ -200,17 +221,25 @@ sub draw_botl {
 
     return unless TAEB->state eq 'playing';
 
+    my %botl_modes = (%BOTL_DRAW_MODES, TAEB->ai->botl_modes);
+
+    my $status_mode = $botl_modes{$self->status_method} || {};
+    my $status_fun = $status_mode->{status};
+
     Curses::move(22, 0);
 
     if (!$botl) {
-        my $command = TAEB->has_action ? TAEB->action->command : '?';
-        $command =~ s/\n/\\n/g;
-        $command =~ s/\e/\\e/g;
-        $command =~ s/\cd/^D/g;
-
-        $botl = TAEB->checking ? "Checking " . TAEB->checking
-              : TAEB->state eq 'dying' ? "Viewing death " . TAEB->death_state
-              : TAEB->currently . " ($command)";
+        if (TAEB->checking) {
+            $botl = "Checking " . TAEB->checking;
+        }
+        elsif (TAEB->state eq 'dying') {
+            $botl = "Viewing death " . TAEB->death_state;
+        }
+        else {
+            my $botl_mode = $botl_modes{$self->botl_method} || {};
+            my $botl_fun = $botl_mode->{botl};
+            $botl = $self->$botl_fun;
+        }
     }
 
     Curses::addstr($botl);
@@ -219,49 +248,9 @@ sub draw_botl {
     Curses::move(23, 0);
 
     if (!$status) {
-        my @pieces;
-        push @pieces, 'D:' . TAEB->current_level->z;
-        $pieces[-1] .= uc substr(TAEB->current_level->branch, 0, 1)
-            if TAEB->current_level->known_branch;
-        $pieces[-1] .= ' ('. ucfirst(TAEB->current_level->special_level) .')'
-            if TAEB->current_level->special_level;
-
-        # Avoid undef warnings
-        my $hp    = TAEB->hp;
-        my $maxhp = TAEB->maxhp;
-        push @pieces, 'H:' . (defined $hp ? $hp : '?');
-        $pieces[-1] .= '/' . (defined $maxhp ? $maxhp : '?')
-            if !defined($hp) || !defined($maxhp) || $hp != $maxhp;
-
-        if (TAEB->spells->has_spells) {
-            push @pieces, 'P:' . TAEB->power;
-            $pieces[-1] .= '/' . TAEB->maxpower
-                if TAEB->power != TAEB->maxpower;
-        }
-
-        push @pieces, 'A:' . TAEB->ac;
-        push @pieces, 'X:' . TAEB->level;
-        push @pieces, 'N:' . TAEB->nutrition;
-        push @pieces, 'T:' . TAEB->turn . '/' . TAEB->step;
-        push @pieces, 'S:' . TAEB->score
-            if TAEB->has_score;
-        push @pieces, '$' . TAEB->gold;
-
-        my $resistances = join '', map {  /^(c|f|p|d|sl|sh)\w+/ } TAEB->resistances;
-        push @pieces, 'R:' . $resistances
-            if $resistances;
-
-        my $statuses = join '', map { ucfirst substr $_, 0, 2 } TAEB->statuses;
-        push @pieces, '[' . $statuses . ']'
-            if $statuses;
-
-        my $timebuf = $self->time_buffer;
-        if (@$timebuf > 1) {
-            my $secs = $timebuf->[0] - $timebuf->[1];
-            push @pieces, sprintf "%1.1fs", $secs;
-        }
-
-        $status = join ' ', @pieces;
+        my $status_mode = $botl_modes{$self->status_method} || {};
+        my $status_fun = $status_mode->{status};
+        $status = $self->$status_fun;
     }
 
     Curses::addstr($status);
@@ -274,6 +263,73 @@ sub draw_botl {
         Curses::attroff(Curses::A_BOLD);
         Curses::clrtoeol;
     }
+}
+
+sub taeb_botl {
+    my $self = shift;
+
+    my $command = TAEB->has_action ? TAEB->action->command : '?';
+    $command =~ s/\n/\\n/g;
+    $command =~ s/\e/\\e/g;
+    $command =~ s/\cd/^D/g;
+
+    return TAEB->currently . " ($command)";
+}
+
+sub taeb_status {
+    my $self = shift;
+
+    my @pieces;
+    push @pieces, 'D:' . TAEB->current_level->z;
+    $pieces[-1] .= uc substr(TAEB->current_level->branch, 0, 1)
+        if TAEB->current_level->known_branch;
+    $pieces[-1] .= ' ('. ucfirst(TAEB->current_level->special_level) .')'
+        if TAEB->current_level->special_level;
+
+    # Avoid undef warnings
+    my $hp    = TAEB->hp;
+    my $maxhp = TAEB->maxhp;
+    push @pieces, 'H:' . (defined $hp ? $hp : '?');
+    $pieces[-1] .= '/' . (defined $maxhp ? $maxhp : '?')
+        if !defined($hp) || !defined($maxhp) || $hp != $maxhp;
+
+    if (TAEB->spells->has_spells) {
+        push @pieces, 'P:' . TAEB->power;
+        $pieces[-1] .= '/' . TAEB->maxpower
+            if TAEB->power != TAEB->maxpower;
+    }
+
+    push @pieces, 'A:' . TAEB->ac;
+    push @pieces, 'X:' . TAEB->level;
+    push @pieces, 'N:' . TAEB->nutrition;
+    push @pieces, 'T:' . TAEB->turn . '/' . TAEB->step;
+    push @pieces, 'S:' . TAEB->score
+        if TAEB->has_score;
+    push @pieces, '$' . TAEB->gold;
+
+    my $resistances = join '', map {  /^(c|f|p|d|sl|sh)\w+/ } TAEB->resistances;
+    push @pieces, 'R:' . $resistances
+        if $resistances;
+
+    my $statuses = join '', map { ucfirst substr $_, 0, 2 } TAEB->statuses;
+    push @pieces, '[' . $statuses . ']'
+        if $statuses;
+
+    push @pieces, $self->step_time;
+
+    return join ' ', @pieces;
+}
+
+sub step_time {
+    my $self = shift;
+
+    my $timebuf = $self->time_buffer;
+    if (@$timebuf > 1) {
+        my $secs = $timebuf->[0] - $timebuf->[1];
+        return sprintf "%1.1fs", $secs;
+    }
+
+    return '';
 }
 
 sub place_cursor {
@@ -521,7 +577,7 @@ my %spell_in_maximum;
 my %spell_in_bounce_minimum;
 my %spell_in_bounce_maximum;
 
-%standard_modes = (
+%MAP_DRAW_MODES = (
     normal =>    { description => 'Normal NetHack colors',
                    color => sub { shift->normal_color },
                    bounding_box_only => 1,},
@@ -603,14 +659,84 @@ my %spell_in_bounce_maximum;
     },
 );
 
+%BOTL_DRAW_MODES = (
+    taeb => {
+        description => 'TAEB botl',
+        botl        => sub { shift->taeb_botl },
+        status      => sub { shift->taeb_status },
+    },
+    nethack => {
+        description => 'NetHack botl',
+        botl        => sub { TAEB->scraper->previous_row_22 },
+        status      => sub { TAEB->scraper->previous_row_23 },
+    },
+    level => {
+        description => 'Level debug info',
+        botl        => sub {
+            my $level = TAEB->current_level;
+            my @details;
+
+            push @details, 'I:' . $level->item_count;
+            $details[-1] .= '*' if $level->has_type('unknown_items');
+
+            push @details, 'M:' . $level->monster_count;
+            push @details, 'T:' . $level->turns_spent_on;
+            push @details, 'E:' . $level->exits;
+
+            push @details, 'shop' if $level->has_shop;
+            push @details, 'vault' if $level->has_vault;
+            push @details, 'bones' if $level->is_bones;
+
+            return join ' ', @details;
+        },
+    },
+    actions => {
+        description => 'Recent actions',
+        botl        => sub {
+            my @actions = TAEB->_old_actions;
+            my $botl = '';
+            while (@actions) {
+                my $name = pop(@actions)->name;
+                last if length("$botl $name") > 80;
+                $botl .= $name . ' ';
+            }
+
+            return $botl;
+        },
+    },
+    actions_nomove => {
+        description => 'Recent actions (except Move)',
+        botl        => sub {
+            my @actions = TAEB->_old_actions;
+            my $botl = '';
+            while (@actions) {
+                my $name = pop(@actions)->name;
+                next if $name eq 'Move';
+                last if length("$botl $name") > 80;
+                $botl .= $name . ' ';
+            }
+
+            return $botl;
+        },
+    },
+    reset => {
+        description => 'Reset to configured settings',
+        immediate   => sub {
+            my $self = shift;
+            $self->reset_botl_method;
+            $self->reset_status_method;
+        },
+    },
+);
+
 sub change_draw_mode {
     my $self = shift;
 
-    my %modes = (%standard_modes, TAEB->ai->drawing_modes);
+    my %map_modes = (%MAP_DRAW_MODES, TAEB->ai->drawing_modes);
 
     my $menu = TAEB::Display::Menu->new(
         description => "Change draw mode",
-        items       => [ sort map { $_->{description} } values %modes ],
+        items       => [ sort map { $_->{description} } values %map_modes ],
         select_type => 'single',
     );
 
@@ -619,12 +745,38 @@ sub change_draw_mode {
 
     my $change = $item->title;
 
-    my ($key) = grep { $modes{$_}{description} eq $change } keys %modes;
+    my ($key) = grep { $map_modes{$_}{description} eq $change } keys %map_modes;
 
-    $self->glyph_method($key) if $modes{$key}{glyph};
-    $self->color_method($key) if $modes{$key}{color};
+    $self->glyph_method($key) if $map_modes{$key}{glyph};
+    $self->color_method($key) if $map_modes{$key}{color};
 
-    $modes{$key}{immediate}($self) if $modes{$key}{immediate};
+    $map_modes{$key}{immediate}($self) if $map_modes{$key}{immediate};
+
+    $self->requires_redraw(1);
+}
+
+sub change_botl_mode {
+    my $self = shift;
+
+    my %botl_modes = (%BOTL_DRAW_MODES, TAEB->ai->botl_modes);
+
+    my $menu = TAEB::Display::Menu->new(
+        description => "Change botl mode",
+        items       => [ sort map { $_->{description} } values %botl_modes ],
+        select_type => 'single',
+    );
+
+    defined(my $item = $self->display_menu($menu))
+        or return;
+
+    my $change = $item->title;
+
+    my ($key) = grep { $botl_modes{$_}{description} eq $change } keys %botl_modes;
+
+    $self->botl_method($key) if $botl_modes{$key}{botl};
+    $self->status_method($key) if $botl_modes{$key}{status};
+
+    $botl_modes{$key}{immediate}($self) if $botl_modes{$key}{immediate};
 
     $self->requires_redraw(1);
 }

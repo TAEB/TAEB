@@ -68,6 +68,8 @@ sub select_identify {
 
 sub drawing_modes {}
 
+sub botl_modes {}
+
 sub map_commands {}
 
 __PACKAGE__->meta->make_immutable;
