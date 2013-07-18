@@ -133,10 +133,10 @@ sub redraw {
 
     my $level  = $args{level} || TAEB->current_level;
 
-    my %modes = (%MAP_DRAW_MODES, TAEB->ai->drawing_modes);
+    my %map_modes = (%MAP_DRAW_MODES, TAEB->ai->drawing_modes);
 
-    my $color_mode = $modes{$self->color_method} || {};
-    my $glyph_mode = $modes{$self->glyph_method} || {};
+    my $color_mode = $map_modes{$self->color_method} || {};
+    my $glyph_mode = $map_modes{$self->glyph_method} || {};
 
     my $glyph_fun = $glyph_mode->{glyph} || sub { $_[0]->normal_glyph };
     my $color_fun = $color_mode->{color} || sub { $_[0]->normal_color };
@@ -606,11 +606,11 @@ my %spell_in_bounce_maximum;
 sub change_draw_mode {
     my $self = shift;
 
-    my %modes = (%MAP_DRAW_MODES, TAEB->ai->drawing_modes);
+    my %map_modes = (%MAP_DRAW_MODES, TAEB->ai->drawing_modes);
 
     my $menu = TAEB::Display::Menu->new(
         description => "Change draw mode",
-        items       => [ sort map { $_->{description} } values %modes ],
+        items       => [ sort map { $_->{description} } values %map_modes ],
         select_type => 'single',
     );
 
@@ -619,12 +619,12 @@ sub change_draw_mode {
 
     my $change = $item->title;
 
-    my ($key) = grep { $modes{$_}{description} eq $change } keys %modes;
+    my ($key) = grep { $map_modes{$_}{description} eq $change } keys %map_modes;
 
-    $self->glyph_method($key) if $modes{$key}{glyph};
-    $self->color_method($key) if $modes{$key}{color};
+    $self->glyph_method($key) if $map_modes{$key}{glyph};
+    $self->color_method($key) if $map_modes{$key}{color};
 
-    $modes{$key}{immediate}($self) if $modes{$key}{immediate};
+    $map_modes{$key}{immediate}($self) if $map_modes{$key}{immediate};
 
     $self->requires_redraw(1);
 }
