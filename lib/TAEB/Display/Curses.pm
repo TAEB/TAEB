@@ -662,6 +662,26 @@ my %spell_in_bounce_maximum;
         botl        => sub { TAEB->scraper->previous_row_22 },
         status      => sub { TAEB->scraper->previous_row_23 },
     },
+    level => {
+        description => 'Level debug info',
+        botl        => sub {
+            my $level = TAEB->current_level;
+            my @details;
+
+            push @details, 'I:' . $level->item_count;
+            $details[-1] .= '*' if $level->has_type('unknown_items');
+
+            push @details, 'M:' . $level->monster_count;
+            push @details, 'T:' . $level->turns_spent_on;
+            push @details, 'E:' . $level->exits;
+
+            push @details, 'shop' if $level->has_shop;
+            push @details, 'vault' if $level->has_vault;
+            push @details, 'bones' if $level->is_bones;
+
+            return join ' ', @details;
+        },
+    },
     reset => {
         description => 'Reset to configured settings',
         immediate   => sub {
