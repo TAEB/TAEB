@@ -340,11 +340,6 @@ sub resistances {
     return @resistances;
 }
 
-sub update {
-    my $self = shift;
-
-}
-
 sub msg_autopickup {
     my $self    = shift;
     my $enabled = shift;
