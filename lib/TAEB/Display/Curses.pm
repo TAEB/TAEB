@@ -315,13 +315,21 @@ sub taeb_status {
     push @pieces, '[' . $statuses . ']'
         if $statuses;
 
+    push @pieces, $self->step_time;
+
+    return join ' ', @pieces;
+}
+
+sub step_time {
+    my $self = shift;
+
     my $timebuf = $self->time_buffer;
     if (@$timebuf > 1) {
         my $secs = $timebuf->[0] - $timebuf->[1];
-        push @pieces, sprintf "%1.1fs", $secs;
+        return sprintf "%1.1fs", $secs;
     }
 
-    return join ' ', @pieces;
+    return '';
 }
 
 sub place_cursor {
