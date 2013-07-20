@@ -802,6 +802,14 @@ our @msg_regex = (
         qr/^You are now (?:more|most) skilled in (.*?)\./ =>
             [enhanced => sub { $1 }],
     ],
+    [
+        qr/^Your (.*?potion.*?) dilutes\./ =>
+            [diluted => sub { $1 }],
+    ],
+    [
+        qr/^Your (.*?potion.*?) dilutes further\./ =>
+            [diluted_completely => sub { $1 }],
+    ],
 );
 
 our @god_anger = (
