@@ -60,6 +60,11 @@ sub msg_lamp_on {
     my $self = shift;
     my $item = $self->item;
 
+    if ($item->type eq 'potion') {
+        $item->tracker->identify_as('potion of oil')
+            if $item->has_tracker;
+    }
+
     if ($item->can('is_lit')) {
         $item->is_lit(1);
     }
@@ -68,6 +73,11 @@ sub msg_lamp_on {
 sub msg_lamp_off {
     my $self = shift;
     my $item = $self->item;
+
+    if ($item->type eq 'potion') {
+        $item->tracker->identify_as('potion of oil')
+            if $item->has_tracker;
+    }
 
     if ($item->can('is_lit')) {
         $item->is_lit(0);
