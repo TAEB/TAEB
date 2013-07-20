@@ -94,15 +94,9 @@ sub msg_blessed {
     $self->item->is_blessed(1);
 }
 
-sub msg_diluted {
-    my $self = shift;
-    $self->item->did_dilute_partially;
-}
-
-sub msg_diluted_completely {
-    my $self = shift;
-    $self->item->did_dilute_into_water;
-}
+sub msg_diluted            { shift->item->did_dilute_partially }
+sub msg_diluted_completely { shift->item->did_dilute_into_water }
+sub msg_blanked            { shift->item->did_blank }
 
 __PACKAGE__->meta->make_immutable;
 

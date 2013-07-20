@@ -390,6 +390,12 @@ our %msg_string = (
         [status_change => telepathy => 1],
     "An object appears at your feet!" =>
         [check => 'floor'],
+    "The spellbook fades." =>
+        [blanked => 'spellbook'],
+    "The scroll fades." =>
+        [blanked => 'scroll'],
+    "The scrolls fade." =>
+        [blanked => 'scroll'],
 );
 
 our @msg_regex = (
