@@ -84,7 +84,16 @@ subscribe got_item => sub {
         TAEB->send_message(check => "inventory");
     }
 
-    $self->add($slot => $item);
+    # when you wield an item, you get a message like:
+    # "q - 2 daggers (weapon in hand)"
+    # the naive implementation would think you just picked up two more daggers
+    # but instead we need to disable stacking when you wield
+    if (TAEB->action->isa('TAEB::Action::Wield')) {
+        $self->update({ add => 0 }, $slot => $item);
+    }
+    else {
+        $self->add($slot => $item);
+    }
 };
 
 sub msg_enchanted_or_charged {
