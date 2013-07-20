@@ -1276,7 +1276,7 @@ sub handle_menus {
             menu => $menu,
         ));
     }
-    elsif ($topline =~ /What would you like to identify first\?/) {
+    elsif ($topline =~ /What would you like to identify (?:first|next)\?/) {
         $self->reconcile_inventory_with($menu, incomplete => 1);
 
         TAEB->announce(query_identifyitems => (
