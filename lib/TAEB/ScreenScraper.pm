@@ -384,6 +384,10 @@ our %msg_string = (
         [check => 'enhance'],
     "You don't find anything here to loot." =>
         [check => 'floor'],
+    "You feel a strange mental acuity." =>
+        [status_change => telepathy => 1],
+    "You feel in touch with the cosmos." =>
+        [status_change => telepathy => 1],
 );
 
 our @msg_regex = (

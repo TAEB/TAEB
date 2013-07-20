@@ -68,7 +68,7 @@ has [qw/is_blind is_stunned is_confused is_hallucinating is_lycanthropic is_engu
     },
 );
 
-has [qw/is_fast is_very_fast is_stealthy is_teleporting has_teleport_control/] => (
+has [qw/is_fast is_very_fast is_stealthy is_teleporting has_teleport_control has_telepathy/] => (
     is      => 'rw',
     isa     => 'Bool',
     default => 0,
@@ -445,6 +445,7 @@ my %method_of = (
     stoning          => 'is_petrifying',
     levitation       => 'is_levitating',
     teleport_control => 'has_teleport_control',
+    telepathy        => 'has_telepathy',
 );
 
 sub msg_status_change {
