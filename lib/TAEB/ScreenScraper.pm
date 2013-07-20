@@ -202,7 +202,7 @@ our %msg_string = (
         ['status_change', 'stoning', 0],
     "You feel limber!" =>  # consuming acid
         ['status_change', 'stoning', 0],
-    "You hear somene cursing shoplifters." =>
+    "You hear someone cursing shoplifters." =>
         ['level_message', 'shop'],
     "You hear the chime of a cash register." =>
         ['level_message', 'shop'],
