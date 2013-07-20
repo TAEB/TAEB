@@ -84,6 +84,40 @@ subscribe trapdoor => sub {
         if $self->starting_tile->known_branch;
 };
 
+sub exception_no_apply_items {
+    my $self = shift;
+
+    $self->aborted(1);
+
+    # tried to apply a potion of oil!
+    if ($self->item->type eq 'potion') {
+        my $tracker = $self->item->tracker;
+        $tracker->rule_out('potion of oil') if $tracker;
+    }
+    else {
+        TAEB->send_message(check => "inventory");
+    }
+
+    return "";
+}
+
+sub exception_cant_use {
+    my $self = shift;
+
+    $self->aborted(1);
+
+    # tried to apply a potion of oil!
+    if ($self->item->type eq 'potion') {
+        my $tracker = $self->item->tracker;
+        $tracker->rule_out('potion of oil') if $tracker;
+    }
+    else {
+        TAEB->send_message(check => "inventory");
+    }
+
+    return "";
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
