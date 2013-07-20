@@ -1263,7 +1263,7 @@ sub handle_menus {
             menu => $menu,
         ));
     }
-    elsif ($topline =~ /Pick a skill to advance/) {
+    elsif ($topline =~ /Pick a skill to advance|Current skills:/) {
         $self->parse_enhance_from($menu);
 
         TAEB->announce(query_enhance => (
