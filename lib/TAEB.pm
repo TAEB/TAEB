@@ -816,7 +816,7 @@ TAEB->register_debug_commands(
         command => sub {
             my @menu_items;
 
-            for my $spell (TAEB->spells->spells) {
+            for my $spell (sort { $a->slot cmp $b->slot } TAEB->spells->spells) {
                 push @menu_items, TAEB::Display::Menu::Item->new(
                     user_data => $spell,
                     title     => $spell->debug_line_noslot,
