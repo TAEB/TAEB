@@ -600,14 +600,8 @@ our @msg_regex = (
     [
         qr/You add(?: the)? "(.*)" (?:spell )?to your repertoire/ =>
             [check => 'spells'],
-    ],
-    [
-        qr/You add(?: the)? "(.*)" (?:spell )?to your repertoire/ =>
-            ['check' => 'discoveries'],
-    ],
-    [
-        qr/You add(?: the)? "(.*)" (?:spell )?to your repertoire/ =>
-            ['learned_spell' => sub { $1 }],
+            [check => 'discoveries'],
+            [learned_spell => sub { $1 }],
     ],
     [
         qr/crashes on .* and breaks into shards/ =>
@@ -1696,10 +1690,12 @@ sub send_messages {
 
         for my $something (@msg_regex) {
             if ($line =~ $something->[0]) {
-                push @messages, [
-                    map { ref($_) eq 'CODE' ? $_->() : $_ }
-                    @{ $something->[1] }
-                ];
+                for my $idx (1 .. $#$something) {
+                    push @messages, [
+                        map { ref($_) eq 'CODE' ? $_->() : $_ }
+                        @{ $something->[$idx] }
+                    ];
+                }
             }
         }
 
