@@ -388,6 +388,8 @@ our %msg_string = (
         [status_change => telepathy => 1],
     "You feel in touch with the cosmos." =>
         [status_change => telepathy => 1],
+    "An object appears at your feet!" =>
+        [check => 'floor'],
 );
 
 our @msg_regex = (
