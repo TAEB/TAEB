@@ -1277,7 +1277,7 @@ sub handle_menus {
         ));
     }
     elsif ($topline =~ /What would you like to identify first\?/) {
-        $self->reconcile_inventory_with($menu);
+        $self->reconcile_inventory_with($menu, incomplete => 1);
 
         TAEB->announce(query_identifyitems => (
             menu => $menu,
@@ -1331,6 +1331,7 @@ sub msg_reconcile_floor_items {
 sub reconcile_inventory_with {
     my $self = shift;
     my $menu = shift;
+    my %args = @_;
 
     my %missing_slots = map { $_->slot => $_ } TAEB->inventory_items;
 
@@ -1350,6 +1351,8 @@ sub reconcile_inventory_with {
 
         delete $missing_slots{$slot};
     }
+
+    return if $args{incomplete}; # identify won't include identified items
 
     for my $slot (keys %missing_slots) {
         my $item = $missing_slots{$slot};
