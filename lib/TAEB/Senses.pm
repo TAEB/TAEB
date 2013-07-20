@@ -799,7 +799,10 @@ sub msg_enhanced {
     elsif ($prev_level eq 'Skilled')   { $next_level = 'Expert' }
     elsif ($prev_level eq 'Expert')    { $next_level = 'Master' }
     elsif ($prev_level eq 'Master')    { $next_level = 'Grand Master' }
-    else { die "Unable to guess next skill level after '$prev_level' for $skill" }
+    else {
+        TAEB->log->senses("Skill levels: " . (join ', ', map { "$_:" . $self->skill_levels->{$_} } sort keys %{ $self->skill_levels }));
+        die "Unable to guess next skill level after '$prev_level' for $skill";
+    }
 
     TAEB->send_message(skill_level => $skill => $next_level);
 }
