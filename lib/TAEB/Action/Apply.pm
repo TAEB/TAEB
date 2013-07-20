@@ -108,7 +108,7 @@ sub exception_no_apply_items {
         TAEB->send_message(check => "inventory");
     }
 
-    return "";
+    return " ";
 }
 
 sub exception_cant_use {
@@ -125,7 +125,7 @@ sub exception_cant_use {
         TAEB->send_message(check => "inventory");
     }
 
-    return "";
+    return " ";
 }
 
 __PACKAGE__->meta->make_immutable;
