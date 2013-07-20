@@ -927,6 +927,7 @@ our @exceptions = (
     qr/^You cannot drop something you are wearing/ => 'drop_wearing',
     qr/^You don't have anything to use or apply./ => 'no_apply_items',
     qr/^Sorry, I don't know how to use that./ => 'cant_use',
+    qr/^That is a silly thing to use or apply./ => 'cant_use',
 );
 
 our @location_requests = (
