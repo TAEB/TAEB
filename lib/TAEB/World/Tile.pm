@@ -615,6 +615,10 @@ sub debug_line {
         push @bits, 'monster';
     }
 
+    if ($self->item_count == 1 && !$self->has_unknown_items) {
+        push @bits, '- ' . $self->item_idx(0)->debug_line;
+    }
+
     return join ' ', @bits;
 }
 
