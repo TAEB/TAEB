@@ -396,6 +396,10 @@ our %msg_string = (
         [blanked => 'scroll'],
     "The scrolls fade." =>
         [blanked => 'scroll'],
+    "You light your potion." =>
+        ['lamp_on'],
+    "You snuff the lit potion." =>
+        ['lamp_off'],
 );
 
 our @msg_regex = (
