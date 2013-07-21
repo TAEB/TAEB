@@ -401,9 +401,9 @@ our %msg_string = (
     "You snuff the lit potion." =>
         ['lamp_off'],
     "All of a sudden, you can't see yourself." =>
-        [status_change => is_invisible => 1],
+        [status_change => invisible => 1],
     "Your body seems to unfade..." =>
-        [status_change => is_invisible => 0],
+        [status_change => invisible => 0],
 );
 
 our @msg_regex = (
