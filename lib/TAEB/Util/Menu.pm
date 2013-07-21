@@ -33,7 +33,7 @@ sub item_menu {
         return list_menu($title, $thing, $options);
     }
     elsif (blessed($thing) && $thing->isa('Set::Object')) {
-        return list_menu($title, [$thing->members], $options);
+        return list_menu($title, [sort $thing->members], $options);
     }
 
     die "No valid menu type for '$thing'" unless $options->{quiet};
