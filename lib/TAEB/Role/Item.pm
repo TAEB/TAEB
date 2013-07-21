@@ -96,17 +96,12 @@ sub debug_line {
         push @fields, '(wielded)';
     }
 
-    if ($self->can('nutrition')) {
-        push @fields, '[' . $self->nutrition . ']';
+    if ($self->can('total_nutrition')) {
+        push @fields, '[' . $self->total_nutrition . ']';
     }
 
     if ($self->cost_each) {
-        if ($self->quantity == 1) {
-            push @fields, '($' . $self->cost . ')';
-        }
-        else {
-            push @fields, '($'. $self->cost_each .' each, $' . $self->cost . ')';
-        }
+        push @fields, '($' . $self->total_cost . ')';
     }
 
     return join ' ', @fields;

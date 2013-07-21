@@ -1,7 +1,7 @@
 package TAEB::World;
 use Moose;
 
-use NetHack::Item 0.20;
+use NetHack::Item 0.21;
 
 use TAEB::Role::Overload ();
 

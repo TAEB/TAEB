@@ -48,7 +48,7 @@ sub has_projectile {
         my $found = $self->find(
             identity   => $projectile,
             is_wielded => sub { !$_ },
-            cost       => 0,
+            cost_each  => 0,
         );
         return $found if $found;
     }

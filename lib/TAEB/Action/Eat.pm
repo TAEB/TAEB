@@ -71,7 +71,7 @@ sub done {
     }
 
     my $old_nutrition = TAEB->nutrition;
-    my $new_nutrition = $old_nutrition + $item->nutrition;
+    my $new_nutrition = $old_nutrition + $item->nutrition_each;
 
     TAEB->log->action("Eating $item is increasing our nutrition from $old_nutrition to $new_nutrition");
     TAEB->nutrition($new_nutrition);
