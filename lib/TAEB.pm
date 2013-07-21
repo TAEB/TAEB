@@ -916,7 +916,13 @@ TAEB->register_debug_commands(
     "E" => {
         help    => "Display TAEB's skills (#enhance)",
         command => sub {
-            item_menu("Skill levels", TAEB->senses->skill_levels);
+            my $skills = TAEB->senses->skill_levels;
+            for my $skill (keys %$skills) {
+                delete $skills->{$skill}
+                    if $skills->{$skill} eq 'Unskilled';
+            }
+
+            item_menu("Skill levels", $skills);
         },
     },
     "I" => {
