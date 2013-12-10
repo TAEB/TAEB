@@ -8,6 +8,7 @@ use List::MoreUtils ':all';
 
 use Sub::Exporter -setup => {
     exports => [
+        uniq
         qw(dice align2str assert assert_is),
         qw(blessed isweak refaddr weaken),
         @List::Util::EXPORT_OK,
