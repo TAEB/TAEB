@@ -49,7 +49,7 @@ or an old copy from CPAN:
 
 ## Planar AI
 
-The other actively developed AI is Planar, whose design principle is "be the
+Another AI is Planar, whose design principle is "be the
 opposite of Behavorial". You can get it with darcs:
 
     darcs get http://patch-tag.com/r/ais523/taeb-ai-planar
@@ -61,6 +61,13 @@ Or the GitHub mirror:
 Or a tarball snapshot of the GitHub mirror:
 
     http://github.com/TAEB/TAEB-AI-Planar/tarball/master
+
+## Magus AI
+
+The newest AI is Magus, which optimizes specifically for Wizards.
+You can grab it from GitHub:
+
+    git clone git@github.com:TAEB/TAEB-AI-Magus.git
 
 # Configuration
 
