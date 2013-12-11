@@ -68,11 +68,25 @@ has [qw/is_blind is_stunned is_confused is_hallucinating is_lycanthropic is_engu
     },
 );
 
-has [qw/is_fast is_very_fast is_stealthy is_teleporting has_teleport_control has_telepathy is_invisible/] => (
+has [qw/is_fast is_very_fast is_stealthy is_teleporting has_intrinsic_teleport_control has_telepathy is_invisible/] => (
     is      => 'rw',
     isa     => 'Bool',
     default => 0,
 );
+
+sub has_extrinsic_teleport_control {
+    return 1 if TAEB->inventory->find("Master Key of Thievery");
+
+    return 1 if TAEB->equipment->is_wearing_ring("ring of teleport control");
+
+    return 0;
+}
+
+sub has_teleport_control {
+    my $self = shift;
+    return $self->has_intrinsic_teleport_control
+        || $self->has_extrinsic_teleport_control;
+}
 
 has level => (
     is      => 'rw',
@@ -435,17 +449,17 @@ subscribe turn => sub {
 };
 
 my %method_of = (
-    lycanthropy      => 'is_lycanthropic',
-    blindness        => 'is_blind',
-    confusion        => 'is_confused',
-    stunning         => 'is_stunned',
-    hallucination    => 'is_hallucinating',
-    pit              => 'in_pit',
-    web              => 'in_web',
-    stoning          => 'is_petrifying',
-    levitation       => 'is_levitating',
-    teleport_control => 'has_teleport_control',
-    telepathy        => 'has_telepathy',
+    lycanthropy                => 'is_lycanthropic',
+    blindness                  => 'is_blind',
+    confusion                  => 'is_confused',
+    stunning                   => 'is_stunned',
+    hallucination              => 'is_hallucinating',
+    pit                        => 'in_pit',
+    web                        => 'in_web',
+    stoning                    => 'is_petrifying',
+    levitation                 => 'is_levitating',
+    intrinsic_teleport_control => 'has_intrinsic_teleport_control',
+    telepathy                  => 'has_telepathy',
 );
 
 sub msg_status_change {

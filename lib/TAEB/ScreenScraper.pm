@@ -800,11 +800,11 @@ our @msg_regex = (
     ],
     [
         qr/You feel (?:controlled!|in control of yourself\.|centered in your personal space\.)/ =>
-            [status_change => teleport_control => 1],
+            [status_change => intrinsic_teleport_control => 1],
     ],
     [
         qr/You feel uncontrolled!/ =>
-            [status_change => teleport_control => 0],
+            [status_change => intrinsic_teleport_control => 0],
     ],
     [
         qr/^You are now (?:more|most) skilled in (.*?)\./ =>
