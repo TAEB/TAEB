@@ -5,7 +5,8 @@ extends 'TAEB::AI';
 
 # The framework calls this method on the AI object to determine what action to
 # do next. An action is an instance of TAEB::Action, which is basically a handy
-# object wrapper around a NetHack command like "s" for search.
+# object wrapper around a NetHack command like "s" for search. That way we
+# can model the extra information actions require, like items, more deeply.
 sub next_action {
     my $self = shift;
 
