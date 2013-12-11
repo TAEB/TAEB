@@ -25,7 +25,8 @@ attributes that should be provided. Someone not familiar with the WebHack AI
 will probably think the C<required> and C<default> options provided together
 are redundant.
 
-There could also be C<provided> attributes that aren't C<required>.
+There could also be C<provided> attributes that aren't C<required>. For example
+direction for L<TAEB::Action::Cast>.
 
 Finally, C<provided> is another meta-attribute and not just an empty role
 because L<TAEB::Action::Role::Direction> assumes the direction is provided,
