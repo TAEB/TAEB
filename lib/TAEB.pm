@@ -37,9 +37,7 @@ use TAEB::Action;
 use TAEB::Publisher;
 use TAEB::Debug;
 
-with (
-    'TAEB::Role::Persistency',
-);
+with 'TAEB::Role::Persistency';
 
 class_has persistent_data => (
     is        => 'ro',
