@@ -29,7 +29,7 @@ You can install TAEB's dependencies with the following commands:
 # AI
 
 Though TAEB ships with a demo AI, you should still install a robust
-AI. There are two actively developed AIs, Behavioral and Planar.
+AI. There are currently three AIs: Behavioral, Planar, and Magus.
 
 ## Behavioral AI
 
@@ -67,7 +67,7 @@ Or a tarball snapshot of the GitHub mirror:
 The newest AI is Magus, which optimizes specifically for Wizards.
 You can grab it from GitHub:
 
-    git clone git@github.com:TAEB/TAEB-AI-Magus.git
+    git clone git://github.com/TAEB/TAEB-AI-Magus.git
 
 # Configuration
 
