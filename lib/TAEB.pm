@@ -626,15 +626,6 @@ sub has_item {
     $self->inventory->find(@_);
 }
 
-sub has_identified {
-    my $self     = shift;
-    my $identity = shift;
-
-    my @appearances = $self->item_pool->possible_appearances_of($identity);
-    return $appearances[0] if @appearances == 1;
-    return;
-}
-
 sub new_monster {
     my $self = shift;
     TAEB::World::Monster->new(@_);
