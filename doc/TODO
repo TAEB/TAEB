@@ -5,7 +5,6 @@ Everyone is free to add and claim things from this file.
 - Configurable botl
 - Map keystrokes to actions (for an Interhack-like interface)
 - Finish conversion to announcements
-- Move the spells attribute from TAEB to world
 - Move the new_game attribute to Senses
 - Make TAEB::Debug more pluggable
 - use more consistent and useful logging levels
