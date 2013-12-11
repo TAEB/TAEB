@@ -886,6 +886,8 @@ our @prompts = (
     qr/^Do you wish to put something in\?/ => 'put_something_in',
     qr/^(.*?) offers( only)? (\d+) gold pieces? for(?: your items in|the contents of)? (?:the|your) (.*)\.  Sell (?:it|them)\?/ => 'sell_item',
     qr/^What do you want to charge\?/ => 'charge_what',
+    qr/^What type of (scroll|spellbook) do you want to write\?/ => 'write_what',
+    qr/^What do you want to write on\?/ => 'write_on_what',
 );
 
 our @message_prompts = (
@@ -902,6 +904,7 @@ our @exceptions = (
     qr/^You don't have anything to (?:zap|eat)/ => 'missing_item',
     qr/^You don't have anything to use or apply/=> 'missing_item',
     qr/^You don't have anything else to wear/   => 'missing_item',
+    qr/^You don't have anything to write on/    => 'missing_item',
     qr/^You are too hungry to cast that spell/  => 'hunger_cast',
     qr/^You have nothing to brace yourself against/ => 'impeded_by_levitation',
     # The next case is if we fail to kick something due to levitation,
