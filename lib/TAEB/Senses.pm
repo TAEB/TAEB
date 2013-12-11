@@ -53,7 +53,9 @@ has nutrition => (
     default => 900,
 );
 
-has [qw/is_blind is_stunned is_confused is_hallucinating is_lycanthropic is_engulfed is_grabbed is_petrifying is_levitating is_food_poisoned is_ill is_wounded_legs/] => (
+has [qw/is_blind is_stunned is_confused is_hallucinating is_lycanthropic
+        is_engulfed is_grabbed is_petrifying is_levitating is_food_poisoned
+        is_ill is_wounded_legs/] => (
     traits  => ['TAEB::DisplayStatus'],
     is      => 'rw',
     isa     => 'Bool',
@@ -68,7 +70,8 @@ has [qw/is_blind is_stunned is_confused is_hallucinating is_lycanthropic is_engu
     },
 );
 
-has [qw/is_fast is_very_fast is_stealthy is_teleporting has_intrinsic_teleport_control has_telepathy is_invisible/] => (
+has [qw/is_fast is_very_fast is_stealthy is_teleporting
+        has_intrinsic_teleport_control has_telepathy is_invisible/] => (
     is      => 'rw',
     isa     => 'Bool',
     default => 0,
