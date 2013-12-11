@@ -70,7 +70,7 @@ has [qw/is_blind is_stunned is_confused is_hallucinating is_lycanthropic
     },
 );
 
-has [qw/is_fast is_very_fast is_stealthy is_teleporting
+has [qw/is_fast is_very_fast is_stealthy has_intrinsic_teleportitis
         has_intrinsic_teleport_control has_telepathy is_invisible/] => (
     is      => 'rw',
     isa     => 'Bool',
@@ -85,10 +85,24 @@ sub has_extrinsic_teleport_control {
     return 0;
 }
 
+sub has_extrinsic_teleportitis {
+    return 1 if TAEB->inventory->find("Master Key of Thievery");
+
+    return 1 if TAEB->equipment->is_wearing_ring("ring of teleportation");
+
+    return 0;
+}
+
 sub has_teleport_control {
     my $self = shift;
     return $self->has_intrinsic_teleport_control
         || $self->has_extrinsic_teleport_control;
+}
+
+sub has_teleportitis {
+    my $self = shift;
+    return $self->has_intrinsic_teleportitis
+        || $self->has_extrinsic_teleportitis;
 }
 
 has level => (
@@ -462,6 +476,7 @@ my %method_of = (
     stoning                    => 'is_petrifying',
     levitation                 => 'is_levitating',
     intrinsic_teleport_control => 'has_intrinsic_teleport_control',
+    intrinsic_teleportitis     => 'has_intrinsic_teleportitis',
     telepathy                  => 'has_telepathy',
 );
 
