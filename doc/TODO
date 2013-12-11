@@ -1,9 +1,11 @@
 Everyone is free to add and claim things from this file.
 
+*** See http://github.com/TAEB/TAEB/issues
+
 - Configurable botl
 - Map keystrokes to actions (for an Interhack-like interface)
-- Announcements
-- Move the spells attribute from TAEB to.. dungeon?
+- Finish conversion to announcements
+- Move the spells attribute from TAEB to world
 - Move the new_game attribute to Senses
 - Make TAEB::Debug more pluggable
 - use more consistent and useful logging levels
@@ -14,10 +16,7 @@ Everyone is free to add and claim things from this file.
     - error for non-fatal errors
     - critical for fatal errors
 - use some getopt module for bin/taeb
-- use NetHack-Monster rather than our builtin spoilers
 - use separate menus/keys for glyph modes and color modes
-- senses->ac should have a trigger that validates against what we think
-    our ac should be based on equipment, and check inventory otherwise
 - items should know the container that they are in (inventory, tile,
     monster, other item), so that the ai doesn't have to search for things
     all the time

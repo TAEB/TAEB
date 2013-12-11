@@ -1,6 +1,3 @@
-List of random things I plan to work on (unless someone else wants to
-help. Prod me on irc://freenode/#interhack.
-
 * ExtendedCurses UI
  * allow use of screen area in terminals > 80x24 for other info.
 
