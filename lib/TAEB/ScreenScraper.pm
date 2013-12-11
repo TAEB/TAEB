@@ -929,6 +929,8 @@ our @exceptions = (
     qr/^You don't have anything to use or apply./ => 'no_apply_items',
     qr/^Sorry, I don't know how to use that./ => 'cant_use',
     qr/^That is a silly thing to use or apply./ => 'cant_use',
+    qr/^Your marker is too dry to write that!/ => 'marker_low',
+    qr/^Your marker dries out!/                => 'marker_zero',
 );
 
 our @location_requests = (

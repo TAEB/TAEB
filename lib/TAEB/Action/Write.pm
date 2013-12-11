@@ -27,5 +27,10 @@ sub respond_apply_what    { shift->marker->slot }
 sub respond_write_on_what { shift->onto->slot }
 sub respond_write_what    { shift->identity . "\n" }
 
+sub exception_marker_zero { shift->marker->charges(0) }
+
+# XXX figure out how many charges were required, cap marker charges to new possible range
+sub exception_marker_low  { shift->marker->charges(0) }
+
 1;
 
