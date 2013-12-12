@@ -57,6 +57,24 @@ has time_buffer => (
     default => sub { [] },
 );
 
+has steps_last_second => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => 0,
+);
+
+has steps_this_second => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => 0,
+);
+
+has this_second => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => time,
+);
+
 has initialized => (
     is  => 'rw',
     isa => 'Bool',
@@ -315,7 +333,7 @@ sub taeb_status {
     push @pieces, '[' . $statuses . ']'
         if $statuses;
 
-    push @pieces, $self->step_time;
+    push @pieces, $self->steps_last_second;
 
     return join ' ', @pieces;
 }
@@ -783,11 +801,25 @@ sub change_botl_mode {
 
 subscribe step => sub {
     my $self = shift;
-    my $time = gettimeofday;
-    my $list = $self->time_buffer;
+    {
+        my $fine_time = gettimeofday;
+        my $list = $self->time_buffer;
 
-    unshift @$list, $time;
-    splice @$list, 2 if @$list > 2;
+        unshift @$list, $fine_time;
+        splice @$list, 2 if @$list > 2;
+    }
+
+    {
+        my $time = time;
+        if ($time == $self->this_second) {
+            $self->steps_this_second($self->steps_this_second + 1);
+        }
+        else {
+            $self->this_second($time);
+            $self->steps_last_second($self->steps_this_second);
+            $self->steps_this_second(1);
+        }
+    }
 };
 
 sub get_key { Curses::getch }
