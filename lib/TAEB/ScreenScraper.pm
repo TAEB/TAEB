@@ -905,6 +905,7 @@ our @exceptions = (
     qr/^You don't have anything to use or apply/=> 'missing_item',
     qr/^You don't have anything else to wear/   => 'missing_item',
     qr/^You don't have anything to write on/    => 'missing_item',
+    qr/^Not wearing any accessories/            => 'missing_item',
     qr/^You are too hungry to cast that spell/  => 'hunger_cast',
     qr/^You have nothing to brace yourself against/ => 'impeded_by_levitation',
     # The next case is if we fail to kick something due to levitation,
