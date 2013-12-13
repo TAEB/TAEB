@@ -15,3 +15,4 @@ MANIFEST.bak
 TAEB-*
 *.bs
 *.o
+bin/syscall-tracer

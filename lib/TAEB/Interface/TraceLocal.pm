@@ -1,9 +1,26 @@
-package TAEB::Interface::DTraceLocal;
+package TAEB::Interface::TraceLocal;
 use Moose;
 use TAEB::OO;
 use IO::Pty::Easy;
 
 extends 'TAEB::Interface';
+
+my $trace_command;
+BEGIN {
+    use Config;
+    if ($Config::Config{archname} eq 'x86_64-linux') {
+        if (!-e 'bin/syscall-tracer') {
+            die "Please run 'cc src/syscall-tracer -o bin/syscall-tracer' and try again";
+        }
+        $trace_command = qq{sudo ./bin/syscall-tracer %d};
+    }
+    elsif ($Config::Config{archname} eq 'darwin-2level') {
+        $trace_command = qq{sudo dtrace -p %d -qn 'syscall::read_nocancel:entry { printf(".\\n") }'};
+    }
+    else {
+        die "Platform $Config::Config{archname} not supported";
+    }
+}
 
 has name => (
     is      => 'ro',
@@ -29,9 +46,9 @@ has pty => (
     builder => '_build_pty',
 );
 
-has dtrace => (
+has trace => (
     is     => 'ro',
-    writer => '_set_dtrace',
+    writer => '_set_trace',
 );
 
 sub _build_pty {
@@ -61,9 +78,9 @@ sub _build_pty {
 
     my $pid = $pty->pid;
 
-    open my $handle, qq{sudo dtrace -p $pid -qn 'syscall::read_nocancel:entry { printf(".\\n") }' |}
-        or die "unable to launch DTrace: $!";
-    $self->_set_dtrace($handle);
+    open my $handle, '-|', sprintf($trace_command, $pid)
+        or die "unable to launch tracer ($trace_command): $!";
+    $self->_set_trace($handle);
 
     return $pty;
 }
@@ -115,18 +132,27 @@ sub wait_for_termination {
 augment read => sub {
     my $self = shift;
 
-    my $handle = $self->dtrace;
-    my $discard = <$handle>;
+    # pty needs to be initialized first, since it sets the trace attribute
+    my $pty = $self->pty;
+
+    # XXX this isn't quite right - if we issue multiple commands at once (this
+    # happens during check functions, for instance - '@@' checks autopickup,
+    # etc), we'll queue up multiple 'read' events. we need to actually do this
+    # non-blockingly.
+    my $handle = $self->trace;
+    chomp(my $discard = <$handle>);
 
     # We already waited for output to arrive; don't wait even longer if there
     # isn't any. Use an appropriate reading function depending on the class.
-    my $out = $self->pty->read(0,1024);
-    return '' if !defined($out);
-
-    # We specified blocks of 1024 characters above. If we got exactly 1024,
-    # read more.
-    if (length($out) == 1024) {
-        return $out . $self->read(@_);
+    # Don't just recurse, because that will make us recheck the trace status
+    # every time.
+    my $out = '';
+    while (my $next = $pty->read(0, 1024)) {
+        last if !defined $next;
+        $out .= $next;
+        # We specified blocks of 1024 characters above. If we got exactly 1024,
+        # read more.
+        last if length($next) < 1024;
     }
 
     return $out;
@@ -152,7 +178,7 @@ __END__
 
 =head1 NAME
 
-TAEB::Interface::DTraceLocal - Wait for input using DTrace
+TAEB::Interface::TraceLocal - Wait for input using DTrace or ptrace
 
 =cut
 
