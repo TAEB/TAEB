@@ -608,6 +608,13 @@ our @msg_regex = (
             [learned_spell => sub { $1 }],
     ],
     [
+        qr/You know "(.*)" quite well already/ =>
+            [check => 'spells'],
+            [check => 'discoveries'],
+            [knew_spell => sub { $1 }],
+    ],
+
+    [
         qr/crashes on .* and breaks into shards/ =>
             ['check' => 'discoveries'],
     ],

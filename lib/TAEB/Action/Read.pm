@@ -52,6 +52,16 @@ sub msg_learned_spell {
         if $self->item->has_tracker;
 }
 
+sub msg_knew_spell {
+    my $self = shift;
+    my $name = shift;
+
+    $self->item->tracker->identify_as("spellbook of $name")
+        if $self->item->has_tracker;
+
+    TAEB->log->error("Read spellbook of $name even though we knew the spell.");
+}
+
 sub can_read {
     my $self = shift;
     my $item = shift;
