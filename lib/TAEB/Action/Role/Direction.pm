@@ -33,11 +33,13 @@ sub respond_what_direction { shift->direction }
 
 before run => sub {
     my $self = shift;
+    my $direction = $self->direction;
 
-    return unless $self->direction;
+    return unless $direction;
+    return if $direction eq '<' || $direction eq '>';
 
     my ( $x,  $y) = (TAEB->x, TAEB->y);
-    my ($dx, $dy) = vi2delta($self->direction);
+    my ($dx, $dy) = vi2delta($direction);
 
     return unless $dx || $dy;
 
