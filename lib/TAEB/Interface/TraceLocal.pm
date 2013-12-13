@@ -8,7 +8,7 @@ extends 'TAEB::Interface';
 my $trace_command;
 BEGIN {
     use Config;
-    if ($Config::Config{archname} eq 'x86_64-linux') {
+    if ($Config::Config{archname} =~ /^x86_64-linux/) {
         if (!-e 'bin/syscall-tracer') {
             die "Please run 'cc src/syscall-tracer -o bin/syscall-tracer' and try again";
         }
