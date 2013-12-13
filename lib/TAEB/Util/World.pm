@@ -144,6 +144,8 @@ my %vi2delta = (
 );
 
 sub vi2delta {
+    TAEB->log->util("Invalid direction: $_[0]", level => 'error')
+        unless $vi2delta{ lc $_[0] };
     return @{ $vi2delta{ lc $_[0] } || [] };
 }
 
