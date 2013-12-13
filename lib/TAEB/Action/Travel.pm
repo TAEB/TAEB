@@ -13,47 +13,17 @@ has path => (
 );
 
 has intralevel_subpath => (
-    is  => 'ro',
-    isa => 'TAEB::World::Path',
+    is      => 'ro',
+    isa     => 'TAEB::World::Path',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        my $intralevel_subpath = $self->path->intralevel_subpath;
+        confess "Travel requires a path with components on the current level"
+            if !$intralevel_subpath;
+        return $intralevel_subpath;
+    },
 );
-
-# if the first movement is < or >, then just use the Ascend or Descend actions
-# if the path spans multiple levels, just go until the level change action
-around new => sub {
-    my $orig  = shift;
-    my $class = shift;
-    my %args  = @_;
-
-    # we only want to change Travel
-    return $class->$orig(@_) if $class ne 'TAEB::Action::Travel';
-
-    my $start;
-
-    if ($args{path}) {
-        $start = substr($args{path}->path, 0, 1);
-    }
-    else {
-        confess "You must specify a path to the Travel action.";
-    }
-
-    if ($start eq '<') {
-        return TAEB::Action::Ascend->new(%args);
-    }
-    elsif ($start eq '>') {
-        return TAEB::Action::Descend->new(%args);
-    }
-
-    my $intralevel_subpath = $args{path}->intralevel_subpath;
-    if ($intralevel_subpath) {
-        return $class->$orig(
-            %args,
-            path               => $intralevel_subpath,
-            intralevel_subpath => $intralevel_subpath,
-        );
-    }
-
-    $class->$orig(%args);
-};
 
 sub location_controlled_tele {
     my $self = shift;
@@ -83,7 +53,7 @@ sub done {
         unless TAEB->is_blind;
 }
 
-__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+__PACKAGE__->meta->make_immutable;
 
 1;
 
