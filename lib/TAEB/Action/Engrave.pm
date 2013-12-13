@@ -11,6 +11,10 @@ has '+engraver' => (
     default => '-',
 );
 
+has '+current_item' => (
+    isa => 'NetHack::Item | Str',
+);
+
 has text => (
     is       => 'ro',
     isa      => 'Str',
