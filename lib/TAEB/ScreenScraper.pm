@@ -1658,6 +1658,27 @@ sub handle_game_end {
 
         die "The game has ended.\n";
     }
+    elsif (TAEB->topline =~ /^(Fare thee well|Sayonara|Aloha|Farvel|Goodbye)/) {
+        TAEB->death_state('summary');
+
+        TAEB->death_report->score($1)
+            if TAEB->vt->row_plaintext(2) =~ /(\d+) points?/;
+
+        TAEB->death_report->turns($1)
+            if TAEB->vt->row_plaintext(3) =~ /(\d+) moves?/;
+
+        TAEB->death_report->reason($1)
+            if TAEB->vt->row_plaintext(2) =~ /^You (.*) in /;
+
+        # summary is always one page, so after that is high scores with no
+        # "press space to close nethack"
+        TAEB->write(' ');
+        TAEB->interface->flush;
+
+        # at this point the nethack process has now ended
+
+        die "The game has ended.\n";
+    }
     # No easy thing to check for here, so assume death_state isn't lying to us
     elsif (TAEB->death_state eq 'inventory') {
         TAEB->write(' ');
