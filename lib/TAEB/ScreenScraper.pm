@@ -1651,7 +1651,7 @@ sub handle_game_end {
 
         # summary is always one page, so after that is high scores with no
         # "press space to close nethack"
-        TAEB->write(' ');
+        TAEB->write('   ');
         TAEB->interface->flush;
 
         # at this point the nethack process has now ended
@@ -1672,7 +1672,7 @@ sub handle_game_end {
 
         # summary is always one page, so after that is high scores with no
         # "press space to close nethack"
-        TAEB->write(' ');
+        TAEB->write('   ');
         TAEB->interface->flush;
 
         # at this point the nethack process has now ended
