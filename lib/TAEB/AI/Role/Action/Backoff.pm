@@ -118,7 +118,7 @@ role {
 
             if ($self->$is_blacked_out_method) {
                 my $forbidden_until = $self->$forbidden_until_method;
-                TAEB->log->ai("$action_class is blacked out until $forbidden_until but it was used anyway!", level => "error");
+                TAEB->log->ai("$label is blacked out until $forbidden_until but it was used anyway!", level => "error");
             }
         }
 
