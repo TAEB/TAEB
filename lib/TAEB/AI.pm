@@ -42,7 +42,7 @@ sub respond_wish {
         && !TAEB->role eq 'Rog'
         && !TAEB->seen_artifact('Master Key of Thievery');
 
-    return "blessed fixed greased +3 silver dragon scale mail"
+    return "blessed fixed greased +3 silver dragon scale mail\n"
         unless TAEB->has_item(qr/silver dragon scale mail/)
             || TAEB->role eq 'Mon';
 
@@ -51,11 +51,11 @@ sub respond_wish {
         if TAEB->has_identified("potion of full healing");
 
     # Curing status effects sounds good, too.
-    return "blessed fixed greased +3 unicorn horn"
+    return "blessed fixed greased +3 unicorn horn\n"
         unless TAEB->has_item('unicorn horn');
 
     # When in doubt, ask for more shit to throw at people.
-    return "3 blessed fixed +3 silver daggers";
+    return "3 blessed fixed +3 silver daggers\n";
 }
 
 sub select_identify {
