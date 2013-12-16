@@ -19,43 +19,26 @@ has [qw/hit_obscured_monster hit_immobile_boulder pushing/] => (
     default => 0,
 );
 
-# if the first movement is < or >, then just use the Ascend or Descend actions
 # if the first movement moves us into a boulder, record the fact
-around new => sub {
-    my $orig  = shift;
-    my $class = shift;
-    my %args  = @_;
-
-    # we only want to change Move
-    return $class->$orig(@_) if $class ne 'TAEB::Action::Move';
+sub BUILD {
+    my $self = shift;
 
     my $start;
-
-    if ($args{path}) {
-        $start = substr($args{path}->path, 0, 1);
+    if ($self->path) {
+        $start = substr($self->path->path, 0, 1);
     }
-    elsif ($args{direction}) {
-        $start = substr($args{direction},  0, 1);
+    elsif ($self->direction) {
+        $start = substr($self->direction, 0, 1);
     }
     else {
         confess "You must specify a path or direction to the Move action.";
     }
 
-    if ($start eq '<') {
-        return TAEB::Action::Ascend->new(%args);
+    my $next_tile = TAEB->current_tile->at_direction($start);
+    if ($next_tile && $next_tile->has_boulder) {
+        $self->pushing(1);
     }
-    elsif ($start eq '>') {
-        return TAEB::Action::Descend->new(%args);
-    }
-    else {
-        my $next_tile = TAEB->current_tile->at_direction($start);
-        if ($next_tile && $next_tile->has_boulder) {
-            $args{pushing} = 1;
-        }
-    }
-
-    $class->$orig(%args);
-};
+}
 
 sub directions {
     my $self = shift;
@@ -70,15 +53,43 @@ sub command {
     return substr($self->directions, 0, 1);
 }
 
+sub complement_type {
+    my $self = shift;
+    return $self->command eq '>' ? (stairsup => '<')
+         : $self->command eq '<' ? (stairsdown => '>')
+         : do { TAEB->log->action("complement_type called on a move action of type " . $self->command); undef };
+}
+
 # if we didn't move, and we tried to move diagonally, and the tile we're trying
 # to move onto (or off of) is obscured, then assume that tile is a door.
 # XXX: we could also be # in a pit or bear trap
 sub done {
     my $self = shift;
 
-    my $walked = TAEB->x - $self->starting_tile->x
-              || TAEB->y - $self->starting_tile->y
-              || TAEB->z - $self->starting_tile->z;
+    my $start          = $self->starting_tile;
+    my $current        = TAEB->current_tile;
+    my $intra_level    = $self->command eq '<' || $self->command eq '>';
+    my $changed_levels = TAEB->z != $start->z;
+
+    # have to also check $intra_level or else we get confused by trapdoors and
+    # level teleporters
+    if ($changed_levels && $intra_level) {
+        if (($start->isa('TAEB::World::Tile::Stairs') && !$start->other_side) ||
+            $start->other_side == $start) {
+            TAEB->log->action("Setting the other_side of $start to $current");
+            $start->other_side($current);
+        }
+
+        # If we changed level, then connect the dungeon graph.
+        if ($current->type eq 'obscured') {
+            $current->change_type($self->complement_type);
+            $current->other_side($start);
+        }
+    }
+
+    my $walked = TAEB->x - $start->x
+              || TAEB->y - $start->y
+              || $changed_levels;
 
     if ($walked) {
         TAEB->send_message('walked');
@@ -86,18 +97,48 @@ sub done {
         if ($self->pushing) {
             # If we pushed a boulder, then if it's still there, it
             # must be genuine.
-            TAEB->current_tile->known_genuine_boulder(0);
+            $current->known_genuine_boulder(0);
             my $beyond = TAEB->current_level->at_safe(
-                TAEB->x * 2 - $self->starting_tile->x,
-                TAEB->y * 2 - $self->starting_tile->y,
+                TAEB->x * 2 - $start->x,
+                TAEB->y * 2 - $start->y,
             );
             $beyond->known_genuine_boulder(1)
                 if $beyond && $beyond->has_boulder;
         }
 
+        if ($intra_level && (my $branch = $start->branch)) {
+            if ($self->command eq '<') {
+                if ($branch eq 'sokoban' || $branch eq 'vlad') {
+                    $current->branch($branch);
+                }
+
+                # dungeons branch propagates upwards except for sokoban, which
+                # is immediately identified
+                if ($branch eq 'dungeons' && !$current->known_branch) {
+                    $current->branch($branch);
+                }
+
+                # mines propagates if the new level is 5 or deeper. any higher
+                # and we could've left the mines and entered the dungeon
+                if ($branch eq 'mines' && $current->z >= 5) {
+                    $current->branch($branch);
+                }
+            }
+            elsif ($self->command eq '>') {
+                $current->branch($branch)
+                    if $branch eq 'mines'
+                    || $branch eq 'quest'
+                    || $branch eq 'gehennom'
+                    || ($branch eq 'dungeons' && $start->z > 4);
+            }
+        }
+
         # the rest applies only if we haven't moved
         return;
     }
+
+    # none of the rest applies if we're trying to change levels
+    return if $intra_level;
 
     my $dir = substr($self->directions, 0, 1);
     my ($dx, $dy) = vi2delta($dir);
@@ -193,6 +234,8 @@ sub msg_hidden_monster { shift->hit_obscured_monster(1) }
 
 sub msg_immobile_boulder { shift->hit_immobile_boulder(1) }
 
+sub respond_really_escape { 'y' }
+
 sub location_controlled_tele {
     my $self = shift;
     my $target = $self->path->to;
@@ -215,7 +258,7 @@ sub is_impossible {
     return TAEB->is_engulfed;
 }
 
-__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+__PACKAGE__->meta->make_immutable;
 
 1;
 

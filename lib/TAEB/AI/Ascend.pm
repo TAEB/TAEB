@@ -5,7 +5,7 @@ extends 'TAEB::AI';
 
 # This is actually useful for testing the end-of-game sequence, but it's also
 # here because, well, ascend
-sub next_action { TAEB::Action::Ascend->new }
+sub next_action { TAEB::Action::Move->new(direction => '<') }
 
 __PACKAGE__->meta->make_immutable;
 

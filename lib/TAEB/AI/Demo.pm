@@ -65,7 +65,7 @@ sub try_hunt {
 sub try_descend {
     return unless TAEB->current_tile->type eq 'stairsdown';
 
-    return TAEB::Action::Descend->new;
+    return TAEB::Action::Move->new(direction => '>');
 }
 
 # If we see stairs, then go to them.
