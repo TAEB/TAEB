@@ -95,12 +95,17 @@ role {
                 $self->$exponent_method($exponent);
             }
 
-            $self->$forbidden_until_method($turn + 2 ** $exponent);
+            my $until = $turn + 2 ** $exponent;
+            $self->$forbidden_until_method($until);
+
+            TAEB->log->ai("Blacking out $label until $until");
         }
         elsif ($self->$clear_when($prev)) {
             $self->$clear_exponent_method;
 
             $self->$clear_forbidden_until;
+
+            TAEB->log->ai("Clearing black out of $label");
         }
     };
 
