@@ -51,6 +51,12 @@ has trace => (
     writer => '_set_trace',
 );
 
+has has_read => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
+
 sub _build_pty {
     my $self = shift;
 
@@ -132,28 +138,37 @@ sub wait_for_termination {
 augment read => sub {
     my $self = shift;
 
+    return if $self->has_read;
+
     # pty needs to be initialized first, since it sets the trace attribute
     my $pty = $self->pty;
 
-    # XXX this isn't quite right - if we issue multiple commands at once (this
-    # happens during check functions, for instance - '@@' checks autopickup,
-    # etc), we'll queue up multiple 'read' events. we need to actually do this
-    # non-blockingly.
     my $handle = $self->trace;
-    chomp(my $discard = <$handle>);
+    my $discard = <$handle>;
 
-    # We already waited for output to arrive; don't wait even longer if there
-    # isn't any. Use an appropriate reading function depending on the class.
-    # Don't just recurse, because that will make us recheck the trace status
-    # every time.
+    my ($rin, $rout) = ('', '');
+    vec($rin, fileno($handle), 1) = 1;
+    while (1) {
+        my $ret = select($rout = $rin, undef, undef, 0);
+        redo if $ret == -1;
+        last if $ret == 0;
+        $discard = <$handle>;
+    }
+
     my $out = '';
     while (my $next = $pty->read(0, 1024)) {
         last if !defined $next;
         $out .= $next;
-        # We specified blocks of 1024 characters above. If we got exactly 1024,
-        # read more.
-        last if length($next) < 1024;
+        ($rin, $rout) = ('', '');
+        vec($rin, fileno($pty), 1) = 1;
+        # this in theory should be able to use a delay of 0, but sometimes
+        # nethack writes more than one thing in between reads, and reading on
+        # this end sometimes only sees the first chunk if it runs too fast.
+        my $ret = select($rout = $rin, undef, undef, 0.01);
+        last if $ret == 0;
     }
+
+    $self->has_read(1);
 
     return $out;
 };
@@ -163,6 +178,8 @@ augment write => sub {
 
     my $chars = $self->pty->write((join '', @_), 1);
     return if !defined($chars);
+
+    $self->has_read(0);
 
     # An IPE counts the number of chars written; an IPH doesn't,
     # because writes are delayed-action in such a case.
