@@ -26,6 +26,11 @@ has 'max_dlvl' => (
     default => sub { TAEB->dungeon->max_dlvl },
 );
 
+has 'reason' => (
+    is  => 'rw',
+    isa => 'Str',
+);
+
 augment as_string => sub {
     my $self = shift;
 
@@ -33,12 +38,14 @@ augment as_string => sub {
     my $score    = $self->score;
     my $turns    = $self->turns;
     my $max_dlvl = $self->max_dlvl;
+    my $reason   = $self->reason;
 
     return << "REPORT";
 Conducts: $conducts
 Score:    $score
 Turns:    $turns
 Deepest:  Level $max_dlvl
+Reason:   $reason
 REPORT
 };
 

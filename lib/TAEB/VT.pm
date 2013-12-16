@@ -43,18 +43,30 @@ sub find_row {
     return;
 }
 
-sub contains {
+sub contains_at {
     my $self = shift;
     my $text = shift;
 
-    defined $self->find_row(sub { index($_[0], $text) >= 0 });
+    $self->find_row(sub { index($_[0], $text) >= 0 });
+}
+
+sub contains {
+    my $self = shift;
+    my $text = shift;
+    defined $self->contains_at($text);
+}
+
+sub matches_at {
+    my $self = shift;
+    my $re = shift;
+
+    $self->find_row(sub { $_[0] =~ $re });
 }
 
 sub matches {
     my $self = shift;
     my $re = shift;
-
-    defined $self->find_row(sub { $_[0] =~ $re });
+    defined $self->matches_at($re);
 }
 
 sub at {

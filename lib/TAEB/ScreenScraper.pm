@@ -1632,14 +1632,22 @@ sub handle_game_end {
         TAEB->write(' ');
         _recurse;
     }
-    elsif (TAEB->topline =~ /^(Fare thee well|Sayonara|Aloha|Farvel|Goodbye) /) {
+    elsif (defined(my $grass = TAEB->vt->contains_at('_)/\\\\_//(\/(/\)/\//\/|_)_'))) {
         TAEB->death_state('summary');
 
         TAEB->death_report->score($1)
-            if TAEB->vt->row_plaintext(2) =~ /(\d+) points?/;
+            if TAEB->vt->row_plaintext($grass + 5) =~ /(\d+) points?/;
 
         TAEB->death_report->turns($1)
-            if TAEB->vt->row_plaintext(3) =~ /(\d+) moves?/;
+            if TAEB->vt->row_plaintext($grass + 6) =~ /(\d+) moves?/;
+
+        my @reason;
+        my $killed_by = TAEB->vt->contains_at('killed by');
+        while (TAEB->vt->row_plaintext($killed_by) =~ /^ +\| +(\w.*\w) +\| +$/) {
+            push @reason, $1;
+            $killed_by++;
+        }
+        TAEB->death_report->reason(join(' ', @reason));
 
         # summary is always one page, so after that is high scores with no
         # "press space to close nethack"
