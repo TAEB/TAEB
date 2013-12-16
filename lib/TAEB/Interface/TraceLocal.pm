@@ -156,16 +156,13 @@ augment read => sub {
     }
 
     my $out = '';
-    while (my $next = $pty->read(0, 1024)) {
-        last if !defined $next;
-        $out .= $next;
-        ($rin, $rout) = ('', '');
-        vec($rin, fileno($pty), 1) = 1;
+    while (1) {
         # this in theory should be able to use a delay of 0, but sometimes
         # nethack writes more than one thing in between reads, and reading on
         # this end sometimes only sees the first chunk if it runs too fast.
-        my $ret = select($rout = $rin, undef, undef, 0.01);
-        last if $ret == 0;
+        my $next = $pty->read(0.01, 1024);
+        last if !defined $next;
+        $out .= $next;
     }
 
     $self->has_read(1);
