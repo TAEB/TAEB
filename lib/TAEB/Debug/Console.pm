@@ -55,7 +55,7 @@ sub repl {
         local $SIG{__WARN__};
         local $SIG{__DIE__};
         local $SIG{INT} = sub { die "Interrupted." };
-        Carp::Reply::repl(@_);
+        Carp::Reply::repl(1);
     };
 
     TAEB->display->reinitialize;
