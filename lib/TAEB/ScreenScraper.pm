@@ -1643,7 +1643,7 @@ sub handle_game_end {
 
         my @reason;
         my $killed_by = TAEB->vt->matches_at(qr/(?:(?:killed|poisoned) by|died of)/);
-        while (TAEB->vt->row_plaintext($killed_by) =~ /^ +\| +(\w.*\w) +\| +$/) {
+        while (TAEB->vt->row_plaintext($killed_by) =~ /^ +\| +(\S.*\S) +\| +$/) {
             push @reason, $1;
             $killed_by++;
         }
