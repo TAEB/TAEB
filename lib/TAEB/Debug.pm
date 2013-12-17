@@ -4,6 +4,7 @@ use TAEB::OO;
 use TAEB::Debug::Console;
 use TAEB::Debug::Map;
 use TAEB::Debug::Sanity;
+use TAEB::Debug::Watch;
 
 has console => (
     is      => 'ro',
@@ -21,6 +22,12 @@ has map => (
     is      => 'ro',
     isa     => 'TAEB::Debug::Map',
     default => sub { TAEB::Debug::Map->new },
+);
+
+has watch => (
+    is      => 'ro',
+    isa     => 'TAEB::Debug::Watch',
+    default => sub { TAEB::Debug::Watch->new },
 );
 
 __PACKAGE__->meta->make_immutable;
