@@ -4,6 +4,8 @@ use TAEB::OO;
 use Try::Tiny;
 with 'TAEB::Role::Config';
 
+use Scalar::Util 'weaken';
+
 TAEB->register_debug_commands(
     'w' => {
         help    => "Toggle watchpoints",
@@ -32,6 +34,34 @@ has watchpoints => (
         reset       => 'clear',
     },
 );
+
+sub watch_once {
+    my $self = shift;
+    my ($watchpoint) = @_;
+
+    weaken(my $weakself = $self);
+    my $wrapped;
+    $wrapped = sub {
+        my $ret = $watchpoint->();
+        if ($ret) {
+            $weakself->remove($wrapped);
+            undef $wrapped;
+        }
+        return $ret;
+    };
+    $self->watch($wrapped);
+}
+
+sub remove {
+    my $self = shift;
+    my ($watchpoint) = @_;
+
+    my @watchpoints = $self->watchpoints;
+    $self->reset;
+    for my $old (@watchpoints) {
+        $self->watch($old) unless $old == $watchpoint;
+    }
+}
 
 sub toggle {
     my $self = shift;
