@@ -35,6 +35,17 @@ has watchpoints => (
     },
 );
 
+has watched_messages => (
+    traits  => ['Array'],
+    isa     => 'ArrayRef[Str]',
+    default => sub { [] },
+    handles => {
+        watched_messages       => 'elements',
+        watch_message          => 'push',
+        reset_watched_messages => 'clear',
+    },
+);
+
 sub watch_once {
     my $self = shift;
     my ($watchpoint) = @_;
@@ -63,6 +74,16 @@ sub remove {
     }
 }
 
+sub remove_message {
+    my $self = shift;
+    my ($message) = @_;
+
+    my @messages = $self->watched_messages;
+    for my $old (@messages) {
+        $self->watch_message($old) unless $old eq $message;
+    }
+}
+
 sub toggle {
     my $self = shift;
 
@@ -82,6 +103,24 @@ subscribe step => sub {
             TAEB->paused(1);
             last;
         }
+    }
+};
+
+sub msg_any {
+    my $self = shift;
+    my ($msg, @args) = @_;
+
+    if (grep { $msg eq $_ } $self->watched_messages) {
+        TAEB->paused(1);
+    }
+}
+
+subscribe any => sub {
+    my $self = shift;
+    my ($announcement) = @_;
+
+    if (grep { $announcement->name eq $_ } $self->watched_messages) {
+        TAEB->paused(1);
     }
 };
 
