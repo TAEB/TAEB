@@ -271,13 +271,6 @@ sub update {
     my $oldtype     = $self->type;
     my $oldglyph    = $self->glyph;
 
-    # gas spore explosions should not update the map
-    # XXX what's this for?  we don't run the AI until we've seen all
-    # output anyway, and worse things than this will break if we lose
-    # sync
-    # isn't it supposed to be green?
-    return if $newglyph =~ m{^[\\/-]$} && $color == COLOR_RED;
-
     $self->glyph($newglyph);
     $self->color($color);
 
