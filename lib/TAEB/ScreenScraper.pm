@@ -1642,7 +1642,7 @@ sub handle_game_end {
             if TAEB->vt->row_plaintext($grass + 6) =~ /(\d+) moves?/;
 
         my @reason;
-        my $killed_by = TAEB->vt->contains_at('killed by');
+        my $killed_by = TAEB->vt->matches_at(qr/(?:killed|poisoned) by/);
         while (TAEB->vt->row_plaintext($killed_by) =~ /^ +\| +(\w.*\w) +\| +$/) {
             push @reason, $1;
             $killed_by++;
