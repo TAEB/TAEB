@@ -122,12 +122,6 @@ has items => (
     },
 );
 
-has fully_explored => (
-    is      => 'rw',
-    isa     => 'Bool',
-    default => 0,
-);
-
 has been_magic_mapped => (
     is      => 'rw',
     isa     => 'Bool',
@@ -956,7 +950,6 @@ sub msg_farlooked {
 
 subscribe tile_type_change => sub {
     my $self = shift;
-    $self->fully_explored(0);
     $self->clear_astar_cache;
 };
 
