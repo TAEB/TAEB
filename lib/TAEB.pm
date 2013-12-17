@@ -614,6 +614,7 @@ sub new_item {
     my $class = $item->meta->name;
     (my $taeb_class = $class) =~ s/^NetHack::Item/TAEB::World::Item/;
     $taeb_class->meta->rebless_instance($item);
+    $item->created_on($self->turn);
     return $item;
 }
 

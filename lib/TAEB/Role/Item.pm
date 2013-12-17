@@ -7,6 +7,11 @@ with 'MooseX::Role::Matcher' => {
     allow_missing_methods => 1,
 };
 
+has created_on => (
+    is  => 'rw',
+    isa => 'Int',
+);
+
 sub is_auto_picked_up {
     my $self = shift;
     return 0 if !TAEB->autopickup;
@@ -102,6 +107,10 @@ sub debug_line {
 
     if ($self->cost_each) {
         push @fields, '($' . $self->total_cost . ')';
+    }
+
+    if ($self->created_on) {
+        push @fields, '<T' . $self->created_on . '>';
     }
 
     return join ' ', @fields;
