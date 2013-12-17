@@ -39,17 +39,23 @@ sub repl {
     };
     return unless $loaded;
 
-    TAEB->display->deinitialize;
+    TAEB->display->deinitialize(no_clear => 1);
 
-    print "\n"
-        . "\e[1;37m+"
+    print "\e[13;1H"
+        . "\e[1;37m" . "+"
         . "\e[1;30m" . ('-' x 50)
-        . "\e[1;37m[ "
-        . "\e[1;36mT\e[0;36mAEB \e[1;36mC\e[0;36monsole"
-        . " \e[1;37m]"
+        . "\e[1;37m" . "[ "
+        . "\e[1;36m" . "T"
+        . "\e[0;36m" . "AEB "
+        . "\e[1;36m" . "C"
+        . "\e[0;36m" . "onsole "
+        . "\e[1;37m" . "]"
         . "\e[1;30m" . ('-' x 12)
-        . "\e[1;37m+"
-        . "\e[m\n";
+        . "\e[1;37m" . "+"
+        . "\e[m"
+        . "\e[1;12r"
+        . "\e[12;1H"
+        . "\e[1J";
 
     try {
         local $SIG{__WARN__};
@@ -57,6 +63,8 @@ sub repl {
         local $SIG{INT} = sub { die "Interrupted." };
         Carp::Reply::repl(1);
     };
+
+    print "\e[1;25r";
 
     TAEB->display->reinitialize;
 }

@@ -104,6 +104,7 @@ augment reinitialize => sub {
     my $self = shift;
     $self->initialized(1);
 
+    Curses::reset_prog_mode;
     Curses::initscr;
 
     # need to do this again for some reason
@@ -112,16 +113,24 @@ augment reinitialize => sub {
 
 sub deinitialize {
     my $self = shift;
+    my %opts = @_;
 
     return unless $self->initialized;
 
     $self->initialized(0);
 
-    Curses::clear();
-    Curses::refresh();
+    if (!$opts{no_clear}) {
+        Curses::clear();
+        Curses::refresh();
+    }
 
     Curses::def_prog_mode();
-    Curses::endwin();
+    if ($opts{no_clear}) {
+        Curses::reset_shell_mode();
+    }
+    else {
+        Curses::endwin();
+    }
 }
 
 sub notify {
