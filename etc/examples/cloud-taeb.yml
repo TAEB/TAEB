@@ -1,0 +1,23 @@
+---
+ai: Behavioral::Personality::Explorer
+ai_options:
+    Behavioral:
+        avoid_branch: mines
+
+interface: Telnet
+
+display: Curses
+
+character:
+    role: Valkyrie
+    race: Dwarf
+    gender: Female
+    align: Law
+
+logger:
+    log_rotate:
+        dir: logs
+        compress: 1
+
+other_config:
+    - pass_config.yml
