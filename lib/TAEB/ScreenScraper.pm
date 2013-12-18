@@ -1365,6 +1365,10 @@ sub reconcile_inventory_with {
     my $menu = shift;
     my %args = @_;
 
+    for my $undef (grep { !defined($_->slot) } TAEB->inventory_items) {
+        TAEB->log->scraper("Found an inventory item with no slot when trying to reconcile our inventory with the menu: $undef");
+    }
+
     my %missing_slots = map { $_->slot => $_ } TAEB->inventory_items;
 
     for my $menu_item ($menu->all_items) {
