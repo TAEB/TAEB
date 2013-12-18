@@ -1651,7 +1651,11 @@ sub handle_game_end {
             push @reason, $1;
             $killed_by++;
         }
-        TAEB->death_report->reason(join(' ', @reason));
+        my $reason = join(' ', @reason);
+        # some words are too long to fit on a single line, so they're just
+        # arbitrarily split
+        $reason =~ s/hallucinogen-dis torted/hallucinogen-distorted/;
+        TAEB->death_report->reason($reason);
 
         # summary is always one page, so after that is high scores with no
         # "press space to close nethack"
