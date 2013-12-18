@@ -9,7 +9,7 @@ BEGIN {
             my $self = shift;
             my $other = shift;
 
-            refaddr($self) == refaddr($other)
+            (refaddr($self) // $self) == (refaddr($other) // $other)
         },
         q{!=} => sub {
             my $self = shift;
