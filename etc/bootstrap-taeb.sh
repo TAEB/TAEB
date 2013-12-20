@@ -21,7 +21,7 @@ git clone https://github.com/TAEB/TAEB.git
 # Install everything else that TAEB needs.
 (
 cd TAEB
-#dzil authordeps --missing | cpanm --sudo --notest
+dzil authordeps --missing | cpanm --sudo --notest
 dzil listdeps --missing | cpanm --sudo --notest
 )
 
