@@ -51,28 +51,16 @@ has status_method => (
     },
 );
 
-has time_buffer => (
-    is      => 'ro',
-    isa     => 'ArrayRef[Num]',
-    default => sub { [] },
+has steps_per_second => (
+    is      => 'rw',
+    isa     => 'Num',
+    default => sub { 0 },
 );
 
-has steps_last_second => (
+has last_step_time => (
     is      => 'rw',
-    isa     => 'Int',
-    default => 0,
-);
-
-has steps_this_second => (
-    is      => 'rw',
-    isa     => 'Int',
-    default => 0,
-);
-
-has this_second => (
-    is      => 'rw',
-    isa     => 'Int',
-    default => time,
+    isa     => 'Num',
+    default => sub { 0 },
 );
 
 has initialized => (
@@ -350,13 +338,7 @@ sub taeb_status {
 sub step_time {
     my $self = shift;
 
-    my $timebuf = $self->time_buffer;
-    if (@$timebuf > 1) {
-        my $secs = $timebuf->[0] - $timebuf->[1];
-        return sprintf "%1.1fs", $secs;
-    }
-
-    return '';
+    return sprintf "%1.1fs", $self->steps_per_second;
 }
 
 sub place_cursor {
@@ -810,25 +792,15 @@ sub change_botl_mode {
 
 subscribe step => sub {
     my $self = shift;
-    {
-        my $fine_time = gettimeofday;
-        my $list = $self->time_buffer;
 
-        unshift @$list, $fine_time;
-        splice @$list, 2 if @$list > 2;
-    }
-
-    {
-        my $time = time;
-        if ($time == $self->this_second) {
-            $self->steps_this_second($self->steps_this_second + 1);
-        }
-        else {
-            $self->this_second($time);
-            $self->steps_last_second($self->steps_this_second);
-            $self->steps_this_second(1);
-        }
-    }
+    # Calculate the steps per second using exponential moving average.
+    my $now = gettimeofday;
+    my $time_diff = $now - $self->last_step_time;
+    # If it's been longer than one second, throw away the accumulated value by
+    # setting alpha to 1.
+    my $alpha = $time_diff < 1 ? 0.05 : 1;
+    $self->last_step_time($now);
+    $self->steps_per_second(($alpha * (1/$time_diff)) + (1.0 - $alpha) * $self->steps_per_second);
 };
 
 sub get_key { Curses::getch }
