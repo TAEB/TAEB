@@ -342,7 +342,7 @@ sub taeb_status {
     push @pieces, '[' . $statuses . ']'
         if $statuses;
 
-    push @pieces, $self->steps_last_second;
+    push @pieces, $self->step_time();
 
     return join ' ', @pieces;
 }
