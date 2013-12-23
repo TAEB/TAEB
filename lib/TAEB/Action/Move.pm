@@ -39,7 +39,7 @@ sub BUILD {
             if $next_tile->has_boulder;
 
         confess "Tried to move into a monster"
-            if $next_tile->has_monster;
+            if $start ne '<' && $start ne '>' && $next_tile->has_monster;
     }
 }
 
