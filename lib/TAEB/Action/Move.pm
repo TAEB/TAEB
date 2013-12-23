@@ -34,13 +34,12 @@ sub BUILD {
         confess "You must specify a path or direction to the Move action.";
     }
 
-    my $next_tile = TAEB->current_tile->at_direction($start);
-    if ($next_tile && $next_tile->has_boulder) {
-        $self->pushing(1);
-    }
+    if (my $next_tile = TAEB->current_tile->at_direction($start)) {
+        $self->pushing(1)
+            if $next_tile->has_boulder;
 
-    if ($next_tile->has_monster) {
-        confess "Tried to move into a monster";
+        confess "Tried to move into a monster"
+            if $next_tile->has_monster;
     }
 }
 
