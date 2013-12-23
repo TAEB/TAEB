@@ -814,6 +814,21 @@ sub each_changed_tile_and_neighbors {
     }
 }
 
+sub can_have_secret_doors {
+    my $self = shift;
+
+    return 1 unless $self->known_branch;
+
+    my $branch = $self->branch;
+    return 1 if $branch eq 'dungeons';
+    return 0 if $branch eq 'sokoban';
+
+    return 1 if $self->is_minetown;
+    return 1 if $self->is_minesend;
+    return 0 if $branch eq 'mines';
+
+    return 1;
+}
 
 sub msg_dungeon_level {
     my $self = shift;
