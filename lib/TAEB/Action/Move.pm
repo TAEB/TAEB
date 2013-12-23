@@ -38,6 +38,10 @@ sub BUILD {
     if ($next_tile && $next_tile->has_boulder) {
         $self->pushing(1);
     }
+
+    if ($next_tile->has_monster) {
+        confess "Tried to move into a monster";
+    }
 }
 
 sub directions {
