@@ -24,7 +24,10 @@ sub read { ## no critic (ProhibitBuiltinHomonyms)
         last if $iter >= $self->min_read_iterations && length($input);
     }
 
-    TAEB->log->log_to_channel(input => "Received '$input' from NetHack.");
+    TAEB->log->log_to_channel(
+        input => "Received '$input' from NetHack.",
+        (length($input) ? () : (level => 'warning')),
+    );
     return $input;
 }
 
