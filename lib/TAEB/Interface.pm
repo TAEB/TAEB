@@ -2,18 +2,28 @@ package TAEB::Interface;
 use Moose;
 use TAEB::OO;
 
-has read_iterations => (
+has min_read_iterations => (
     is      => 'ro',
     isa     => 'Int',
     default => 1,
 );
 
+has max_read_iterations => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 3,
+);
+
 sub read { ## no critic (ProhibitBuiltinHomonyms)
     my $self = shift;
 
-    my $input = join '',
-                map { my $output = inner(); defined $output ? $output : '' }
-                1 .. $self->read_iterations;
+    my $input = '';
+    for my $iter (1..$self->max_read_iterations) {
+        my $output = inner();
+        $input .= defined $output ? $output : '';
+        last if $iter >= $self->min_read_iterations && length($input);
+    }
+
     TAEB->log->log_to_channel(input => "Received '$input' from NetHack.");
     return $input;
 }
