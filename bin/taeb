@@ -44,7 +44,11 @@ require TAEB;
 TAEB->config->override_config($_) for @config_overrides;
 
 if (${$cmdline_options{quit}}) {
-    TAEB->config->override_config('{"ai": "Quit"}');
+    TAEB->config->override_config(<<QUIT
+---
+ai: Quit
+QUIT
+    );
 }
 
 my $tstp = $SIG{TSTP} = sub {
