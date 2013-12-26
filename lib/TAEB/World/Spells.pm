@@ -108,10 +108,10 @@ sub knows_spell {
     return 1;
 }
 
-sub msg_experience_level_change {
+subscribe experience_level_change => sub {
     my $self = shift;
     TAEB->send_message(check => "spells") if $self->has_spells;
-}
+};
 
 sub known_skills { uniq map { $_->skill } shift->spells }
 

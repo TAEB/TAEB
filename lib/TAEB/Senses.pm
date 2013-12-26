@@ -112,7 +112,9 @@ has level => (
     trigger => sub {
         my ($self, $new, $old) = @_;
         if (defined($old) && defined($new) && $new != $old) {
-            TAEB->send_message('experience_level_change', $old => $new);
+            TAEB->send_message(
+                experience_level_change => TAEB::Announcement::Character::ExperienceLevelChange->new(old_level => $old, new_level => $new)
+            );
         }
     },
 );
