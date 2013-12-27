@@ -482,17 +482,17 @@ my %method_of = (
     telepathy                  => 'has_telepathy',
 );
 
-sub msg_status_change {
-    my $self     = shift;
-    my $status   = shift;
-    my $now_have = shift;
+subscribe status_change => sub{
+    my $self = shift;
+    my $event = shift;
+    my $status = $event->status;
 
     my $method = $method_of{$status} || "is_$status";
 
     if ($self->can($method)) {
-        $self->$method($now_have);
+        $self->$method($event->in_effect);
     }
-}
+};
 
 sub msg_resistance_change {
     my $self     = shift;
@@ -507,13 +507,13 @@ sub msg_resistance_change {
 }
 sub msg_pit {
     my $self = shift;
-    $self->msg_status_change(pit => @_);
+    TAEB->send_message(TAEB::Announcement::Character::StatusChange->new(status => 'pit', in_effect => shift));
     TAEB->send_message('dungeon_feature' => 'trap' => 'pit');
 }
 
 sub msg_web {
     my $self = shift;
-    $self->msg_status_change(web => @_);
+    TAEB->send_message(TAEB::Announcement::Character::StatusChange->new(status => 'web', in_effect => shift));
     TAEB->send_message('dungeon_feature' => 'trap' => 'web');
 }
 
@@ -543,7 +543,7 @@ sub msg_life_saving {
 
 sub msg_engulfed {
     my $self = shift;
-    $self->msg_status_change(engulfed => @_);
+    TAEB->send_message(TAEB::Announcement::Character::StatusChange->new(status => 'engulfed', in_effect => shift));
 }
 
 subscribe grabbed => sub {

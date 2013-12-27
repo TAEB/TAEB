@@ -22,7 +22,7 @@ subscribe nothing_happens => sub {
     # nothing happens is good! we know we don't have these status effects
     if ($item->match(identity => 'unicorn horn')) {
         for (qw/blindness confusion stunning hallucination/) {
-            TAEB->send_message(status_change => $_ => 0);
+            TAEB->send_message(TAEB::Announcement::Character::StatusChange->new(status => $_, in_effect => 0));
         }
     }
 };
@@ -35,20 +35,20 @@ sub msg_no_oil {
     $item->has_oil(0);
 }
 
-sub msg_status_change {
+subscribe status_change => sub {
     my $self = shift;
-    my $status = shift;
-    my $have = shift;
+    my $event = shift;
+    my $status = $event->status;
 
     # we lost the effect, so we don't care
-    return if !$have;
+    return if !$event->in_effect;
 
     my $item = $self->item;
     if ($item->identity eq 'unicorn horn') {
         TAEB->log->action("We seem to have gained the '$status' effect and we rubbed $item this turn. Marking it as cursed.");
         $item->buc("cursed");
     }
-}
+};
 
 sub msg_negative_stethoscope {
     my $self = shift;
