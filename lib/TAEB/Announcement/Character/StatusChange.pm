@@ -51,26 +51,23 @@ __PACKAGE__->parse_messages(
     "Your quickness feels more natural." => {
         status => 'fast', in_effect => 1
     },
-    "You are slowing down." => {
-        status => 'fast', in_effect => 0
-    },
+    "You are slowing down." => [
+        { status => 'fast',    in_effect => 0 },
+        { status => 'stoning', in_effect => 1 },
+    ],
     "Your limbs are getting oozy." => {
         status => 'fast', in_effect => 0
     },
-    "You slow down." => {
-        status => 'fast', in_effect => 0
-    },
-    "Your quickness feels less natural." => {
-        status => 'fast', in_effect => 0
-    },
+    "You slow down." => [
+        { status => 'fast',      in_effect => 0 },
+        { status => 'very_fast', in_effect => 0 },
+    ],
+    "Your quickness feels less natural." => [
+        { status => 'fast',      in_effect => 0 },
+        { status => 'very_fast', in_effect => 0 },
+    ],
     '"and thus I grant thee the gift of Speed!"' => {
         status => 'fast', in_effect => 1
-    },
-    "You slow down." => {
-        status => 'very_fast', in_effect => 0
-    },
-    "Your quickness feels less natural." => {
-        status => 'very_fast', in_effect => 0
     },
     "You are suddenly moving faster." => {
         status => 'very_fast', in_effect => 1
@@ -105,9 +102,6 @@ __PACKAGE__->parse_messages(
     },
     "You feel less jumpy." => {
         status => 'intrinsic_teleportitis', in_effect => 0
-    },
-    "You are slowing down." => {
-        status => 'stoning', in_effect => 1
     },
     "Your limbs are stiffening." => {
         status => 'stoning', in_effect => 1
