@@ -564,12 +564,12 @@ sub elbereth_count {
     return $elbereths;
 }
 
-sub msg_nutrition {
+subscribe nutrition => sub {
     my $self = shift;
-    my $nutrition = shift;
+    my $event = shift;
 
-    $self->nutrition($nutrition);
-}
+    $self->nutrition($event->nutrition);
+};
 
 sub msg_polyself {
     my $self = shift;
