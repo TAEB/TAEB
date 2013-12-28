@@ -76,9 +76,10 @@ do {
 
         while (my ($message, $args) = splice @_, 0, 2) {
             my $constructor =
-                  ref($args) eq 'HASH' ? sub { $class->new(%$args) }
-                : ref($args) eq 'CODE' ? sub { $class->new($args->(@_)) }
-                : confess "Unknown constructor type '$args' (I can handle hashref and coderef)";
+                  ref($args) eq 'HASH'  ? sub { $class->new(%$args) }
+                : ref($args) eq 'CODE'  ? sub { $class->new($args->(@_)) }
+                : ref($args) eq 'ARRAY' ? sub { map { $class->new(%$_) } @$args }
+                : confess "Unknown constructor type '$args' (I can handle hashref, coderef, and arrayref)";
 
             if (!ref($message)) {
                 if (exists $exact_message_table{$message}) {
