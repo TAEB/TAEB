@@ -82,8 +82,8 @@ sub msg_throw_count {
     TAEB->inventory->decrease_quantity($self->projectile->slot, $count - 1);
 }
 
-after msg_killed => sub {
-    my ($self, $monster_name) = @_;
+subscribe killed => sub {
+    my ($self, $event) = @_;
     $self->killed(1);
 };
 
