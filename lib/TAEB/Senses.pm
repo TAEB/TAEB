@@ -419,7 +419,7 @@ subscribe beartrap => sub {
     $self->in_beartrap($event->now_stuck);
 };
 
-sub msg_walked {
+subscribe walked => sub {
     my $self = shift;
     $self->in_beartrap(0);
     $self->in_pit(0);
@@ -430,7 +430,7 @@ sub msg_walked {
         TAEB->write("@");
         TAEB->process_input;
     }
-}
+};
 
 subscribe turn => sub {
     my $self = shift;
