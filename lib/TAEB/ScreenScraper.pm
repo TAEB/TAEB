@@ -8,65 +8,6 @@ use NetHack::Menu 0.07;
 use Try::Tiny;
 
 our %msg_string = (
-    "You are blinded by a blast of light!" =>
-        ['status_change', 'blindness', 1],
-    "You can see again." =>
-        ['status_change', 'blindness', 0],
-    "You feel feverish." =>
-        ['status_change', 'lycanthropy', 1],
-    "You feel purified." =>
-        ['status_change', 'lycanthropy', 0],
-    "You feel quick!" =>
-        ['status_change' => fast => 1],
-    "You feel slow!" =>
-        ['status_change' => fast => 0],
-    "You seem faster." =>
-        ['status_change' => fast => 1],
-    "You seem slower." =>
-        ['status_change' => fast => 0],
-    "You feel slower." =>
-        ['status_change' => fast => 0],
-    "You speed up." =>
-        ['status_change' => fast => 1],
-    "Your quickness feels more natural." =>
-        ['status_change' => fast => 1],
-    "You are slowing down." =>
-        ['status_change' => fast => 0],
-    "Your limbs are getting oozy." =>
-        ['status_change' => fast => 0],
-    "You slow down." =>
-        ['status_change' => fast => 0],
-    "Your quickness feels less natural." =>
-        ['status_change' => fast => 0],
-    "\"and thus I grant thee the gift of Speed!\"" =>
-        ['status_change' => fast => 1],
-    "You slow down." =>
-        ['status_change' => very_fast => 0],
-    "Your quickness feels less natural." =>
-        ['status_change' => very_fast => 0],
-    "You are suddenly moving faster." =>
-        ['status_change' => very_fast => 1],
-    "You are suddenly moving much faster." =>
-        ['status_change' => very_fast => 1],
-    "Your knees seem more flexible now." =>
-        ['status_change' => very_fast => 1],
-    "You feel yourself slowing down." =>
-        ['status_change' => very_fast => 0],
-    "You feel yourself slowing down a bit." =>
-        ['status_change' => very_fast => 0],
-    "\"and thus I grant thee the gift of Stealth!\"" =>
-        ['status_change' => stealthy => 1],
-#    "You feel clumsy." XXX this is also an attribute loss message
-    "You feel stealthy!" =>
-        ['status_change' => stealthy => 1],
-    "You feel less stealthy!" =>
-        ['status_change' => stealthy => 0],
-    "You feel very jumpy." =>
-        ['status_change' => intrinsic_teleportitis => 1],
-    "You feel diffuse." =>
-        ['status_change' => intrinsic_teleportitis => 1],
-    "You feel less jumpy." =>
-        ['status_change' => intrinsic_teleportitis => 0],
     "The fountain dries up!" =>
         ['dungeon_feature', 'fountain dries up'],
     "As the hand retreats, the fountain disappears!" =>
@@ -194,14 +135,6 @@ our %msg_string = (
         ['angry_watch'],
     "You're under arrest!" =>
         ['angry_watch'],
-    "You are slowing down." =>
-        ['status_change', 'stoning', 1],
-    "Your limbs are stiffening." =>
-        ['status_change', 'stoning', 1],
-    "You feel more limber." =>  # praying
-        ['status_change', 'stoning', 0],
-    "You feel limber!" =>  # consuming acid
-        ['status_change', 'stoning', 0],
     "You hear someone cursing shoplifters." =>
         ['level_message', 'shop'],
     "You hear the chime of a cash register." =>
@@ -226,8 +159,6 @@ our %msg_string = (
         [check => 'inventory'],
     "\"A curse upon thee for sitting upon this most holy throne!\"" =>
         [check => 'inventory'],
-    "Your right leg is in no shape for kicking." =>
-        [status_change => wounded_legs => 1],
     "You hear nothing special." =>
         ['negative_stethoscope'],
     "You hear a voice say, \"It's dead, Jim.\"" =>
@@ -332,18 +263,6 @@ our %msg_string = (
         ['cursed'],
     'It is cursed.' =>
         ['cursed'],
-    'You start to float in the air!' =>
-        [status_change => levitation => 1],
-    'You float gently to the floor.' =>
-        [status_change => levitation => 0],
-    'You are floating high above the stairs.' =>
-        [status_change => levitation => 1],
-    'You have nothing to brace yourself against.' =>
-        [status_change => levitation => 1],
-    'You cannot reach the ground.' =>
-        [status_change => levitation => 1],
-    'You are floating high above the fountain.' =>
-        [status_change => levitation => 1],
     'Floating in the air, you miss wildly!'  =>
         ['impeded_by_levitation'],
     'Your sacrifice sprouts wings and a propeller and roars away!' =>
@@ -384,10 +303,6 @@ our %msg_string = (
         [check => 'enhance'],
     "You don't find anything here to loot." =>
         [check => 'floor'],
-    "You feel a strange mental acuity." =>
-        [status_change => telepathy => 1],
-    "You feel in touch with the cosmos." =>
-        [status_change => telepathy => 1],
     "An object appears at your feet!" =>
         [check => 'floor'],
     "The spellbook fades." =>
@@ -400,10 +315,6 @@ our %msg_string = (
         ['lamp_on'],
     "You snuff the lit potion." =>
         ['lamp_off'],
-    "All of a sudden, you can't see yourself." =>
-        [status_change => invisible => 1],
-    "Your body seems to unfade..." =>
-        [status_change => invisible => 0],
 );
 
 our @msg_regex = (
@@ -436,10 +347,6 @@ our @msg_regex = (
     [
             qr/^The .* appears to be in ex(?:cellent|traordinary) health for a statue.$/,
                 ['negative_stethoscope'],
-    ],
-    [
-            qr/^Your legs? feels? somewhat better\.$/,
-                [status_change => wounded_legs => 0],
     ],
     [
             qr/^You can't go (?:up|down) here\.$/,
@@ -554,10 +461,6 @@ our @msg_regex = (
             ['autopickup' => sub { $1 eq 'ON' }],
     ],
     [
-        qr/^You (?:kill|destroy) (?:the|an?)(?: poor)?(?: invisible)? (.*)(?:\.|!)/ =>
-            ['killed' => sub { $1 } ],
-    ],
-    [
         qr/^Suddenly, .* vanishes from the sink!/ =>
             ['ring' => 'ring of hunger'],
     ],
@@ -667,25 +570,8 @@ our @msg_regex = (
             ['hidden_monster' => sub { ($1, $2) } ],
     ],
     [
-        qr/^What a pity - you just ruined a future piece of (?:fine )?art!/ =>
-            ['status_change', 'stoning', 0],
-    ],
-    [
         qr/^(.*?) (misses|hits|kicks|butts|bites|stings)[.!]$/ =>
             ['attacked' => sub { ($1, $2 ne 'misses') } ],
-    ],
-    [
-        qr/^Your .* get new energy\.$/ =>
-            [status_change => very_fast => 1],
-    ],
-    [
-        # This one is somewhat tricky.  There is no message for speed ending
-        # if you are still very fast due to speed boots, so speed will stay
-        # at 'fast'. This causes no harm until the boots are taken off or
-        # destroyed; fortunately at that time we receive the following message,
-        # which allows us to fix the mistaken speed.
-        qr/^You feel yourself slow down.*\.$/ =>
-            [status_change => very_fast => 0],
     ],
     [
         qr/^You (?:be chillin'|feel a momentary chill)\.$/ =>
@@ -804,14 +690,6 @@ our @msg_regex = (
     [
         qr/Hmmm, it seems to be locked\./ =>
             ['container_locked'],
-    ],
-    [
-        qr/You feel (?:controlled!|in control of yourself\.|centered in your personal space\.)/ =>
-            [status_change => intrinsic_teleport_control => 1],
-    ],
-    [
-        qr/You feel uncontrolled!/ =>
-            [status_change => intrinsic_teleport_control => 0],
     ],
     [
         qr/^You are now (?:more|most) skilled in (.*?)\./ =>

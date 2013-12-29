@@ -112,7 +112,9 @@ has level => (
     trigger => sub {
         my ($self, $new, $old) = @_;
         if (defined($old) && defined($new) && $new != $old) {
-            TAEB->send_message('experience_level_change', $old => $new);
+            TAEB->send_message(
+                experience_level_change => TAEB::Announcement::Character::ExperienceLevelChange->new(old_level => $old, new_level => $new)
+            );
         }
     },
 );
@@ -417,7 +419,7 @@ subscribe beartrap => sub {
     $self->in_beartrap($event->now_stuck);
 };
 
-sub msg_walked {
+subscribe walked => sub {
     my $self = shift;
     $self->in_beartrap(0);
     $self->in_pit(0);
@@ -428,7 +430,7 @@ sub msg_walked {
         TAEB->write("@");
         TAEB->process_input;
     }
-}
+};
 
 subscribe turn => sub {
     my $self = shift;
@@ -480,17 +482,17 @@ my %method_of = (
     telepathy                  => 'has_telepathy',
 );
 
-sub msg_status_change {
-    my $self     = shift;
-    my $status   = shift;
-    my $now_have = shift;
+subscribe status_change => sub{
+    my $self = shift;
+    my $event = shift;
+    my $status = $event->status;
 
     my $method = $method_of{$status} || "is_$status";
 
     if ($self->can($method)) {
-        $self->$method($now_have);
+        $self->$method($event->in_effect);
     }
-}
+};
 
 sub msg_resistance_change {
     my $self     = shift;
@@ -505,13 +507,13 @@ sub msg_resistance_change {
 }
 sub msg_pit {
     my $self = shift;
-    $self->msg_status_change(pit => @_);
+    TAEB->send_message(TAEB::Announcement::Character::StatusChange->new(status => 'pit', in_effect => shift));
     TAEB->send_message('dungeon_feature' => 'trap' => 'pit');
 }
 
 sub msg_web {
     my $self = shift;
-    $self->msg_status_change(web => @_);
+    TAEB->send_message(TAEB::Announcement::Character::StatusChange->new(status => 'web', in_effect => shift));
     TAEB->send_message('dungeon_feature' => 'trap' => 'web');
 }
 
@@ -541,7 +543,7 @@ sub msg_life_saving {
 
 sub msg_engulfed {
     my $self = shift;
-    $self->msg_status_change(engulfed => @_);
+    TAEB->send_message(TAEB::Announcement::Character::StatusChange->new(status => 'engulfed', in_effect => shift));
 }
 
 subscribe grabbed => sub {
@@ -562,12 +564,12 @@ sub elbereth_count {
     return $elbereths;
 }
 
-sub msg_nutrition {
+subscribe nutrition => sub {
     my $self = shift;
-    my $nutrition = shift;
+    my $event = shift;
 
-    $self->nutrition($nutrition);
-}
+    $self->nutrition($event->nutrition);
+};
 
 sub msg_polyself {
     my $self = shift;

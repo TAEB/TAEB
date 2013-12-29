@@ -71,13 +71,13 @@ around target_tile => sub {
     return $tile;
 };
 
-sub msg_killed {
-    my ($self, $monster_name) = @_;
+subscribe msg_killed => sub {
+    my ($self, $event) = @_;
 
     return unless defined $self->victim_tile;
 
-    $self->victim_tile->witness_kill($monster_name);
-}
+    $self->victim_tile->witness_kill($event->monster_name);
+};
 
 no Moose::Role;
 no TAEB::OO;

@@ -95,7 +95,7 @@ sub done {
               || $changed_levels;
 
     if ($walked) {
-        TAEB->send_message('walked');
+        TAEB->send_message(TAEB::Announcement::Walked->new());
 
         if ($self->pushing) {
             # If we pushed a boulder, then if it's still there, it
